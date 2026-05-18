@@ -27,18 +27,19 @@ pub fn on_popup_blur(window: &tauri::Window) {
 }
 
 fn position_popup(window: &WebviewWindow, tray_rect: &tauri::Rect) -> tauri::Result<()> {
+    let scale = window.scale_factor().unwrap_or(1.0);
     let win_size = window.outer_size()?;
 
-    let tray_x = tray_rect.position.x;
-    let tray_w = tray_rect.size.width;
+    let tray_pos: PhysicalPosition<i32> = tray_rect.position.to_physical(scale);
+    let tray_size: tauri::PhysicalSize<i32> = tray_rect.size.to_physical(scale);
 
-    let x = (tray_x + tray_w / 2.0 - win_size.width as f64 / 2.0) as i32;
+    let x = tray_pos.x + tray_size.width / 2 - win_size.width as i32 / 2;
 
     #[cfg(target_os = "macos")]
-    let y = (tray_rect.position.y + tray_rect.size.height) as i32;
+    let y = tray_pos.y + tray_size.height;
 
     #[cfg(not(target_os = "macos"))]
-    let y = (tray_rect.position.y - win_size.height as f64) as i32;
+    let y = tray_pos.y - win_size.height as i32;
 
     window.set_position(PhysicalPosition::new(x, y))?;
     Ok(())
@@ -62,13 +63,16 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
         .icon(app.default_window_icon().cloned().unwrap())
         .tooltip("KimaiMate")
         .menu(&menu)
-        .menu_on_left_click(false)
+        .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {
             "settings" => {
-                if let Some(w) = app.get_webview_window("settings") {
-                    let _ = w.show();
-                    let _ = w.set_focus();
-                }
+                let handle = app.clone();
+                tauri::async_runtime::spawn(async move {
+                    if let Some(w) = handle.get_webview_window("settings") {
+                        let _ = w.show();
+                        let _ = w.set_focus();
+                    }
+                });
             }
             "open_kimai" => {
                 // TODO: open configured Kimai URL in default browser

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentWindow, Window } from "@tauri-apps/api/window";
 import HeaderStatus from "../components/HeaderStatus";
 import ActiveTimerCard from "../components/ActiveTimerCard";
 import EmptyTimerState from "../components/EmptyTimerState";
@@ -147,7 +147,13 @@ export default function TrayPopup() {
           <PopupFooterActions
             onNewTask={() => setShowNewTask(true)}
             onOpenKimai={() => {}}
-            onSettings={() => {}}
+            onSettings={async () => {
+              const w = await Window.getByLabel("settings");
+              if (w) {
+                await w.show();
+                await w.setFocus();
+              }
+            }}
           />
         </>
       )}
