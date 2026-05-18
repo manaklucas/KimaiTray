@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { ActiveTimer } from "../types";
 
 interface IdleDialogProps {
@@ -36,8 +37,11 @@ export default function IdleDialog({
   onStopAndStartNew,
   isProcessing,
 }: IdleDialogProps) {
+  const { t } = useTranslation();
   const btnBase =
     "w-full rounded-md px-3 py-2 text-[12px] font-medium transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed";
+
+  const idleTime = formatTime(idleStartedAt);
 
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -60,18 +64,17 @@ export default function IdleDialog({
           </div>
           <div>
             <h3 className="text-[13px] font-semibold text-gray-900 dark:text-gray-100">
-              You were idle
+              {t("idle.youWereIdle")}
             </h3>
             <p className="text-[11px] text-gray-500 dark:text-gray-400">
-              {formatDuration(idleDurationSeconds)} since{" "}
-              {formatTime(idleStartedAt)}
+              {formatDuration(idleDurationSeconds)} {t("common.since", { time: idleTime })}
             </p>
           </div>
         </div>
 
         <div className="mb-4 rounded-md bg-gray-50 dark:bg-gray-800/50 px-3 py-2">
           <p className="text-[11px] text-gray-500 dark:text-gray-400">
-            Active timer
+            {t("idle.activeTimer")}
           </p>
           <p className="text-[12px] font-medium text-gray-900 dark:text-gray-100 truncate">
             {timer.project}
@@ -88,28 +91,28 @@ export default function IdleDialog({
             disabled={isProcessing}
             className={`${btnBase} bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]`}
           >
-            Continue — keep idle time
+            {t("idle.continueKeep")}
           </button>
           <button
             onClick={onStopAtIdleStart}
             disabled={isProcessing}
             className={`${btnBase} bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600`}
           >
-            Stop at {formatTime(idleStartedAt)}
+            {t("idle.stopAt", { time: idleTime })}
           </button>
           <button
             onClick={onStopNow}
             disabled={isProcessing}
             className={`${btnBase} bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600`}
           >
-            Stop now
+            {t("idle.stopNow")}
           </button>
           <button
             onClick={onStopAndStartNew}
             disabled={isProcessing}
             className={`${btnBase} text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800`}
           >
-            Stop at {formatTime(idleStartedAt)} & start new task
+            {t("idle.stopAtAndNew", { time: idleTime })}
           </button>
         </div>
       </div>

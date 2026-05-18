@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import type { ActiveTimer } from "../types";
 
 interface ActiveTimerCardProps {
@@ -45,6 +46,7 @@ export default function ActiveTimerCard({
   isSaving,
   saveError,
 }: ActiveTimerCardProps) {
+  const { t } = useTranslation();
   const [elapsed, setElapsed] = useState(() =>
     Math.max(0, Math.floor(Date.now() / 1000) - timer.beginSeconds),
   );
@@ -111,11 +113,11 @@ export default function ActiveTimerCard({
   const saveBegin = () => {
     const d = new Date(beginValue);
     if (isNaN(d.getTime())) {
-      setBeginError("Invalid time");
+      setBeginError(t("timer.invalidTime"));
       return;
     }
     if (d.getTime() > Date.now()) {
-      setBeginError("Can't be in the future");
+      setBeginError(t("timer.futureTime"));
       return;
     }
     setEditingBegin(false);
@@ -163,12 +165,12 @@ export default function ActiveTimerCard({
             <div className="ml-auto flex items-center gap-1.5 shrink-0">
               {multipleActive && (
                 <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
-                  +more
+                  {t("common.more")}
                 </span>
               )}
               {isSaving && (
                 <span className="text-[9px] text-emerald-500 dark:text-emerald-400 animate-pulse">
-                  Saving…
+                  {t("common.saving")}
                 </span>
               )}
             </div>
@@ -185,7 +187,7 @@ export default function ActiveTimerCard({
               onChange={(e) => setDescValue(e.target.value)}
               onBlur={saveDesc}
               onKeyDown={handleDescKey}
-              placeholder="Add note…"
+              placeholder={t("timer.addNote")}
               className="w-full text-[11px] bg-white dark:bg-gray-800 border border-emerald-300 dark:border-emerald-700 rounded px-1.5 py-0.5 text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-emerald-400"
             />
           ) : (
@@ -201,7 +203,7 @@ export default function ActiveTimerCard({
                   : "text-gray-300 dark:text-gray-600 italic"
               }`}
             >
-              {timer.description || "Add note…"}
+              {timer.description || t("timer.addNote")}
             </p>
           )}
         </div>
@@ -238,7 +240,7 @@ export default function ActiveTimerCard({
                 disabled={!onEdit}
                 className="text-[10px] text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors disabled:hover:text-gray-400 dark:disabled:hover:text-gray-500 shrink-0"
               >
-                since {formatStartTime(timer.beginIso)}
+                {t("common.since", { time: formatStartTime(timer.beginIso) })}
               </button>
             )}
           </div>
@@ -251,7 +253,7 @@ export default function ActiveTimerCard({
               disabled:opacity-50 disabled:cursor-not-allowed
               transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
           >
-            {isStopping ? "Stopping…" : "Stop"}
+            {isStopping ? t("tray.stopping") : t("timer.stopTimer")}
           </button>
         </div>
 

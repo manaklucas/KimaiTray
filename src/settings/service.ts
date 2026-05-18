@@ -9,6 +9,8 @@ export const defaultSettings: AppSettings = {
   connections: [],
   activeConnectionId: "",
 
+  language: "sk",
+
   launchAtLogin: false,
   refreshInterval: 60,
   openKimaiInBrowser: true,

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getCurrentWindow, Window } from "@tauri-apps/api/window";
 import HeaderStatus from "../components/HeaderStatus";
 import ActiveTimerCard from "../components/ActiveTimerCard";
@@ -14,17 +15,29 @@ import { useStartTask } from "../hooks/useStartTask";
 import type { StartTaskPayload } from "../hooks/useStartTask";
 import { useEditTimer } from "../hooks/useEditTimer";
 import { useIdleDetection } from "../hooks/useIdleDetection";
-import { setTrayTooltip, setTrayTitle, setTrayIcon } from "../api/trayApi";
+import { setTrayTooltip, setTrayTitle, setTrayIcon, updateTrayMenu } from "../api/trayApi";
 import { useAppearance } from "../hooks/useAppearance";
+import { useLanguageSync } from "../hooks/useLanguageSync";
 import { updateTimesheet, stopTimesheet } from "../api/timesheetApi";
 import { formatElapsed } from "../components/ActiveTimerCard";
 import type { RecentTask } from "../types";
 
 export default function TrayPopup() {
+  const { t, i18n } = useTranslation();
   const [showNewTask, setShowNewTask] = useState(false);
   const [idleProcessing, setIdleProcessing] = useState(false);
 
   useAppearance();
+  useLanguageSync();
+
+  useEffect(() => {
+    updateTrayMenu({
+      settingsLabel: t("common.settings"),
+      openKimaiLabel: t("common.openKimai"),
+      refreshLabel: t("common.refresh"),
+      quitLabel: t("common.quit"),
+    });
+  }, [i18n.language, t]);
 
   const {
     client,
@@ -76,8 +89,8 @@ export default function TrayPopup() {
     import("@tauri-apps/plugin-notification").then(({ sendNotification }) => {
       const mins = Math.round(idleDurationSeconds / 60);
       sendNotification({
-        title: "KimaiTray",
-        body: `You were idle for ${mins} min while tracking "${timer?.project ?? "timer"}"`,
+        title: "KimaiMate",
+        body: t("notifications.idleWhileTracking", { minutes: mins, project: timer?.project ?? "timer" }),
       });
     }).catch(() => {});
   }, [idleState]);
@@ -182,7 +195,7 @@ export default function TrayPopup() {
   // Update tray tooltip and menu bar title
   useEffect(() => {
     if (!timer) {
-      setTrayTooltip("KimaiTray");
+      setTrayTooltip("KimaiMate");
       setTrayTitle("");
       return;
     }
@@ -217,7 +230,7 @@ export default function TrayPopup() {
     const id = setInterval(tick, 1000);
     return () => {
       clearInterval(id);
-      setTrayTooltip("KimaiTray");
+      setTrayTooltip("KimaiMate");
       setTrayTitle("");
     };
   }, [timer?.id, timer?.beginSeconds, timer?.project, timer?.activity, traySettings]);

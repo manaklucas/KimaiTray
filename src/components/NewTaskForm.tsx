@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { getCustomers, getProjects } from "../api/projectApi";
@@ -23,6 +24,7 @@ export default function NewTaskForm({
   onCancel,
   isSubmitting,
 }: NewTaskFormProps) {
+  const { t } = useTranslation();
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [projectId, setProjectId] = useState<number | null>(null);
   const [activityId, setActivityId] = useState<number | null>(null);
@@ -117,14 +119,14 @@ export default function NewTaskForm({
           </svg>
         </button>
         <span className="text-[12px] font-semibold text-gray-700 dark:text-gray-200">
-          New Task
+          {t("newTask.title")}
         </span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 pt-2.5 space-y-2.5">
         <div>
           <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Customer
+            {t("newTask.customer")}
           </label>
           <select
             value={customerId ?? ""}
@@ -136,7 +138,7 @@ export default function NewTaskForm({
             disabled={isSubmitting}
             className={selectCls}
           >
-            <option value="">All customers</option>
+            <option value="">{t("newTask.allCustomers")}</option>
             {customers.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -147,7 +149,7 @@ export default function NewTaskForm({
 
         <div>
           <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Project <span className="text-[var(--accent)]">*</span>
+            {t("newTask.project")} <span className="text-[var(--accent)]">*</span>
           </label>
           <select
             value={projectId ?? ""}
@@ -159,7 +161,7 @@ export default function NewTaskForm({
             disabled={isSubmitting}
             className={selectCls}
           >
-            <option value="">Select project…</option>
+            <option value="">{t("newTask.selectProject")}</option>
             {filteredProjects.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
@@ -170,7 +172,7 @@ export default function NewTaskForm({
 
         <div>
           <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Activity <span className="text-[var(--accent)]">*</span>
+            {t("newTask.activity")} <span className="text-[var(--accent)]">*</span>
           </label>
           <select
             value={activityId ?? ""}
@@ -181,7 +183,7 @@ export default function NewTaskForm({
             className={selectCls}
           >
             <option value="">
-              {projectId == null ? "Select project first" : "Select activity…"}
+              {projectId == null ? t("newTask.selectProjectFirst") : t("newTask.selectActivity")}
             </option>
             {filteredActivities.map((a) => (
               <option key={a.id} value={a.id}>
@@ -193,14 +195,14 @@ export default function NewTaskForm({
 
         <div>
           <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Description
+            {t("newTask.description")}
           </label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             disabled={isSubmitting}
-            placeholder="Optional note…"
+            placeholder={t("newTask.optionalNote")}
             className={selectCls}
           />
         </div>
@@ -208,14 +210,14 @@ export default function NewTaskForm({
         <div>
           <div className="flex items-center gap-1.5 mb-1">
             <label className="text-[10px] font-medium text-gray-500 dark:text-gray-400">
-              Start time
+              {t("newTask.startTime")}
             </label>
             <button
               type="button"
               onClick={() => setUseCustomTime(!useCustomTime)}
               className="text-[9px] font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
             >
-              {useCustomTime ? "Use now" : "Custom"}
+              {useCustomTime ? t("newTask.useNow") : t("newTask.custom")}
             </button>
           </div>
           {useCustomTime ? (
@@ -228,7 +230,7 @@ export default function NewTaskForm({
             />
           ) : (
             <span className="text-xs text-gray-400 dark:text-gray-500">
-              Now
+              {t("common.now")}
             </span>
           )}
         </div>
@@ -245,7 +247,7 @@ export default function NewTaskForm({
             disabled:opacity-40 disabled:cursor-not-allowed
             transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
         >
-          Cancel
+          {t("common.cancel")}
         </button>
         <button
           onClick={handleSubmit}
@@ -273,14 +275,14 @@ export default function NewTaskForm({
                   d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
                 />
               </svg>
-              Stop & Start
+              {t("timer.stopAndStart")}
             </>
           ) : (
             <>
               <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
-              Start
+              {t("timer.startTimer")}
             </>
           )}
         </button>

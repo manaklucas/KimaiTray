@@ -1,3 +1,4 @@
+import i18n from "../shared/i18n";
 import {
   createKimaiClient,
   isInsecureUrl,
@@ -32,10 +33,10 @@ export async function testConnection(
   token: string,
 ): Promise<ConnectionResult> {
   if (!baseUrl) {
-    return { success: false, error: "Kimai URL is required" };
+    return { success: false, error: i18n.t("connection.urlRequired") };
   }
   if (!token) {
-    return { success: false, error: "API token is required" };
+    return { success: false, error: i18n.t("connection.tokenRequired") };
   }
 
   const insecure = isInsecureUrl(baseUrl);

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { AppSettings } from "../types";
 import {
   Divider,
@@ -15,14 +16,16 @@ interface Props {
 }
 
 export default function IdleDetectionSection({ settings, update }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div>
-      <SectionTitle>Idle Detection</SectionTitle>
+      <SectionTitle>{t("idle.title")}</SectionTitle>
       <SectionDescription>
-        Detect when you step away and decide what happens to the running timer.
+        {t("idle.description")}
       </SectionDescription>
 
-      <FieldGroup label="Enable idle detection" description="Monitor system activity to detect inactivity" horizontal>
+      <FieldGroup label={t("idle.enableIdle")} description={t("idle.enableIdleDescription")} horizontal>
         <Toggle
           checked={settings.enableIdleDetection}
           onChange={(v) => update("enableIdleDetection", v)}
@@ -31,7 +34,7 @@ export default function IdleDetectionSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label="Idle threshold" description="Minutes of inactivity before considered idle" horizontal>
+      <FieldGroup label={t("idle.idleThreshold")} description={t("idle.idleThresholdDescription")} horizontal>
         <NumberInput
           value={settings.idleThresholdMinutes}
           onChange={(v) => update("idleThresholdMinutes", v)}
@@ -44,17 +47,17 @@ export default function IdleDetectionSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label="When idle is detected" description="What to do with the running timer" horizontal>
+      <FieldGroup label={t("idle.whenIdle")} description={t("idle.whenIdleDescription")} horizontal>
         <Select
           value={settings.idleAction}
           onChange={(v) =>
             update("idleAction", v as AppSettings["idleAction"])
           }
           options={[
-            { value: "ask", label: "Ask me" },
-            { value: "stop", label: "Stop timer" },
-            { value: "discard", label: "Discard idle time" },
-            { value: "continue", label: "Keep running" },
+            { value: "ask", label: t("idle.askMe") },
+            { value: "stop", label: t("idle.stopTimer") },
+            { value: "discard", label: t("idle.discardIdleTime") },
+            { value: "continue", label: t("idle.keepRunning") },
           ]}
           disabled={!settings.enableIdleDetection}
         />
@@ -62,7 +65,7 @@ export default function IdleDetectionSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label="Show idle notification" description="Display a system notification when idle is detected" horizontal>
+      <FieldGroup label={t("idle.showNotification")} description={t("idle.showNotificationDescription")} horizontal>
         <Toggle
           checked={settings.showIdleNotification}
           onChange={(v) => update("showIdleNotification", v)}

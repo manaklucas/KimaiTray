@@ -41,3 +41,16 @@ export async function setPopupCornerRadius(radius: number): Promise<void> {
     // best-effort — only works on macOS
   }
 }
+
+export async function updateTrayMenu(labels: {
+  settingsLabel: string;
+  openKimaiLabel: string;
+  refreshLabel: string;
+  quitLabel: string;
+}): Promise<void> {
+  try {
+    await invoke("update_tray_menu", labels);
+  } catch {
+    // best-effort
+  }
+}

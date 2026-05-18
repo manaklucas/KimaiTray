@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { ConnectionStatus } from "../hooks/useActiveTimer";
 import type { SavedConnection } from "../types";
 
@@ -18,12 +19,12 @@ const DOT_STYLES: Record<ConnectionStatus, string> = {
   unconfigured: "bg-gray-300 dark:bg-gray-600",
 };
 
-const STATUS_LABEL: Record<ConnectionStatus, string> = {
-  connected: "",
-  loading: "Connecting…",
-  error: "Error",
-  offline: "Offline",
-  unconfigured: "Not configured",
+const STATUS_LABEL_KEYS: Record<ConnectionStatus, string | null> = {
+  connected: null,
+  loading: "status.connecting",
+  error: "status.error",
+  offline: "status.offline",
+  unconfigured: "status.notConfigured",
 };
 
 export default function HeaderStatus({
@@ -33,7 +34,9 @@ export default function HeaderStatus({
   activeConnectionId,
   onSwitchConnection,
 }: HeaderStatusProps) {
-  const label = errorMessage || STATUS_LABEL[status];
+  const { t } = useTranslation();
+  const labelKey = STATUS_LABEL_KEYS[status];
+  const label = errorMessage || (labelKey ? t(labelKey) : "");
   const active = connections.find((c) => c.id === activeConnectionId);
   const hasMultiple = connections.length > 1;
 
@@ -51,7 +54,7 @@ export default function HeaderStatus({
           />
         ) : (
           <span className="text-[11px] font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase truncate">
-            {active?.name ?? "KimaiTray"}
+            {active?.name ?? "KimaiMate"}
           </span>
         )}
       </div>
@@ -104,7 +107,7 @@ function ConnectionSwitcher({
         className="flex items-center gap-1 text-[11px] font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase truncate
           hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
       >
-        <span className="truncate">{active?.name ?? "KimaiTray"}</span>
+        <span className="truncate">{active?.name ?? "KimaiMate"}</span>
         <svg
           className={`h-3 w-3 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
           fill="none"

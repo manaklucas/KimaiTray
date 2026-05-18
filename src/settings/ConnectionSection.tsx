@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { AppSettings, SavedConnection } from "../types";
 import { testConnection, isInsecureUrl, type ConnectionResult } from "../api";
 import { getApiToken } from "../api/secureStore";
@@ -25,6 +26,7 @@ export default function ConnectionSection({
   removeConnection,
   activateConnection,
 }: Props) {
+  const { t } = useTranslation();
   const [editingId, setEditingId] = useState<string | null>(
     settings.activeConnectionId || null,
   );
@@ -110,7 +112,7 @@ export default function ConnectionSection({
       result = await testConnection(url, editToken);
     } catch {
       setStatus("error");
-      setStatusMessage("Unexpected error during connection test");
+      setStatusMessage(t("connection.unexpectedError"));
       return;
     }
 
@@ -132,12 +134,12 @@ export default function ConnectionSection({
       setStatus("connected");
       const who = result.user.alias || result.user.username;
       const ver = result.version ? ` · Kimai ${result.version.version}` : "";
-      setStatusMessage(`Connected as ${who}${ver}`);
+      setStatusMessage(`${t("connection.connectedAs", { user: who })}${ver}`);
     } else {
       setStatus("error");
-      setStatusMessage(result.error ?? "Connection failed");
+      setStatusMessage(result.error ?? t("connection.connectionFailed"));
     }
-  }, [url, editToken, name, editingId, saveConnection]);
+  }, [url, editToken, name, editingId, saveConnection, t]);
 
   const handleDelete = useCallback(
     async (id: string, e: React.MouseEvent) => {
@@ -157,10 +159,9 @@ export default function ConnectionSection({
 
   return (
     <div>
-      <SectionTitle>Connection</SectionTitle>
+      <SectionTitle>{t("connection.title")}</SectionTitle>
       <SectionDescription>
-        Connect to your Kimai instance using its base URL and a personal API
-        token. You can save multiple connections and switch between them.
+        {t("connection.description")}
       </SectionDescription>
 
       {/* Saved connections list */}
@@ -230,7 +231,7 @@ export default function ConnectionSection({
                 d="M12 4.5v15m7.5-7.5h-15"
               />
             </svg>
-            Add New Connection
+            {t("connection.addNew")}
           </button>
         </div>
       )}
@@ -251,38 +252,37 @@ export default function ConnectionSection({
             />
           </svg>
           <span>
-            Insecure connection — your API token may be transmitted in plain
-            text. Use HTTPS in production.
+            {t("connection.httpsWarning")}
           </span>
         </div>
       )}
 
       <FieldGroup
-        label="Connection Name"
-        description="A friendly name for this connection"
+        label={t("connection.connectionName")}
+        description={t("connection.connectionNameDescription")}
       >
         <TextInput
           value={name}
           onChange={setName}
-          placeholder="e.g. Production, Staging"
+          placeholder={t("connection.connectionNamePlaceholder")}
         />
       </FieldGroup>
 
       <FieldGroup
-        label="Kimai Base URL"
-        description="The root URL of your Kimai installation"
+        label={t("connection.baseUrl")}
+        description={t("connection.baseUrlDescription")}
       >
         <TextInput
           type="url"
           value={url}
           onChange={setUrl}
-          placeholder="https://kimai.example.com"
+          placeholder={t("connection.baseUrlPlaceholder")}
         />
       </FieldGroup>
 
       <FieldGroup
-        label="API Token"
-        description="Generate one in Kimai → Settings → API"
+        label={t("connection.apiToken")}
+        description={t("connection.apiTokenDescription")}
       >
         <div className="flex gap-2">
           <div className="flex-1">
@@ -290,7 +290,7 @@ export default function ConnectionSection({
               type={showToken ? "text" : "password"}
               value={editToken}
               onChange={setEditToken}
-              placeholder="Paste your API token"
+              placeholder={t("connection.apiTokenPlaceholder")}
             />
           </div>
           <button
@@ -300,7 +300,7 @@ export default function ConnectionSection({
               hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700
               focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400"
           >
-            {showToken ? "Hide" : "Show"}
+            {showToken ? t("common.hide") : t("common.show")}
           </button>
         </div>
       </FieldGroup>
@@ -319,7 +319,7 @@ export default function ConnectionSection({
             focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1
             transition-colors"
         >
-          {status === "testing" ? "Testing…" : "Test & Save"}
+          {status === "testing" ? t("connection.testing") : t("connection.testAndSave")}
         </button>
 
         <StatusBadge status={status} message={statusMessage} />

@@ -21,6 +21,7 @@ pub fn run() {
             tray::set_tray_icon,
             tray::set_popup_vibrancy,
             tray::set_popup_corner_radius,
+            tray::update_tray_menu,
             idle::get_idle_seconds,
         ])
         .setup(|app| {

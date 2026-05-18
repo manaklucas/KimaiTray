@@ -33,6 +33,8 @@ export interface AppSettings {
   connections: SavedConnection[];
   activeConnectionId: string;
 
+  language: "sk" | "en" | "cs" | "de" | "uk" | "system";
+
   launchAtLogin: boolean;
   refreshInterval: number;
   openKimaiInBrowser: boolean;

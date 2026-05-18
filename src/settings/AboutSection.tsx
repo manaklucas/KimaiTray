@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { Divider, SectionTitle } from "./Controls";
 
@@ -50,44 +51,45 @@ function ExternalIcon() {
 }
 
 export default function AboutSection() {
+  const { t } = useTranslation();
+
   return (
     <div>
-      <SectionTitle>About</SectionTitle>
+      <SectionTitle>{t("aboutSection.title")}</SectionTitle>
 
       <div className="mb-5 rounded-lg bg-gray-50 px-4 py-4 dark:bg-gray-800/50">
         <div className="text-[15px] font-semibold text-gray-800 dark:text-gray-200">
-          KimaiTray
+          {t("aboutSection.appName")}
         </div>
         <div className="text-[12px] text-gray-500 dark:text-gray-400">
-          Version 0.1.0
+          {t("aboutSection.version", { version: "0.1.0" })}
         </div>
         <div className="mt-2 text-[12px] text-gray-400 dark:text-gray-500">
-          A free, open-source Kimai time-tracking companion for your menu bar.
-          Built with Tauri, React, and TypeScript.
+          {t("aboutSection.appDescription")}
         </div>
       </div>
 
       <div className="space-y-0.5">
         <LinkButton
-          label="GitHub Repository"
+          label={t("aboutSection.githubRepo")}
           href="https://github.com/engazan/kimaimate"
           icon={<ExternalIcon />}
           disabled
         />
         <LinkButton
-          label="Website"
+          label={t("aboutSection.website")}
           href="https://kimaimate.app"
           icon={<ExternalIcon />}
           disabled
         />
         <LinkButton
-          label="Report an Issue"
+          label={t("aboutSection.reportIssue")}
           href="https://github.com/engazan/kimaimate/issues"
           icon={<ExternalIcon />}
           disabled
         />
         <LinkButton
-          label="Privacy Policy"
+          label={t("aboutSection.privacyPolicy")}
           href="https://kimaimate.app/privacy"
           icon={<ExternalIcon />}
           disabled
@@ -98,11 +100,10 @@ export default function AboutSection() {
 
       <div className="mt-1">
         <div className="mb-2 text-[13px] font-medium text-gray-700 dark:text-gray-300">
-          Support KimaiTray
+          {t("aboutSection.supportTitle")}
         </div>
         <p className="mb-3 text-[12px] text-gray-400 dark:text-gray-500">
-          KimaiTray is free for everyone — no premium tiers, no paywalls.
-          If you find it useful, consider supporting development.
+          {t("aboutSection.supportDescription")}
         </p>
         <div className="flex flex-wrap gap-2">
           <DonateButton
@@ -129,7 +130,7 @@ export default function AboutSection() {
       <Divider />
 
       <div className="text-[11px] text-gray-300 dark:text-gray-600">
-        Made with care. © 2025 KimaiTray contributors.
+        {t("aboutSection.copyright")}
       </div>
     </div>
   );

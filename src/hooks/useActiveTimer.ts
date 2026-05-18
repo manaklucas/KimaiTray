@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { KimaiApiError } from "../api/kimaiClient";
@@ -29,6 +30,7 @@ export function useActiveTimer(
   isConfigured: boolean,
   refreshIntervalSec: number,
 ): UseActiveTimerResult {
+  const { t } = useTranslation();
   const qc = useQueryClient();
   const enabled = !!client;
 
@@ -112,7 +114,7 @@ export function useActiveTimer(
     errorMessage =
       stopMut.error instanceof KimaiApiError
         ? stopMut.error.message
-        : "Failed to stop timer";
+        : t("errors.failedToStopTimer");
   }
 
   return {

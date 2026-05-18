@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { AppSettings } from "../types";
 import { SectionDescription, SectionTitle } from "./Controls";
 
@@ -5,18 +6,6 @@ interface Props {
   settings: AppSettings;
   update: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
 }
-
-const menuBarOptions: {
-  value: AppSettings["menuBarLabelStyle"];
-  label: string;
-  previewWithSeconds: string;
-  previewWithoutSeconds: string;
-}[] = [
-  { value: "timer", label: "Elapsed time", previewWithSeconds: "1:23:45", previewWithoutSeconds: "1:23" },
-  { value: "project", label: "Project name", previewWithSeconds: "Acme Corp", previewWithoutSeconds: "Acme Corp" },
-  { value: "activity", label: "Activity name", previewWithSeconds: "Development", previewWithoutSeconds: "Development" },
-  { value: "hidden", label: "Icon only", previewWithSeconds: "", previewWithoutSeconds: "" },
-];
 
 function TrayDot() {
   return (
@@ -28,18 +17,32 @@ function TrayDot() {
 }
 
 export default function TimerSection({ settings, update }: Props) {
+  const { t } = useTranslation();
+
+  const menuBarOptions: {
+    value: AppSettings["menuBarLabelStyle"];
+    label: string;
+    previewWithSeconds: string;
+    previewWithoutSeconds: string;
+  }[] = [
+    { value: "timer", label: t("timerSettings.elapsedTime"), previewWithSeconds: "1:23:45", previewWithoutSeconds: "1:23" },
+    { value: "project", label: t("timerSettings.projectName"), previewWithSeconds: "Acme Corp", previewWithoutSeconds: "Acme Corp" },
+    { value: "activity", label: t("timerSettings.activityName"), previewWithSeconds: "Development", previewWithoutSeconds: "Development" },
+    { value: "hidden", label: t("timerSettings.iconOnly"), previewWithSeconds: "", previewWithoutSeconds: "" },
+  ];
+
   return (
     <div>
-      <SectionTitle>Timer</SectionTitle>
+      <SectionTitle>{t("timerSettings.title")}</SectionTitle>
       <SectionDescription>
-        Control how running timers appear in the menu bar and tray.
+        {t("timerSettings.description")}
       </SectionDescription>
 
       <div className="text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-        Menu bar label
+        {t("timerSettings.menuBarLabel")}
       </div>
       <div className="text-[11px] text-gray-400 dark:text-gray-500 mb-3">
-        What to display next to the tray icon while a timer is running
+        {t("timerSettings.menuBarLabelDescription")}
       </div>
 
       <div className="grid grid-cols-2 gap-2">
@@ -95,10 +98,10 @@ export default function TimerSection({ settings, update }: Props) {
         <div className="mt-3 flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2.5">
           <div>
             <div className="text-[12px] font-medium text-gray-700 dark:text-gray-300">
-              Show seconds
+              {t("timerSettings.showSeconds")}
             </div>
             <div className="text-[11px] text-gray-400 dark:text-gray-500">
-              Display HH:MM:SS instead of HH:MM
+              {t("timerSettings.showSecondsDescription")}
             </div>
           </div>
           <button

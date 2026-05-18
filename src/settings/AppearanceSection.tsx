@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { AppSettings } from "../types";
 import {
   Divider,
@@ -12,16 +13,6 @@ interface Props {
   update: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
 }
 
-const themeOptions: {
-  value: AppSettings["theme"];
-  label: string;
-  description: string;
-}[] = [
-  { value: "light", label: "Light", description: "Always light background" },
-  { value: "dark", label: "Dark", description: "Always dark background" },
-  { value: "transparent", label: "Transparent", description: "Frosted glass with blur" },
-];
-
 const accentOptions: { value: AppSettings["accentStyle"]; color: string }[] = [
   { value: "blue", color: "#3b82f6" },
   { value: "green", color: "#10b981" },
@@ -31,14 +22,26 @@ const accentOptions: { value: AppSettings["accentStyle"]; color: string }[] = [
 ];
 
 export default function AppearanceSection({ settings, update }: Props) {
+  const { t } = useTranslation();
+
+  const themeOptions: {
+    value: AppSettings["theme"];
+    label: string;
+    description: string;
+  }[] = [
+    { value: "light", label: t("appearanceSettings.light"), description: t("appearanceSettings.lightDescription") },
+    { value: "dark", label: t("appearanceSettings.dark"), description: t("appearanceSettings.darkDescription") },
+    { value: "transparent", label: t("appearanceSettings.transparent"), description: t("appearanceSettings.transparentDescription") },
+  ];
+
   return (
     <div>
-      <SectionTitle>Appearance</SectionTitle>
+      <SectionTitle>{t("appearanceSettings.title")}</SectionTitle>
       <SectionDescription>
-        Customize the look and feel of KimaiTray.
+        {t("appearanceSettings.description")}
       </SectionDescription>
 
-      <FieldGroup label="Theme" description="Popup window background style">
+      <FieldGroup label={t("appearanceSettings.theme")} description={t("appearanceSettings.themeDescription")}>
         <div className="flex gap-2 mt-1">
           {themeOptions.map((opt) => {
             const active = settings.theme === opt.value;
@@ -98,7 +101,7 @@ export default function AppearanceSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label="Rounded corners" description="Round the popup edges like native macOS tray apps" horizontal>
+      <FieldGroup label={t("appearanceSettings.roundedCorners")} description={t("appearanceSettings.roundedCornersDescription")} horizontal>
         <Toggle
           checked={settings.roundedPopupCorners}
           onChange={(v) => update("roundedPopupCorners", v)}
@@ -107,7 +110,7 @@ export default function AppearanceSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label="Compact popup" description="Use a smaller, denser layout for the tray popup" horizontal>
+      <FieldGroup label={t("appearanceSettings.compactPopup")} description={t("appearanceSettings.compactPopupDescription")} horizontal>
         <Toggle
           checked={settings.useCompactPopup}
           onChange={(v) => update("useCompactPopup", v)}
@@ -116,7 +119,7 @@ export default function AppearanceSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label="Reduce visual effects" description="Disable animations and translucency" horizontal>
+      <FieldGroup label={t("appearanceSettings.reduceEffects")} description={t("appearanceSettings.reduceEffectsDescription")} horizontal>
         <Toggle
           checked={settings.reduceVisualEffects}
           onChange={(v) => update("reduceVisualEffects", v)}
@@ -125,7 +128,7 @@ export default function AppearanceSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label="Accent color" description="Used for active states and primary actions">
+      <FieldGroup label={t("appearanceSettings.accentColor")} description={t("appearanceSettings.accentColorDescription")}>
         <div className="flex gap-2 mt-1">
           {accentOptions.map((opt) => (
             <button

@@ -167,6 +167,41 @@ pub fn set_popup_corner_radius(app: AppHandle, radius: f64) -> Result<(), String
     Ok(())
 }
 
+#[tauri::command]
+pub fn update_tray_menu(
+    app: AppHandle,
+    settings_label: String,
+    open_kimai_label: String,
+    refresh_label: String,
+    quit_label: String,
+) -> Result<(), String> {
+    let tray = app.tray_by_id("main").ok_or("Tray icon not found")?;
+    let menu = build_tray_menu(&app, &settings_label, &open_kimai_label, &refresh_label, &quit_label)
+        .map_err(|e| e.to_string())?;
+    tray.set_menu(Some(menu)).map_err(|e| e.to_string())
+}
+
+fn build_tray_menu(
+    app: &AppHandle,
+    settings_label: &str,
+    open_kimai_label: &str,
+    refresh_label: &str,
+    quit_label: &str,
+) -> tauri::Result<tauri::menu::Menu<tauri::Wry>> {
+    let settings_i = MenuItem::with_id(app, "settings", settings_label, true, None::<&str>)?;
+    let open_kimai_i = MenuItem::with_id(app, "open_kimai", open_kimai_label, true, None::<&str>)?;
+    let refresh_i = MenuItem::with_id(app, "refresh", refresh_label, true, None::<&str>)?;
+    let quit_i = MenuItem::with_id(app, "quit", quit_label, true, None::<&str>)?;
+
+    MenuBuilder::new(app)
+        .item(&settings_i)
+        .item(&open_kimai_i)
+        .item(&refresh_i)
+        .separator()
+        .item(&quit_i)
+        .build()
+}
+
 pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
     let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
     let open_kimai_i = MenuItem::with_id(app, "open_kimai", "Open Kimai", true, None::<&str>)?;
