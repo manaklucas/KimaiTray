@@ -1,6 +1,8 @@
+import { load } from "@tauri-apps/plugin-store";
 import type { AppSettings } from "../types";
 
-const SETTINGS_KEY = "kimaimate_settings";
+const STORE_PATH = "settings.json";
+const SETTINGS_KEY = "settings";
 
 export const defaultSettings: AppSettings = {
   kimaiUrl: "",
@@ -23,16 +25,28 @@ export const defaultSettings: AppSettings = {
   accentStyle: "blue",
 };
 
+let storePromise: ReturnType<typeof load> | null = null;
+
+function getStore() {
+  if (!storePromise) {
+    storePromise = load(STORE_PATH, { defaults: {}, autoSave: true });
+  }
+  return storePromise;
+}
+
 export async function loadSettings(): Promise<AppSettings> {
   try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
+    const store = await getStore();
+    const raw = await store.get<AppSettings>(SETTINGS_KEY);
     if (!raw) return { ...defaultSettings };
-    return { ...defaultSettings, ...JSON.parse(raw) };
+    return { ...defaultSettings, ...raw };
   } catch {
     return { ...defaultSettings };
   }
 }
 
 export async function saveSettings(settings: AppSettings): Promise<void> {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  const store = await getStore();
+  await store.set(SETTINGS_KEY, settings);
+  await store.save();
 }

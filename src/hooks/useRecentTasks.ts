@@ -5,6 +5,7 @@ import { getRecentTimesheets } from "../api/timesheetApi";
 import { getProjects, getCustomers } from "../api/projectApi";
 import { getActivities } from "../api/activityApi";
 import type { RecentTask } from "../types";
+import { extractId } from "../api/kimaiTypes";
 
 function formatRelativeDate(iso: string): string {
   const d = new Date(iso);
@@ -64,24 +65,26 @@ export function useRecentTasks(
     const result: RecentTask[] = [];
 
     for (const entry of entries) {
-      const key = `${entry.project}-${entry.activity}`;
+      const projectId = extractId(entry.project);
+      const activityId = extractId(entry.activity);
+      const key = `${projectId}-${activityId}`;
       if (seen.has(key)) continue;
       seen.add(key);
 
-      const proj = projects.find((p) => p.id === entry.project);
-      const act = activities.find((a) => a.id === entry.activity);
+      const proj = projects.find((p) => p.id === projectId);
+      const act = activities.find((a) => a.id === activityId);
       const cust = proj
         ? customers.find((c) => c.id === proj.customer)
         : undefined;
 
       result.push({
         key,
-        projectId: entry.project,
-        activityId: entry.activity,
-        project: proj?.name ?? `Project #${entry.project}`,
+        projectId,
+        activityId,
+        project: proj?.name ?? `Project #${projectId}`,
         projectColor: proj?.color ?? "#6b7280",
         customer: cust?.name ?? "",
-        activity: act?.name ?? `Activity #${entry.activity}`,
+        activity: act?.name ?? `Activity #${activityId}`,
         description: entry.description ?? "",
         lastUsed: formatRelativeDate(entry.begin),
       });

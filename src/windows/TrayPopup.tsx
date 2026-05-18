@@ -19,7 +19,7 @@ import type { RecentTask } from "../types";
 export default function TrayPopup() {
   const [showNewTask, setShowNewTask] = useState(false);
 
-  const { client, isConfigured, refreshInterval } = useKimaiClient();
+  const { client, isConfigured, refreshInterval, baseUrl } = useKimaiClient();
   const {
     timer,
     multipleActive,
@@ -146,7 +146,10 @@ export default function TrayPopup() {
 
           <PopupFooterActions
             onNewTask={() => setShowNewTask(true)}
-            onOpenKimai={() => {}}
+            onOpenKimai={async () => {
+              const { openUrl } = await import("@tauri-apps/plugin-opener");
+              if (baseUrl) openUrl(baseUrl);
+            }}
             onSettings={async () => {
               const w = await Window.getByLabel("settings");
               if (w) {

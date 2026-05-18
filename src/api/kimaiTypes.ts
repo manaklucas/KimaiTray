@@ -60,9 +60,13 @@ export interface KimaiTimesheetEntry {
   exported: boolean;
   billable: boolean;
   tags: string[];
-  activity: number;
-  project: number;
-  user: number;
+  activity: number | { id: number };
+  project: number | { id: number };
+  user: number | { id: number };
+}
+
+export function extractId(val: number | { id: number }): number {
+  return typeof val === "number" ? val : val.id;
 }
 
 // ── Request payloads ───────────────────────────────────────────

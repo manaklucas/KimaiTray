@@ -38,13 +38,17 @@ export function useKimaiClient(): UseKimaiClientResult {
     load();
   }, [load]);
 
-  // Reload credentials when the popup gains focus (picks up Settings changes)
   useEffect(() => {
-    const cancel = getCurrentWindow().onFocusChanged(({ payload }) => {
+    const win = getCurrentWindow();
+    const unlistenFocus = win.onFocusChanged(({ payload }) => {
       if (payload) load();
     });
+    const unlistenShow = win.listen("tauri://window-show", () => {
+      load();
+    });
     return () => {
-      cancel.then((fn) => fn());
+      unlistenFocus.then((fn) => fn());
+      unlistenShow.then((fn) => fn());
     };
   }, [load]);
 

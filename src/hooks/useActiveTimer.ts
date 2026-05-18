@@ -6,6 +6,7 @@ import { getActiveTimesheets, stopTimesheet } from "../api/timesheetApi";
 import { getProjects } from "../api/projectApi";
 import { getActivities } from "../api/activityApi";
 import type { ActiveTimer } from "../types";
+import { extractId } from "../api/kimaiTypes";
 
 export type ConnectionStatus =
   | "connected"
@@ -59,13 +60,15 @@ export function useActiveTimer(
   const timer = useMemo<ActiveTimer | null>(() => {
     if (entries.length === 0) return null;
     const entry = entries.reduce((a, b) => (a.begin > b.begin ? a : b));
-    const proj = projects.find((p) => p.id === entry.project);
-    const act = activities.find((a) => a.id === entry.activity);
+    const projectId = extractId(entry.project);
+    const activityId = extractId(entry.activity);
+    const proj = projects.find((p) => p.id === projectId);
+    const act = activities.find((a) => a.id === activityId);
     return {
       id: entry.id,
-      project: proj?.name ?? `Project #${entry.project}`,
+      project: proj?.name ?? `Project #${projectId}`,
       projectColor: proj?.color ?? "#6b7280",
-      activity: act?.name ?? `Activity #${entry.activity}`,
+      activity: act?.name ?? `Activity #${activityId}`,
       description: entry.description ?? "",
       beginSeconds: Math.floor(new Date(entry.begin).getTime() / 1000),
       beginIso: entry.begin,

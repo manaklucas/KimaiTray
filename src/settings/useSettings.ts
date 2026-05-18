@@ -12,11 +12,13 @@ export function useSettings() {
   const [token, setToken] = useState("");
   const [loaded, setLoaded] = useState(false);
   const prevUrlRef = useRef("");
+  const urlRef = useRef("");
 
   useEffect(() => {
     loadSettings().then((s) => {
       setSettings(s);
       prevUrlRef.current = s.kimaiUrl;
+      urlRef.current = s.kimaiUrl;
       loadToken(s.kimaiUrl);
     });
   }, []);
@@ -40,6 +42,7 @@ export function useSettings() {
 
         if (key === "kimaiUrl") {
           const newUrl = value as string;
+          urlRef.current = newUrl;
           if (newUrl !== prevUrlRef.current) {
             prevUrlRef.current = newUrl;
             loadToken(newUrl);
@@ -55,19 +58,20 @@ export function useSettings() {
   const updateToken = useCallback(
     async (value: string) => {
       setToken(value);
-      if (settings.kimaiUrl) {
+      const url = urlRef.current;
+      if (url) {
         try {
           if (value) {
-            await saveApiToken(settings.kimaiUrl, value);
+            await saveApiToken(url, value);
           } else {
-            await deleteApiToken(settings.kimaiUrl);
+            await deleteApiToken(url);
           }
         } catch {
-          // Keychain unavailable — token held in memory only
+          // Store unavailable
         }
       }
     },
-    [settings.kimaiUrl],
+    [],
   );
 
   return { settings, token, update, updateToken, loaded };

@@ -5,6 +5,10 @@ use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     AppHandle, Manager, PhysicalPosition, WebviewWindow,
 };
+use tauri_plugin_opener::OpenerExt;
+use tauri_plugin_store::StoreExt;
+
+const STORE_PATH: &str = "settings.json";
 
 #[tauri::command]
 pub fn set_tray_tooltip(app: AppHandle, text: String) -> Result<(), String> {
@@ -75,7 +79,18 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
                 });
             }
             "open_kimai" => {
-                // TODO: open configured Kimai URL in default browser
+                let handle = app.clone();
+                tauri::async_runtime::spawn(async move {
+                    if let Ok(store) = handle.store(STORE_PATH) {
+                        if let Some(serde_json::Value::Object(s)) = store.get("settings") {
+                            if let Some(serde_json::Value::String(url)) = s.get("kimaiUrl") {
+                                if !url.is_empty() {
+                                    let _ = handle.opener().open_url(url, None::<&str>);
+                                }
+                            }
+                        }
+                    }
+                });
             }
             "refresh" => {
                 // TODO: refresh data from Kimai API
