@@ -19,7 +19,7 @@ export function resolveSystemLanguage(): SupportedLanguage {
   if (lower.startsWith("de")) return "de";
   if (lower.startsWith("uk") || lower.startsWith("ua")) return "uk";
   if (lower.startsWith("en")) return "en";
-  return "sk";
+  return "en";
 }
 
 export function resolveLanguage(setting: LanguageSetting): SupportedLanguage {
@@ -34,7 +34,7 @@ async function getInitialLanguage(): Promise<SupportedLanguage> {
   } catch {
     // Settings unavailable at startup
   }
-  return "sk";
+  return resolveSystemLanguage();
 }
 
 const initPromise = getInitialLanguage().then((lng) =>

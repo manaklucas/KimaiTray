@@ -6,6 +6,7 @@ import { getCustomers, getProjects } from "../api/projectApi";
 import { getActivities } from "../api/activityApi";
 import type { StartTaskPayload } from "../hooks/useStartTask";
 import TagsInput from "./TagsInput";
+import DateTimePicker from "./DateTimePicker";
 
 interface NewTaskFormProps {
   client: KimaiClient;
@@ -16,7 +17,7 @@ interface NewTaskFormProps {
 }
 
 const selectCls =
-  "w-full rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.06] px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-300 focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] focus:outline-none disabled:opacity-40 transition-colors";
+  "w-full rounded-lg border border-gray-300 dark:border-white/20 bg-white dark:bg-white/[0.08] px-3 py-2 text-[13px] text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] focus:outline-none disabled:opacity-40 transition-colors";
 
 export default function NewTaskForm({
   client,
@@ -231,12 +232,10 @@ export default function NewTaskForm({
             </button>
           </div>
           {useCustomTime ? (
-            <input
-              type="datetime-local"
+            <DateTimePicker
               value={beginTime}
-              onChange={(e) => setBeginTime(e.target.value)}
+              onChange={setBeginTime}
               disabled={isSubmitting}
-              className={selectCls}
             />
           ) : (
             <span className="text-xs text-gray-400 dark:text-gray-500">

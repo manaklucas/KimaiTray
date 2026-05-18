@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { ActiveTimer } from "../types";
 import TagsList from "./TagsList";
 import TagsInput from "./TagsInput";
+import DateTimePicker from "./DateTimePicker";
 
 interface ActiveTimerCardProps {
   timer: ActiveTimer;
@@ -130,18 +131,12 @@ export default function ActiveTimerCard({
   const [editingBegin, setEditingBegin] = useState(false);
   const [beginValue, setBeginValue] = useState("");
   const [beginError, setBeginError] = useState("");
-  const beginRef = useRef<HTMLInputElement>(null);
-
   const startEditBegin = () => {
     if (!onEdit) return;
     setBeginValue(toDatetimeLocal(timer.beginIso));
     setBeginError("");
     setEditingBegin(true);
   };
-
-  useEffect(() => {
-    if (editingBegin) beginRef.current?.focus();
-  }, [editingBegin]);
 
   const saveBegin = () => {
     const d = new Date(beginValue);
@@ -161,16 +156,6 @@ export default function ActiveTimerCard({
     }
   };
 
-  const handleBeginKey = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      saveBegin();
-    } else if (e.key === "Escape") {
-      e.preventDefault();
-      setEditingBegin(false);
-      setBeginError("");
-    }
-  };
 
   // Reset editing when timer changes
   useEffect(() => {
@@ -222,7 +207,7 @@ export default function ActiveTimerCard({
               onBlur={saveDesc}
               onKeyDown={handleDescKey}
               placeholder={t("timer.addNote")}
-              className="w-full text-[11px] bg-white dark:bg-gray-800 border border-emerald-300 dark:border-emerald-700 rounded px-1.5 py-0.5 text-gray-700 dark:text-gray-300 placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+              className="w-full text-[11px] bg-white dark:bg-gray-800 border border-emerald-300 dark:border-emerald-700 rounded px-1.5 py-0.5 text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-emerald-400"
             />
           ) : (
             <p
@@ -234,7 +219,7 @@ export default function ActiveTimerCard({
               } ${
                 timer.description
                   ? "text-gray-500 dark:text-gray-400"
-                  : "text-gray-300 dark:text-gray-600 italic"
+                  : "text-gray-400 dark:text-gray-500 italic"
               }`}
             >
               {timer.description || t("timer.addNote")}
@@ -262,7 +247,7 @@ export default function ActiveTimerCard({
           ) : onEdit ? (
             <p
               onClick={startEditTags}
-              className="text-[10px] text-gray-300 dark:text-gray-600 italic cursor-text hover:bg-emerald-100/50 dark:hover:bg-emerald-900/30 rounded px-1 -mx-1 transition-colors"
+              className="text-[10px] text-gray-400 dark:text-gray-500 italic cursor-text hover:bg-emerald-100/50 dark:hover:bg-emerald-900/30 rounded px-1 -mx-1 transition-colors"
             >
               {t("tags.addTags")}
             </p>
@@ -277,17 +262,15 @@ export default function ActiveTimerCard({
             </span>
             {editingBegin ? (
               <div className="flex flex-col min-w-0">
-                <input
-                  ref={beginRef}
-                  type="datetime-local"
+                <DateTimePicker
                   value={beginValue}
-                  onChange={(e) => {
-                    setBeginValue(e.target.value);
+                  onChange={(v) => {
+                    setBeginValue(v);
                     setBeginError("");
                   }}
-                  onBlur={saveBegin}
-                  onKeyDown={handleBeginKey}
-                  className="text-[10px] bg-white dark:bg-gray-800 border border-emerald-300 dark:border-emerald-700 rounded px-1 py-0.5 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-400 w-[140px]"
+                  onClose={saveBegin}
+                  compact
+                  className="text-[10px] bg-white dark:bg-gray-800 border border-emerald-300 dark:border-emerald-700 rounded px-1.5 py-0.5 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-400 flex items-center gap-1.5 cursor-pointer"
                 />
                 {beginError && (
                   <span className="text-[9px] text-red-500 mt-0.5">
