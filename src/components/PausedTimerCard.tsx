@@ -75,28 +75,34 @@ export default function PausedTimerCard({
             <button
               onClick={onResume}
               disabled={busy}
-              className="px-2.5 py-1 text-[11px] font-medium rounded-md
+              title={t("pause.resume")}
+              className="p-1.5 rounded-md
                 bg-[var(--accent)]/10 text-[var(--accent)]
                 hover:bg-[var(--accent)]/20 active:bg-[var(--accent)]/30
                 disabled:opacity-50 disabled:cursor-not-allowed
                 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
             >
               {isResuming ? (
-                <div className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--accent)]/30 border-t-[var(--accent)]" />
+                <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--accent)]/30 border-t-[var(--accent)]" />
               ) : (
-                t("pause.resume")
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l15 8-15 8V4z" /></svg>
               )}
             </button>
             <button
               onClick={onStop}
               disabled={busy}
-              className="px-2.5 py-1 text-[11px] font-medium rounded-md
+              title={t("timer.stopTimer")}
+              className="p-1.5 rounded-md
                 bg-red-500/10 text-red-600 dark:text-red-400
                 hover:bg-red-500/20 active:bg-red-500/30
                 disabled:opacity-50 disabled:cursor-not-allowed
                 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
             >
-              {isStopping ? t("tray.stopping") : t("timer.stopTimer")}
+              {isStopping ? (
+                <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-red-400/30 border-t-red-500" />
+              ) : (
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
+              )}
             </button>
           </div>
         </div>

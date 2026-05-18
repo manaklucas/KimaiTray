@@ -310,29 +310,35 @@ export default function ActiveTimerCard({
               <button
                 onClick={onPause}
                 disabled={!!isPausing || !!isStopping}
-                className="px-2.5 py-1 text-[11px] font-medium rounded-md
+                title={t("pause.pause")}
+                className="p-1.5 rounded-md
                   bg-amber-500/10 text-amber-600 dark:text-amber-400
                   hover:bg-amber-500/20 active:bg-amber-500/30
                   disabled:opacity-50 disabled:cursor-not-allowed
                   transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-amber-400"
               >
                 {isPausing ? (
-                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-amber-400/30 border-t-amber-500" />
+                  <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-400/30 border-t-amber-500" />
                 ) : (
-                  t("pause.pause")
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1" /><rect x="14" y="4" width="5" height="16" rx="1" /></svg>
                 )}
               </button>
             )}
             <button
               onClick={onStop}
               disabled={!!isStopping || !!isPausing}
-              className="px-2.5 py-1 text-[11px] font-medium rounded-md
+              title={t("timer.stopTimer")}
+              className="p-1.5 rounded-md
                 bg-red-500/10 text-red-600 dark:text-red-400
                 hover:bg-red-500/20 active:bg-red-500/30
                 disabled:opacity-50 disabled:cursor-not-allowed
                 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-red-400"
             >
-              {isStopping ? t("tray.stopping") : t("timer.stopTimer")}
+              {isStopping ? (
+                <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-red-400/30 border-t-red-500" />
+              ) : (
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
+              )}
             </button>
           </div>
         </div>
