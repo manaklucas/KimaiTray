@@ -1,9 +1,10 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{
+    image::Image,
     menu::{MenuBuilder, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    AppHandle, Manager, PhysicalPosition, WebviewWindow,
+    AppHandle, Emitter, Manager, PhysicalPosition, WebviewWindow,
 };
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_store::StoreExt;
@@ -14,6 +15,57 @@ const STORE_PATH: &str = "settings.json";
 pub fn set_tray_tooltip(app: AppHandle, text: String) -> Result<(), String> {
     let tray = app.tray_by_id("main").ok_or("Tray icon not found")?;
     tray.set_tooltip(Some(&text)).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn set_tray_title(app: AppHandle, title: String) -> Result<(), String> {
+    let tray = app.tray_by_id("main").ok_or("Tray icon not found")?;
+    let t = if title.is_empty() { None } else { Some(title) };
+    tray.set_title(t.as_deref()).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn set_tray_icon(app: AppHandle, state: String) -> Result<(), String> {
+    let tray = app.tray_by_id("main").ok_or("Tray icon not found")?;
+    let rgba = generate_state_icon(&state);
+    let icon = Image::new_owned(rgba, 22, 22);
+    tray.set_icon(Some(icon)).map_err(|e| e.to_string())
+}
+
+fn generate_state_icon(state: &str) -> Vec<u8> {
+    let (r, g, b) = match state {
+        "running" => (16, 185, 129),   // emerald-500
+        "error" => (239, 68, 68),      // red-500
+        _ => (156, 163, 175),          // gray-400 (idle/disconnected)
+    };
+    let size: usize = 22;
+    let mut pixels = vec![0u8; size * size * 4];
+    let center = size as f64 / 2.0;
+    let radius = 5.0;
+    let outline_r = 7.0;
+
+    for y in 0..size {
+        for x in 0..size {
+            let dx = x as f64 - center + 0.5;
+            let dy = y as f64 - center + 0.5;
+            let dist = (dx * dx + dy * dy).sqrt();
+            let idx = (y * size + x) * 4;
+
+            if dist <= radius {
+                pixels[idx] = r;
+                pixels[idx + 1] = g;
+                pixels[idx + 2] = b;
+                pixels[idx + 3] = 255;
+            } else if dist <= outline_r {
+                let alpha = ((outline_r - dist) / (outline_r - radius) * 180.0) as u8;
+                pixels[idx] = r;
+                pixels[idx + 1] = g;
+                pixels[idx + 2] = b;
+                pixels[idx + 3] = alpha;
+            }
+        }
+    }
+    pixels
 }
 
 static LAST_POPUP_HIDE: AtomicU64 = AtomicU64::new(0);
@@ -63,8 +115,11 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
         .item(&quit_i)
         .build()?;
 
+    // Start with idle icon
+    let idle_icon = Image::new_owned(generate_state_icon("idle"), 22, 22);
+
     TrayIconBuilder::with_id("main")
-        .icon(app.default_window_icon().cloned().unwrap())
+        .icon(idle_icon)
         .tooltip("KimaiMate")
         .menu(&menu)
         .show_menu_on_left_click(false)
@@ -93,7 +148,9 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
                 });
             }
             "refresh" => {
-                // TODO: refresh data from Kimai API
+                if let Some(popup) = app.get_webview_window("tray-popup") {
+                    let _ = popup.emit("kimai://refresh", ());
+                }
             }
             "quit" => {
                 app.exit(0);

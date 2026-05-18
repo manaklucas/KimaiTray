@@ -8,11 +8,17 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            None,
+        ))
         .invoke_handler(tauri::generate_handler![
             keychain::save_api_token,
             keychain::get_api_token,
             keychain::delete_api_token,
             tray::set_tray_tooltip,
+            tray::set_tray_title,
+            tray::set_tray_icon,
             idle::get_idle_seconds,
         ])
         .setup(|app| {

@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useState } from "react";
+import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import type { AppSettings } from "../types";
 import {
   Divider,
@@ -14,6 +16,26 @@ interface Props {
 }
 
 export default function GeneralSection({ settings, update }: Props) {
+  const [autostart, setAutostart] = useState(settings.launchAtLogin);
+
+  useEffect(() => {
+    isEnabled().then(setAutostart).catch(() => {});
+  }, []);
+
+  const toggleAutostart = useCallback(async (v: boolean) => {
+    try {
+      if (v) {
+        await enable();
+      } else {
+        await disable();
+      }
+      setAutostart(v);
+      update("launchAtLogin", v);
+    } catch {
+      // Autostart not available
+    }
+  }, [update]);
+
   return (
     <div>
       <SectionTitle>General</SectionTitle>
@@ -23,8 +45,8 @@ export default function GeneralSection({ settings, update }: Props) {
 
       <FieldGroup label="Launch at login" description="Start KimaiMate automatically when you log in" horizontal>
         <Toggle
-          checked={settings.launchAtLogin}
-          onChange={(v) => update("launchAtLogin", v)}
+          checked={autostart}
+          onChange={toggleAutostart}
         />
       </FieldGroup>
 

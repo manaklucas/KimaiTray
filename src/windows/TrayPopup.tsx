@@ -14,7 +14,7 @@ import { useStartTask } from "../hooks/useStartTask";
 import type { StartTaskPayload } from "../hooks/useStartTask";
 import { useEditTimer } from "../hooks/useEditTimer";
 import { useIdleDetection } from "../hooks/useIdleDetection";
-import { setTrayTooltip } from "../api/trayApi";
+import { setTrayTooltip, setTrayTitle, setTrayIcon } from "../api/trayApi";
 import { updateTimesheet, stopTimesheet } from "../api/timesheetApi";
 import { formatElapsed } from "../components/ActiveTimerCard";
 import type { RecentTask } from "../types";
@@ -23,7 +23,7 @@ export default function TrayPopup() {
   const [showNewTask, setShowNewTask] = useState(false);
   const [idleProcessing, setIdleProcessing] = useState(false);
 
-  const { client, isConfigured, refreshInterval, baseUrl, idleSettings } =
+  const { client, isConfigured, refreshInterval, baseUrl, idleSettings, traySettings } =
     useKimaiClient();
   const {
     timer,
@@ -153,9 +153,22 @@ export default function TrayPopup() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [showNewTask]);
 
+  // Update tray icon state
+  useEffect(() => {
+    if (status === "error" || status === "offline") {
+      setTrayIcon("error");
+    } else if (timer) {
+      setTrayIcon("running");
+    } else {
+      setTrayIcon("idle");
+    }
+  }, [status, !!timer]);
+
+  // Update tray tooltip and menu bar title
   useEffect(() => {
     if (!timer) {
       setTrayTooltip("KimaiMate");
+      setTrayTitle("");
       return;
     }
     const tick = () => {
@@ -163,15 +176,45 @@ export default function TrayPopup() {
         0,
         Math.floor(Date.now() / 1000) - timer.beginSeconds,
       );
-      setTrayTooltip(`${timer.project} — ${formatElapsed(secs)}`);
+      const elapsed = formatElapsed(secs);
+
+      // Tooltip — always shows full info
+      setTrayTooltip(`${timer.project} — ${timer.activity} — ${elapsed}`);
+
+      // Menu bar title (macOS) — driven by settings
+      const { menuBarLabelStyle, showElapsedInTray, showTaskNameInTray } = traySettings;
+
+      if (menuBarLabelStyle === "hidden") {
+        setTrayTitle("");
+        return;
+      }
+
+      const parts: string[] = [];
+
+      if (showTaskNameInTray) {
+        if (menuBarLabelStyle === "project") {
+          parts.push(timer.project);
+        } else if (menuBarLabelStyle === "activity") {
+          parts.push(timer.activity);
+        } else {
+          parts.push(timer.project);
+        }
+      }
+
+      if (showElapsedInTray) {
+        parts.push(elapsed);
+      }
+
+      setTrayTitle(parts.join(" — "));
     };
     tick();
     const id = setInterval(tick, 1000);
     return () => {
       clearInterval(id);
       setTrayTooltip("KimaiMate");
+      setTrayTitle("");
     };
-  }, [timer?.id, timer?.beginSeconds, timer?.project]);
+  }, [timer?.id, timer?.beginSeconds, timer?.project, timer?.activity, traySettings]);
 
   const handleStartRecent = (task: RecentTask) => {
     startTask(

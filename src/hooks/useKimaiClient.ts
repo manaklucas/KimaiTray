@@ -11,12 +11,19 @@ interface IdleSettings {
   showIdleNotification: boolean;
 }
 
+interface TraySettings {
+  showElapsedInTray: boolean;
+  showTaskNameInTray: boolean;
+  menuBarLabelStyle: "timer" | "project" | "activity" | "hidden";
+}
+
 interface UseKimaiClientResult {
   client: KimaiClient | null;
   isConfigured: boolean;
   refreshInterval: number;
   baseUrl: string;
   idleSettings: IdleSettings;
+  traySettings: TraySettings;
 }
 
 const defaultIdleSettings: IdleSettings = {
@@ -26,6 +33,12 @@ const defaultIdleSettings: IdleSettings = {
   showIdleNotification: true,
 };
 
+const defaultTraySettings: TraySettings = {
+  showElapsedInTray: true,
+  showTaskNameInTray: false,
+  menuBarLabelStyle: "timer",
+};
+
 export function useKimaiClient(): UseKimaiClientResult {
   const [baseUrl, setBaseUrl] = useState("");
   const [token, setToken] = useState("");
@@ -33,6 +46,8 @@ export function useKimaiClient(): UseKimaiClientResult {
   const [ready, setReady] = useState(false);
   const [idleSettings, setIdleSettings] =
     useState<IdleSettings>(defaultIdleSettings);
+  const [traySettings, setTraySettings] =
+    useState<TraySettings>(defaultTraySettings);
 
   const load = useCallback(async () => {
     const s = await loadSettings();
@@ -43,6 +58,11 @@ export function useKimaiClient(): UseKimaiClientResult {
       idleThresholdMinutes: s.idleThresholdMinutes,
       idleAction: s.idleAction,
       showIdleNotification: s.showIdleNotification,
+    });
+    setTraySettings({
+      showElapsedInTray: s.showElapsedInTray,
+      showTaskNameInTray: s.showTaskNameInTray,
+      menuBarLabelStyle: s.menuBarLabelStyle,
     });
     if (s.kimaiUrl) {
       try {
@@ -86,5 +106,6 @@ export function useKimaiClient(): UseKimaiClientResult {
     refreshInterval,
     baseUrl,
     idleSettings,
+    traySettings,
   };
 }

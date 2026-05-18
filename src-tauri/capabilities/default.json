@@ -12,6 +12,7 @@
     "core:window:allow-set-focus",
     "core:window:allow-center",
     "store:default",
-    "notification:default"
+    "notification:default",
+    "autostart:default"
   ]
 }
