@@ -191,6 +191,15 @@
     "resume": "Resume",
     "pausedSince": "paused at {{time}}"
   },
+  "today": {
+    "title": "Today",
+    "empty": "No time entries today yet",
+    "loadError": "Could not load today's entries",
+    "showAll": "Show all ({{count}})",
+    "showLess": "Show less",
+    "newestFirst": "Newest first",
+    "oldestFirst": "Oldest first"
+  },
   "errors": {
     "unknown": "Unknown error",
     "network": "Network error",

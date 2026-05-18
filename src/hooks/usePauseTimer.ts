@@ -61,6 +61,7 @@ export function usePauseTimer(
   const invalidate = useCallback(() => {
     qc.invalidateQueries({ queryKey: ["active-timesheets"] });
     qc.invalidateQueries({ queryKey: ["recent-timesheets"] });
+    qc.invalidateQueries({ queryKey: ["today-timesheets"] });
   }, [qc]);
 
   const pauseMut = useMutation({

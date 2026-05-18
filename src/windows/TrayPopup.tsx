@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQueryClient } from "@tanstack/react-query";
 import { getCurrentWindow, Window } from "@tauri-apps/api/window";
 import HeaderStatus from "../components/HeaderStatus";
 import ActiveTimerCard from "../components/ActiveTimerCard";
@@ -9,9 +10,11 @@ import RecentTasksList from "../components/RecentTasksList";
 import PopupFooterActions from "../components/PopupFooterActions";
 import NewTaskForm from "../components/NewTaskForm";
 import IdleDialog from "../components/IdleDialog";
+import TodaySection from "../components/TodaySection";
 import { useKimaiClient } from "../hooks/useKimaiClient";
 import { useActiveTimer } from "../hooks/useActiveTimer";
 import { useRecentTasks } from "../hooks/useRecentTasks";
+import { useTodayTimesheets } from "../hooks/useTodayTimesheets";
 import { useStartTask } from "../hooks/useStartTask";
 import type { StartTaskPayload } from "../hooks/useStartTask";
 import { useEditTimer } from "../hooks/useEditTimer";
@@ -26,11 +29,22 @@ import type { RecentTask } from "../types";
 
 export default function TrayPopup() {
   const { t, i18n } = useTranslation();
+  const qc = useQueryClient();
   const [showNewTask, setShowNewTask] = useState(false);
   const [idleProcessing, setIdleProcessing] = useState(false);
 
   useAppearance();
   useLanguageSync();
+
+  useEffect(() => {
+    const win = getCurrentWindow();
+    const unlisten = win.listen("kimai://refresh", () => {
+      qc.invalidateQueries({ queryKey: ["active-timesheets"] });
+      qc.invalidateQueries({ queryKey: ["recent-timesheets"] });
+      qc.invalidateQueries({ queryKey: ["today-timesheets"] });
+    });
+    return () => { unlisten.then((fn) => fn()); };
+  }, [qc]);
 
   useEffect(() => {
     updateTrayMenu({
@@ -79,6 +93,8 @@ export default function TrayPopup() {
     isConfigured,
     activeKey,
   );
+
+  const today = useTodayTimesheets(client, isConfigured, refreshInterval);
 
   const { startTask, startingKey, switchError, dismissError, isStarting } =
     useStartTask(client, timer?.id ?? null, () => setShowNewTask(false));
@@ -345,13 +361,34 @@ export default function TrayPopup() {
 
           <div className="mx-3 mt-2 border-t border-gray-100 dark:border-gray-800" />
 
-          <RecentTasksList
-            tasks={tasks}
-            onStart={handleStartRecent}
-            isLoading={status !== "unconfigured" && tasksLoading}
-            startingKey={startingKey}
-            disabled={isStarting || isStopping || isPausing || isResuming}
-          />
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <RecentTasksList
+              tasks={tasks}
+              onStart={handleStartRecent}
+              isLoading={status !== "unconfigured" && tasksLoading}
+              startingKey={startingKey}
+              disabled={isStarting || isStopping || isPausing || isResuming}
+            />
+
+            {status !== "unconfigured" && (
+              <>
+                <div className="mx-3 border-t border-gray-100 dark:border-gray-800" />
+                <TodaySection
+                  entries={today.entries}
+                  totalCount={today.totalCount}
+                  totalDuration={today.totalDuration}
+                  hasMore={today.hasMore}
+                  expanded={today.expanded}
+                  onToggleExpand={() => today.setExpanded(!today.expanded)}
+                  sortAsc={today.sortAsc}
+                  onToggleSort={() => today.setSortAsc(!today.sortAsc)}
+                  isLoading={today.isLoading}
+                  isError={today.isError}
+                  onRetry={() => today.refetch()}
+                />
+              </>
+            )}
+          </div>
 
           <PopupFooterActions
             onNewTask={() => setShowNewTask(true)}

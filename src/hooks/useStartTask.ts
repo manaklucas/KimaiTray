@@ -61,12 +61,14 @@ export function useStartTask(
       setStartingKey(null);
       qc.invalidateQueries({ queryKey: ["active-timesheets"] });
       qc.invalidateQueries({ queryKey: ["recent-timesheets"] });
+      qc.invalidateQueries({ queryKey: ["today-timesheets"] });
       onTaskStarted?.();
     },
     onError: (err: Error, payload) => {
       setStartingKey(null);
       qc.invalidateQueries({ queryKey: ["active-timesheets"] });
       qc.invalidateQueries({ queryKey: ["recent-timesheets"] });
+      qc.invalidateQueries({ queryKey: ["today-timesheets"] });
 
       if (err instanceof TaskSwitchError && err.stoppedExisting) {
         setSwitchError(

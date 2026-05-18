@@ -191,6 +191,15 @@
     "resume": "Pokračovať",
     "pausedSince": "pozastavené o {{time}}"
   },
+  "today": {
+    "title": "Dnes",
+    "empty": "Zatiaľ žiadne záznamy",
+    "loadError": "Nepodarilo sa načítať dnešné záznamy",
+    "showAll": "Zobraziť všetky ({{count}})",
+    "showLess": "Zobraziť menej",
+    "newestFirst": "Najnovšie prvé",
+    "oldestFirst": "Najstaršie prvé"
+  },
   "errors": {
     "unknown": "Neznáma chyba",
     "network": "Chyba siete",

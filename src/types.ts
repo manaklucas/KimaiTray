@@ -58,6 +58,23 @@ export interface AppSettings {
   accentStyle: "blue" | "green" | "purple" | "orange" | "red";
 }
 
+export interface TodayEntry {
+  id: number;
+  projectId: number;
+  activityId: number;
+  project: string;
+  projectColor: string;
+  customer: string;
+  activity: string;
+  description: string;
+  tags: string[];
+  billable: boolean;
+  beginIso: string;
+  endIso: string | null;
+  duration: number | null;
+  isRunning: boolean;
+}
+
 export type SettingsSection =
   | "connection"
   | "general"

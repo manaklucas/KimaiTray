@@ -191,6 +191,15 @@
     "resume": "Pokračovat",
     "pausedSince": "pozastaveno v {{time}}"
   },
+  "today": {
+    "title": "Dnes",
+    "empty": "Zatím žádné záznamy",
+    "loadError": "Nepodařilo se načíst dnešní záznamy",
+    "showAll": "Zobrazit všechny ({{count}})",
+    "showLess": "Zobrazit méně",
+    "newestFirst": "Nejnovější první",
+    "oldestFirst": "Nejstarší první"
+  },
   "errors": {
     "unknown": "Neznámá chyba",
     "network": "Chyba sítě",

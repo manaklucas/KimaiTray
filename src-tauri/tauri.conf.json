@@ -17,7 +17,7 @@
         "title": "KimaiTray",
         "url": "/",
         "width": 360,
-        "height": 520,
+        "height": 640,
         "visible": false,
         "decorations": false,
         "skipTaskbar": true,

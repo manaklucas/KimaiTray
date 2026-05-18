@@ -191,6 +191,15 @@
     "resume": "Fortsetzen",
     "pausedSince": "pausiert seit {{time}}"
   },
+  "today": {
+    "title": "Heute",
+    "empty": "Noch keine Zeiteinträge heute",
+    "loadError": "Heutige Einträge konnten nicht geladen werden",
+    "showAll": "Alle anzeigen ({{count}})",
+    "showLess": "Weniger anzeigen",
+    "newestFirst": "Neueste zuerst",
+    "oldestFirst": "Älteste zuerst"
+  },
   "errors": {
     "unknown": "Unbekannter Fehler",
     "network": "Netzwerkfehler",

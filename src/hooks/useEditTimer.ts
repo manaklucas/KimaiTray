@@ -24,6 +24,7 @@ export function useEditTimer(client: KimaiClient | null) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["active-timesheets"] });
       qc.invalidateQueries({ queryKey: ["recent-timesheets"] });
+      qc.invalidateQueries({ queryKey: ["today-timesheets"] });
     },
   });
 
