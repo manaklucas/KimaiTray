@@ -3,7 +3,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { KimaiApiError } from "../api/kimaiClient";
 import { startTimesheet, stopTimesheet } from "../api/timesheetApi";
-import type { RecentTask } from "../types";
+
+export interface StartTaskPayload {
+  projectId: number;
+  activityId: number;
+  description?: string;
+  begin?: string;
+  label: string;
+}
 
 class TaskSwitchError extends Error {
   stoppedExisting: boolean;
@@ -16,13 +23,14 @@ class TaskSwitchError extends Error {
 export function useStartTask(
   client: KimaiClient | null,
   activeTimerId: number | null,
+  onTaskStarted?: () => void,
 ) {
   const qc = useQueryClient();
   const [startingKey, setStartingKey] = useState<string | null>(null);
   const [switchError, setSwitchError] = useState<string | null>(null);
 
   const mutation = useMutation({
-    mutationFn: async (task: RecentTask) => {
+    mutationFn: async (payload: StartTaskPayload) => {
       let stoppedExisting = false;
 
       if (activeTimerId != null) {
@@ -32,44 +40,46 @@ export function useStartTask(
 
       try {
         return await startTimesheet(client!, {
-          project: task.projectId,
-          activity: task.activityId,
-          begin: new Date().toISOString(),
+          project: payload.projectId,
+          activity: payload.activityId,
+          description: payload.description,
+          begin: payload.begin ?? new Date().toISOString(),
         });
       } catch (err) {
         throw new TaskSwitchError(err, stoppedExisting);
       }
     },
-    onMutate: (task) => {
-      setStartingKey(task.key);
+    onMutate: () => {
       setSwitchError(null);
     },
     onSuccess: () => {
       setStartingKey(null);
       qc.invalidateQueries({ queryKey: ["active-timesheets"] });
       qc.invalidateQueries({ queryKey: ["recent-timesheets"] });
+      onTaskStarted?.();
     },
-    onError: (err: Error, task) => {
+    onError: (err: Error, payload) => {
       setStartingKey(null);
       qc.invalidateQueries({ queryKey: ["active-timesheets"] });
       qc.invalidateQueries({ queryKey: ["recent-timesheets"] });
 
       if (err instanceof TaskSwitchError && err.stoppedExisting) {
         setSwitchError(
-          `Timer stopped but "${task.project}" failed to start: ${err.message}`,
+          `Timer stopped but "${payload.label}" failed to start: ${err.message}`,
         );
       } else if (activeTimerId != null) {
         setSwitchError(`Failed to stop current timer: ${err.message}`);
       } else {
-        setSwitchError(`Failed to start "${task.project}": ${err.message}`);
+        setSwitchError(`Failed to start "${payload.label}": ${err.message}`);
       }
     },
   });
 
   const startTask = useCallback(
-    (task: RecentTask) => {
+    (payload: StartTaskPayload, trackingKey?: string) => {
       if (!client || mutation.isPending) return;
-      mutation.mutate(task);
+      setStartingKey(trackingKey ?? null);
+      mutation.mutate(payload);
     },
     [client, mutation],
   );
