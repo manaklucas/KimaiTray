@@ -26,8 +26,18 @@ export default function TrayPopup() {
 
   useAppearance();
 
-  const { client, isConfigured, refreshInterval, baseUrl, openKimaiInBrowser, idleSettings, traySettings } =
-    useKimaiClient();
+  const {
+    client,
+    isConfigured,
+    refreshInterval,
+    baseUrl,
+    openKimaiInBrowser,
+    idleSettings,
+    traySettings,
+    connections,
+    activeConnectionId,
+    switchConnection,
+  } = useKimaiClient();
   const {
     timer,
     multipleActive,
@@ -235,7 +245,13 @@ export default function TrayPopup() {
 
   return (
     <div className="relative flex h-screen w-screen flex-col bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-gray-100">
-      <HeaderStatus status={status} errorMessage={errorMessage} />
+      <HeaderStatus
+        status={status}
+        errorMessage={errorMessage}
+        connections={connections}
+        activeConnectionId={activeConnectionId}
+        onSwitchConnection={switchConnection}
+      />
 
       {showNewTask && client ? (
         <NewTaskForm

@@ -6,6 +6,8 @@ const SETTINGS_KEY = "settings";
 
 export const defaultSettings: AppSettings = {
   kimaiUrl: "",
+  connections: [],
+  activeConnectionId: "",
 
   launchAtLogin: false,
   refreshInterval: 60,
@@ -42,7 +44,19 @@ export async function loadSettings(): Promise<AppSettings> {
     const store = await getStore();
     const raw = await store.get<AppSettings>(SETTINGS_KEY);
     if (!raw) return { ...defaultSettings };
-    return { ...defaultSettings, ...raw };
+    const settings = { ...defaultSettings, ...raw };
+
+    if (settings.kimaiUrl && (!settings.connections || settings.connections.length === 0)) {
+      const id = crypto.randomUUID();
+      let name = "Kimai";
+      try { name = new URL(settings.kimaiUrl).hostname; } catch { /* keep default */ }
+      settings.connections = [{ id, name, url: settings.kimaiUrl }];
+      settings.activeConnectionId = id;
+      await store.set(SETTINGS_KEY, settings);
+      await store.save();
+    }
+
+    return settings;
   } catch {
     return { ...defaultSettings };
   }

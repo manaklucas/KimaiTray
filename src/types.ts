@@ -22,8 +22,16 @@ export interface RecentTask {
   lastUsed: string;
 }
 
+export interface SavedConnection {
+  id: string;
+  name: string;
+  url: string;
+}
+
 export interface AppSettings {
   kimaiUrl: string;
+  connections: SavedConnection[];
+  activeConnectionId: string;
 
   launchAtLogin: boolean;
   refreshInterval: number;

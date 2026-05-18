@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { createKimaiClient, type KimaiClient } from "../api/kimaiClient";
 import { getApiToken } from "../api/secureStore";
-import { loadSettings, onSettingsChange } from "../settings/service";
+import { loadSettings, onSettingsChange, saveSettings } from "../settings/service";
+import type { SavedConnection } from "../types";
 
 interface IdleSettings {
   enableIdleDetection: boolean;
@@ -26,6 +27,9 @@ interface UseKimaiClientResult {
   openKimaiInBrowser: boolean;
   idleSettings: IdleSettings;
   traySettings: TraySettings;
+  connections: SavedConnection[];
+  activeConnectionId: string;
+  switchConnection: (id: string) => void;
 }
 
 const defaultIdleSettings: IdleSettings = {
@@ -48,13 +52,25 @@ export function useKimaiClient(): UseKimaiClientResult {
   const [refreshInterval, setRefreshInterval] = useState(60);
   const [openKimaiInBrowser, setOpenKimaiInBrowser] = useState(true);
   const [ready, setReady] = useState(false);
+  const [connections, setConnections] = useState<SavedConnection[]>([]);
+  const [activeConnectionId, setActiveConnectionId] = useState("");
   const [idleSettings, setIdleSettings] =
     useState<IdleSettings>(defaultIdleSettings);
   const [traySettings, setTraySettings] =
     useState<TraySettings>(defaultTraySettings);
 
+  const baseUrlRef = useRef("");
+
   const applySettings = useCallback(async (s: Awaited<ReturnType<typeof loadSettings>>) => {
+    const urlChanged = s.kimaiUrl !== baseUrlRef.current;
+    baseUrlRef.current = s.kimaiUrl;
+
+    if (urlChanged) {
+      setToken("");
+    }
     setBaseUrl(s.kimaiUrl);
+    setConnections(s.connections ?? []);
+    setActiveConnectionId(s.activeConnectionId ?? "");
     setRefreshInterval(s.refreshInterval);
     setOpenKimaiInBrowser(s.openKimaiInBrowser);
     setIdleSettings({
@@ -112,6 +128,24 @@ export function useKimaiClient(): UseKimaiClientResult {
     };
   }, [load]);
 
+  const switchConnection = useCallback(async (id: string) => {
+    const s = await loadSettings();
+    const conn = s.connections.find((c) => c.id === id);
+    if (!conn) return;
+
+    let t = "";
+    try {
+      t = (await getApiToken(conn.url)) ?? "";
+    } catch { /* token load failed */ }
+
+    baseUrlRef.current = conn.url;
+    setBaseUrl(conn.url);
+    setToken(t);
+    setActiveConnectionId(id);
+
+    await saveSettings({ ...s, activeConnectionId: id, kimaiUrl: conn.url });
+  }, []);
+
   const client = useMemo(() => {
     if (!baseUrl || !token) return null;
     return createKimaiClient(baseUrl, token);
@@ -125,5 +159,8 @@ export function useKimaiClient(): UseKimaiClientResult {
     openKimaiInBrowser,
     idleSettings,
     traySettings,
+    connections,
+    activeConnectionId,
+    switchConnection,
   };
 }

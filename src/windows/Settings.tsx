@@ -68,7 +68,15 @@ const NAV_ITEMS: { id: SettingsSection; label: string; icon: ReactNode }[] = [
 
 export default function Settings() {
   const [section, setSection] = useState<SettingsSection>("connection");
-  const { settings, token, update, updateToken, loaded } = useSettings();
+  const {
+    settings,
+    token,
+    update,
+    loaded,
+    saveConnection,
+    removeConnection,
+    activateConnection,
+  } = useSettings();
   useAppearance();
 
   if (!loaded) {
@@ -129,8 +137,9 @@ export default function Settings() {
             <ConnectionSection
               settings={settings}
               token={token}
-              update={update}
-              updateToken={updateToken}
+              saveConnection={saveConnection}
+              removeConnection={removeConnection}
+              activateConnection={activateConnection}
             />
           )}
           {section === "general" && (
