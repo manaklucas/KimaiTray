@@ -1,7 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import HeaderStatus from "../components/HeaderStatus";
+import ActiveTimerCard from "../components/ActiveTimerCard";
+import EmptyTimerState from "../components/EmptyTimerState";
+import RecentTasksList from "../components/RecentTasksList";
+import PopupFooterActions from "../components/PopupFooterActions";
+import { mockActiveTimer, mockRecentTasks, mockTodayTotal } from "../mock/data";
+import type { ActiveTimer, RecentTask } from "../types";
 
 export default function TrayPopup() {
+  const [timer, setTimer] = useState<ActiveTimer | null>(mockActiveTimer);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -12,23 +21,50 @@ export default function TrayPopup() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  const handleStop = () => setTimer(null);
+
+  const handleStart = (task: RecentTask) => {
+    setTimer({
+      id: task.id,
+      project: task.project,
+      projectColor: task.projectColor,
+      activity: task.activity,
+      description: task.description,
+      beginSeconds: Math.floor(Date.now() / 1000),
+    });
+  };
+
+  const handleNewTask = () => {
+    /* TODO: open new task form */
+  };
+
+  const handleOpenKimai = () => {
+    /* TODO: open Kimai in browser */
+  };
+
+  const handleSettings = () => {
+    /* TODO: show settings window */
+  };
+
   return (
-    <div className="flex h-screen w-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-      <header className="border-b border-gray-200 px-4 py-3 dark:border-gray-700">
-        <h1 className="text-sm font-semibold tracking-tight">KimaiMate</h1>
-      </header>
+    <div className="flex h-screen w-screen flex-col bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-gray-100">
+      <HeaderStatus connected={true} todayTotal={mockTodayTotal} />
 
-      <main className="flex flex-1 items-center justify-center overflow-y-auto p-4">
-        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-          No active time entries.
-          <br />
-          Right-click the tray icon → Settings to connect.
-        </p>
-      </main>
+      {timer ? (
+        <ActiveTimerCard timer={timer} onStop={handleStop} />
+      ) : (
+        <EmptyTimerState />
+      )}
 
-      <footer className="border-t border-gray-200 px-4 py-2 text-xs text-gray-400 dark:border-gray-700">
-        KimaiMate v0.1.0
-      </footer>
+      <div className="mx-3 mt-2 border-t border-gray-100 dark:border-gray-800" />
+
+      <RecentTasksList tasks={mockRecentTasks} onStart={handleStart} />
+
+      <PopupFooterActions
+        onNewTask={handleNewTask}
+        onOpenKimai={handleOpenKimai}
+        onSettings={handleSettings}
+      />
     </div>
   );
 }
