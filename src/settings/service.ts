@@ -34,6 +34,8 @@ export const defaultSettings: AppSettings = {
   shortcutTogglePopup: "",
   shortcutStartStopTimer: "",
   shortcutOpenSettings: "",
+
+  autoUpdate: true,
 };
 
 let storePromise: ReturnType<typeof load> | null = null;

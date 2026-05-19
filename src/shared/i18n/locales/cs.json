@@ -139,6 +139,18 @@
     "conflict": "Již se používá pro \"{{action}}\"",
     "invalid": "Neplatná zkratka"
   },
+  "updateSettings": {
+    "title": "Aktualizace",
+    "description": "Nastavte způsob aktualizace aplikace KimaiTray.",
+    "autoUpdate": "Automatické aktualizace",
+    "autoUpdateDescription": "Automaticky stáhnout a nainstalovat aktualizace",
+    "checkForUpdates": "Zkontrolovat aktualizace",
+    "checking": "Kontroluje se…",
+    "upToDate": "Máte nejnovější verzi",
+    "updateAvailable": "Aktualizuje se na v{{version}}…",
+    "checkFailed": "Kontrola aktualizací selhala",
+    "updateLabel": "Aktualizovat na v{{version}}"
+  },
   "appearanceSettings": {
     "title": "Vzhled",
     "description": "Přizpůsobte si vzhled aplikace KimaiTray.",

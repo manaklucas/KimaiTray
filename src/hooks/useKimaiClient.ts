@@ -34,6 +34,7 @@ interface UseKimaiClientResult {
   idleSettings: IdleSettings;
   traySettings: TraySettings;
   shortcutSettings: ShortcutSettings;
+  autoUpdate: boolean;
   connections: SavedConnection[];
   activeConnectionId: string;
   switchConnection: (id: string) => void;
@@ -71,6 +72,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     useState<IdleSettings>(defaultIdleSettings);
   const [traySettings, setTraySettings] =
     useState<TraySettings>(defaultTraySettings);
+  const [autoUpdate, setAutoUpdate] = useState(true);
   const [shortcutSettings, setShortcutSettings] =
     useState<ShortcutSettings>(defaultShortcutSettings);
 
@@ -105,6 +107,7 @@ export function useKimaiClient(): UseKimaiClientResult {
       shortcutStartStopTimer: s.shortcutStartStopTimer,
       shortcutOpenSettings: s.shortcutOpenSettings,
     });
+    setAutoUpdate(s.autoUpdate);
     if (s.kimaiUrl) {
       try {
         const t = await getApiToken(s.kimaiUrl);
@@ -180,6 +183,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     idleSettings,
     traySettings,
     shortcutSettings,
+    autoUpdate,
     connections,
     activeConnectionId,
     switchConnection,

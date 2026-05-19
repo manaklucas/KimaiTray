@@ -11,6 +11,7 @@ import TimerSection from "../settings/TimerSection";
 import IdleDetectionSection from "../settings/IdleDetectionSection";
 import AppearanceSection from "../settings/AppearanceSection";
 import ShortcutsSection from "../settings/ShortcutsSection";
+import UpdateSection from "../settings/UpdateSection";
 import AboutSection from "../settings/AboutSection";
 
 const NAV_ICONS: Record<SettingsSection, ReactNode> = {
@@ -39,6 +40,11 @@ const NAV_ICONS: Record<SettingsSection, ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
     </svg>
   ),
+  update: (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M21.015 4.356v4.992" />
+    </svg>
+  ),
   appearance: (
     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
@@ -57,6 +63,7 @@ const NAV_LABEL_KEYS: Record<SettingsSection, string> = {
   timer: "timerSettings.title",
   idle: "idle.title",
   shortcuts: "shortcuts.title",
+  update: "updateSettings.title",
   appearance: "appearanceSettings.title",
   about: "aboutSection.title",
 };
@@ -67,6 +74,7 @@ const NAV_ORDER: SettingsSection[] = [
   "timer",
   "idle",
   "shortcuts",
+  "update",
   "appearance",
   "about",
 ];
@@ -165,6 +173,9 @@ export default function Settings() {
           )}
           {section === "shortcuts" && (
             <ShortcutsSection settings={settings} update={update} />
+          )}
+          {section === "update" && (
+            <UpdateSection settings={settings} update={update} />
           )}
           {section === "appearance" && (
             <AppearanceSection settings={settings} update={update} />

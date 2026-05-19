@@ -139,6 +139,18 @@
     "conflict": "Вже використовується для «{{action}}»",
     "invalid": "Недійсне скорочення"
   },
+  "updateSettings": {
+    "title": "Оновлення",
+    "description": "Налаштуйте спосіб оновлення застосунку KimaiTray.",
+    "autoUpdate": "Автоматичні оновлення",
+    "autoUpdateDescription": "Автоматично завантажувати та встановлювати оновлення",
+    "checkForUpdates": "Перевірити оновлення",
+    "checking": "Перевірка…",
+    "upToDate": "У вас найновіша версія",
+    "updateAvailable": "Оновлення до v{{version}}…",
+    "checkFailed": "Перевірка оновлень не вдалася",
+    "updateLabel": "Оновити до v{{version}}"
+  },
   "appearanceSettings": {
     "title": "Зовнішній вигляд",
     "description": "Налаштуйте зовнішній вигляд застосунку KimaiTray.",

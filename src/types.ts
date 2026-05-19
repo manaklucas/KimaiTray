@@ -61,6 +61,8 @@ export interface AppSettings {
   shortcutTogglePopup: string;
   shortcutStartStopTimer: string;
   shortcutOpenSettings: string;
+
+  autoUpdate: boolean;
 }
 
 export interface TodayEntry {
@@ -86,5 +88,6 @@ export type SettingsSection =
   | "timer"
   | "idle"
   | "shortcuts"
+  | "update"
   | "appearance"
   | "about";

@@ -159,6 +159,18 @@
     "conflict": "Already used for \"{{action}}\"",
     "invalid": "Invalid shortcut"
   },
+  "updateSettings": {
+    "title": "Update",
+    "description": "Configure how KimaiTray handles application updates.",
+    "autoUpdate": "Automatic updates",
+    "autoUpdateDescription": "Automatically download and install updates when available",
+    "checkForUpdates": "Check for updates",
+    "checking": "Checking…",
+    "upToDate": "You're up to date",
+    "updateAvailable": "Updating to v{{version}}…",
+    "checkFailed": "Update check failed",
+    "updateLabel": "Update to v{{version}}"
+  },
   "aboutSection": {
     "title": "About",
     "appName": "KimaiTray",

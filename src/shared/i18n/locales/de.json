@@ -139,6 +139,18 @@
     "conflict": "Bereits verwendet für \"{{action}}\"",
     "invalid": "Ungültiges Kürzel"
   },
+  "updateSettings": {
+    "title": "Aktualisierung",
+    "description": "Konfigurieren Sie, wie KimaiTray Anwendungsupdates verwaltet.",
+    "autoUpdate": "Automatische Updates",
+    "autoUpdateDescription": "Updates automatisch herunterladen und installieren",
+    "checkForUpdates": "Nach Updates suchen",
+    "checking": "Wird geprüft…",
+    "upToDate": "Sie sind auf dem neuesten Stand",
+    "updateAvailable": "Aktualisierung auf v{{version}}…",
+    "checkFailed": "Update-Prüfung fehlgeschlagen",
+    "updateLabel": "Auf v{{version}} aktualisieren"
+  },
   "appearanceSettings": {
     "title": "Erscheinungsbild",
     "description": "Passen Sie das Aussehen von KimaiTray an.",
