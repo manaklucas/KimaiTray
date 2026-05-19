@@ -149,6 +149,58 @@ body {
   background: rgba(128, 128, 128, 0.08) !important;
 }
 
+/* Paused timer card */
+[data-theme="transparent"][data-window="tray-popup"] .bg-amber-50\/70 {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+/* ── Transparent theme: text readability ─────────────────────── */
+/* Light vibrancy: boost grays that are too faint on glass */
+[data-theme="transparent"][data-window="tray-popup"]:not(.dark) {
+  /* Primary text (project names, headings) */
+  & .text-gray-700 { color: rgba(0, 0, 0, 0.85) !important; }
+  & .text-gray-800 { color: rgba(0, 0, 0, 0.9) !important; }
+  & .text-gray-900 { color: rgba(0, 0, 0, 0.92) !important; }
+
+  /* Secondary text (activities, subtitles, labels) */
+  & .text-gray-500 { color: rgba(0, 0, 0, 0.6) !important; }
+  & .text-gray-400 { color: rgba(0, 0, 0, 0.5) !important; }
+
+  /* Muted text (hints, placeholders) */
+  & .text-gray-300 { color: rgba(0, 0, 0, 0.35) !important; }
+
+  /* Section headers */
+  & .font-semibold.uppercase.tracking-wider { color: rgba(0, 0, 0, 0.55) !important; }
+}
+
+/* Dark vibrancy: boost grays for dark glass */
+[data-theme="transparent"][data-window="tray-popup"].dark {
+  /* Primary text */
+  & .dark\:text-gray-100 { color: rgba(255, 255, 255, 0.95) !important; }
+  & .dark\:text-gray-200 { color: rgba(255, 255, 255, 0.9) !important; }
+  & .dark\:text-gray-300 { color: rgba(255, 255, 255, 0.82) !important; }
+
+  /* Secondary text */
+  & .dark\:text-gray-400 { color: rgba(255, 255, 255, 0.65) !important; }
+  & .dark\:text-gray-500 { color: rgba(255, 255, 255, 0.5) !important; }
+
+  /* Muted text */
+  & .dark\:text-gray-600 { color: rgba(255, 255, 255, 0.35) !important; }
+
+  /* Section headers */
+  & .font-semibold.uppercase.tracking-wider { color: rgba(255, 255, 255, 0.55) !important; }
+}
+
+/* Tag pills on glass */
+[data-theme="transparent"][data-window="tray-popup"]:not(.dark) .bg-gray-100 {
+  background: rgba(0, 0, 0, 0.07) !important;
+}
+
+[data-theme="transparent"][data-window="tray-popup"]:not(.dark) .text-gray-600 {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
 /* Scrollbar adapts in dark class mode */
 .dark ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
