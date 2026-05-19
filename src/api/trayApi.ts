@@ -43,6 +43,7 @@ export async function setPopupCornerRadius(radius: number): Promise<void> {
 }
 
 export async function updateTrayMenu(labels: {
+  toggleLabel: string;
   settingsLabel: string;
   openKimaiLabel: string;
   refreshLabel: string;

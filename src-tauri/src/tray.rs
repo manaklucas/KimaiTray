@@ -171,30 +171,35 @@ pub fn set_popup_corner_radius(app: AppHandle, radius: f64) -> Result<(), String
 #[tauri::command]
 pub fn update_tray_menu(
     app: AppHandle,
+    toggle_label: String,
     settings_label: String,
     open_kimai_label: String,
     refresh_label: String,
     quit_label: String,
 ) -> Result<(), String> {
     let tray = app.tray_by_id("main").ok_or("Tray icon not found")?;
-    let menu = build_tray_menu(&app, &settings_label, &open_kimai_label, &refresh_label, &quit_label)
+    let menu = build_tray_menu(&app, &toggle_label, &settings_label, &open_kimai_label, &refresh_label, &quit_label)
         .map_err(|e| e.to_string())?;
     tray.set_menu(Some(menu)).map_err(|e| e.to_string())
 }
 
 fn build_tray_menu(
     app: &AppHandle,
+    toggle_label: &str,
     settings_label: &str,
     open_kimai_label: &str,
     refresh_label: &str,
     quit_label: &str,
 ) -> tauri::Result<tauri::menu::Menu<tauri::Wry>> {
+    let toggle_i = MenuItem::with_id(app, "toggle_popup", toggle_label, true, None::<&str>)?;
     let settings_i = MenuItem::with_id(app, "settings", settings_label, true, None::<&str>)?;
     let open_kimai_i = MenuItem::with_id(app, "open_kimai", open_kimai_label, true, None::<&str>)?;
     let refresh_i = MenuItem::with_id(app, "refresh", refresh_label, true, None::<&str>)?;
     let quit_i = MenuItem::with_id(app, "quit", quit_label, true, None::<&str>)?;
 
     MenuBuilder::new(app)
+        .item(&toggle_i)
+        .separator()
         .item(&settings_i)
         .item(&open_kimai_i)
         .item(&refresh_i)
@@ -204,12 +209,15 @@ fn build_tray_menu(
 }
 
 pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
+    let toggle_i = MenuItem::with_id(app, "toggle_popup", "Show/Hide", true, None::<&str>)?;
     let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
     let open_kimai_i = MenuItem::with_id(app, "open_kimai", "Open Kimai", true, None::<&str>)?;
     let refresh_i = MenuItem::with_id(app, "refresh", "Refresh", true, None::<&str>)?;
     let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
 
     let menu = MenuBuilder::new(app)
+        .item(&toggle_i)
+        .separator()
         .item(&settings_i)
         .item(&open_kimai_i)
         .item(&refresh_i)
@@ -226,6 +234,16 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {
+            "toggle_popup" => {
+                if let Some(popup) = app.get_webview_window("tray-popup") {
+                    if popup.is_visible().unwrap_or(false) {
+                        let _ = popup.hide();
+                    } else {
+                        let _ = popup.show();
+                        let _ = popup.set_focus();
+                    }
+                }
+            }
             "settings" => {
                 let handle = app.clone();
                 tauri::async_runtime::spawn(async move {

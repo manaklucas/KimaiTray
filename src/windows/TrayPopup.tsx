@@ -52,6 +52,7 @@ export default function TrayPopup() {
 
   useEffect(() => {
     updateTrayMenu({
+      toggleLabel: t("common.showHide"),
       settingsLabel: t("common.settings"),
       openKimaiLabel: t("common.openKimai"),
       refreshLabel: t("common.refresh"),
