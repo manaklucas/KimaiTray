@@ -144,6 +144,21 @@
     "accentColor": "Accent color",
     "accentColorDescription": "Used for active states and primary actions"
   },
+  "shortcuts": {
+    "title": "Shortcuts",
+    "description": "Configure global keyboard shortcuts that work even when KimaiTray is not focused.",
+    "togglePopup": "Toggle popup",
+    "togglePopupDescription": "Show or hide the tray popup window",
+    "startStopTimer": "Start / Stop timer",
+    "startStopTimerDescription": "Stop the active timesheet",
+    "openSettings": "Open Settings",
+    "openSettingsDescription": "Open the settings window",
+    "recording": "Press a key combination…",
+    "notSet": "Not set",
+    "clearShortcut": "Clear shortcut",
+    "conflict": "Already used for \"{{action}}\"",
+    "invalid": "Invalid shortcut"
+  },
   "aboutSection": {
     "title": "About",
     "appName": "KimaiTray",

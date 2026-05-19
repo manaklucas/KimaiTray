@@ -10,6 +10,7 @@ import GeneralSection from "../settings/GeneralSection";
 import TimerSection from "../settings/TimerSection";
 import IdleDetectionSection from "../settings/IdleDetectionSection";
 import AppearanceSection from "../settings/AppearanceSection";
+import ShortcutsSection from "../settings/ShortcutsSection";
 import AboutSection from "../settings/AboutSection";
 
 const NAV_ICONS: Record<SettingsSection, ReactNode> = {
@@ -33,6 +34,11 @@ const NAV_ICONS: Record<SettingsSection, ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75 9.75 9.75 0 018.25 6c0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25 9.75 9.75 0 0012.75 21a9.753 9.753 0 009.002-5.998z" />
     </svg>
   ),
+  shortcuts: (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+    </svg>
+  ),
   appearance: (
     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
@@ -50,6 +56,7 @@ const NAV_LABEL_KEYS: Record<SettingsSection, string> = {
   general: "general.title",
   timer: "timerSettings.title",
   idle: "idle.title",
+  shortcuts: "shortcuts.title",
   appearance: "appearanceSettings.title",
   about: "aboutSection.title",
 };
@@ -59,6 +66,7 @@ const NAV_ORDER: SettingsSection[] = [
   "general",
   "timer",
   "idle",
+  "shortcuts",
   "appearance",
   "about",
 ];
@@ -154,6 +162,9 @@ export default function Settings() {
           )}
           {section === "idle" && (
             <IdleDetectionSection settings={settings} update={update} />
+          )}
+          {section === "shortcuts" && (
+            <ShortcutsSection settings={settings} update={update} />
           )}
           {section === "appearance" && (
             <AppearanceSection settings={settings} update={update} />

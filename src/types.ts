@@ -57,6 +57,10 @@ export interface AppSettings {
   roundedPopupCorners: boolean;
   reduceVisualEffects: boolean;
   accentStyle: "blue" | "green" | "purple" | "orange" | "red";
+
+  shortcutTogglePopup: string;
+  shortcutStartStopTimer: string;
+  shortcutOpenSettings: string;
 }
 
 export interface TodayEntry {
@@ -81,5 +85,6 @@ export type SettingsSection =
   | "general"
   | "timer"
   | "idle"
+  | "shortcuts"
   | "appearance"
   | "about";

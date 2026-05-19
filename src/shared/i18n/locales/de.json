@@ -124,6 +124,21 @@
     "stopNow": "Jetzt stoppen",
     "stopAtAndNew": "Stoppen um {{time}} & neue Aufgabe"
   },
+  "shortcuts": {
+    "title": "Tastenkürzel",
+    "description": "Globale Tastenkürzel konfigurieren, die auch funktionieren, wenn KimaiTray nicht im Vordergrund ist.",
+    "togglePopup": "Popup umschalten",
+    "togglePopupDescription": "Popup-Fenster ein- oder ausblenden",
+    "startStopTimer": "Timer starten / stoppen",
+    "startStopTimerDescription": "Aktiven Zeiteintrag stoppen",
+    "openSettings": "Einstellungen öffnen",
+    "openSettingsDescription": "Einstellungsfenster öffnen",
+    "recording": "Tastenkombination drücken…",
+    "notSet": "Nicht gesetzt",
+    "clearShortcut": "Kürzel löschen",
+    "conflict": "Bereits verwendet für \"{{action}}\"",
+    "invalid": "Ungültiges Kürzel"
+  },
   "appearanceSettings": {
     "title": "Erscheinungsbild",
     "description": "Passen Sie das Aussehen von KimaiTray an.",

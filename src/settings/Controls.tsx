@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 /* ── Field wrapper ──────────────────────────────────────────────── */
 
@@ -211,5 +212,128 @@ export function Select({ value, onChange, options, disabled }: SelectProps) {
         </option>
       ))}
     </select>
+  );
+}
+
+/* ── Shortcut input ────────────────────────────────────────────── */
+
+const isMac = navigator.platform.toUpperCase().includes("MAC");
+
+function keyEventToAccelerator(e: KeyboardEvent): string | null {
+  if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) return null;
+
+  const parts: string[] = [];
+  if (e.ctrlKey || e.metaKey) parts.push("CommandOrControl");
+  if (e.altKey) parts.push("Alt");
+  if (e.shiftKey) parts.push("Shift");
+
+  if (parts.length === 0) return null;
+
+  const key = e.code.startsWith("Key")
+    ? e.code.slice(3)
+    : e.code.startsWith("Digit")
+      ? e.code.slice(5)
+      : e.code;
+
+  parts.push(key);
+  return parts.join("+");
+}
+
+function formatAcceleratorForDisplay(accel: string): string {
+  if (!accel) return "";
+  return accel
+    .split("+")
+    .map((part) => {
+      if (isMac) {
+        if (part === "CommandOrControl") return "⌘";
+        if (part === "Alt") return "⌥";
+        if (part === "Shift") return "⇧";
+      } else {
+        if (part === "CommandOrControl") return "Ctrl";
+      }
+      return part;
+    })
+    .join(isMac ? "" : "+");
+}
+
+interface ShortcutInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}
+
+export function ShortcutInput({ value, onChange, disabled }: ShortcutInputProps) {
+  const { t } = useTranslation();
+  const [recording, setRecording] = useState(false);
+  const ref = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!recording) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (e.key === "Escape") {
+        setRecording(false);
+        return;
+      }
+
+      const accel = keyEventToAccelerator(e);
+      if (accel) {
+        onChange(accel);
+        setRecording(false);
+      }
+    };
+
+    const onBlur = () => setRecording(false);
+
+    window.addEventListener("keydown", onKeyDown, true);
+    ref.current?.addEventListener("blur", onBlur);
+    const btn = ref.current;
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, true);
+      btn?.removeEventListener("blur", onBlur);
+    };
+  }, [recording, onChange]);
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <button
+        ref={ref}
+        type="button"
+        disabled={disabled}
+        onClick={() => { if (!disabled) setRecording(true); }}
+        className={`min-w-[120px] rounded-md border px-2.5 py-1.5 text-[12px] text-left transition-colors
+          focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400
+          ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+          ${recording
+            ? "border-blue-400 bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-500 animate-pulse"
+            : value
+              ? "border-gray-200 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+              : "border-gray-200 bg-gray-50 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500"
+          }`}
+      >
+        {recording
+          ? t("shortcuts.recording")
+          : value
+            ? formatAcceleratorForDisplay(value)
+            : t("shortcuts.notSet")}
+      </button>
+      {value && !recording && !disabled && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="rounded p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300
+            focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400"
+          title={t("shortcuts.clearShortcut")}
+        >
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      )}
+    </div>
   );
 }

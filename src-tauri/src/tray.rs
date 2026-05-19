@@ -208,6 +208,24 @@ fn build_tray_menu(
         .build()
 }
 
+pub fn toggle_popup_window(app: &AppHandle) {
+    if let Some(popup) = app.get_webview_window("tray-popup") {
+        if popup.is_visible().unwrap_or(false) {
+            let _ = popup.hide();
+        } else {
+            let _ = popup.show();
+            let _ = popup.set_focus();
+        }
+    }
+}
+
+pub fn show_settings_window(app: &AppHandle) {
+    if let Some(w) = app.get_webview_window("settings") {
+        let _ = w.show();
+        let _ = w.set_focus();
+    }
+}
+
 pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
     let toggle_i = MenuItem::with_id(app, "toggle_popup", "Show/Hide", true, None::<&str>)?;
     let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
@@ -235,23 +253,10 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {
             "toggle_popup" => {
-                if let Some(popup) = app.get_webview_window("tray-popup") {
-                    if popup.is_visible().unwrap_or(false) {
-                        let _ = popup.hide();
-                    } else {
-                        let _ = popup.show();
-                        let _ = popup.set_focus();
-                    }
-                }
+                toggle_popup_window(app);
             }
             "settings" => {
-                let handle = app.clone();
-                tauri::async_runtime::spawn(async move {
-                    if let Some(w) = handle.get_webview_window("settings") {
-                        let _ = w.show();
-                        let _ = w.set_focus();
-                    }
-                });
+                show_settings_window(app);
             }
             "open_kimai" => {
                 let handle = app.clone();

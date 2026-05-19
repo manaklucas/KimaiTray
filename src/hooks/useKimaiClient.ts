@@ -19,6 +19,12 @@ interface TraySettings {
   showSecondsInTimer: boolean;
 }
 
+interface ShortcutSettings {
+  shortcutTogglePopup: string;
+  shortcutStartStopTimer: string;
+  shortcutOpenSettings: string;
+}
+
 interface UseKimaiClientResult {
   client: KimaiClient | null;
   isConfigured: boolean;
@@ -27,6 +33,7 @@ interface UseKimaiClientResult {
   openKimaiInBrowser: boolean;
   idleSettings: IdleSettings;
   traySettings: TraySettings;
+  shortcutSettings: ShortcutSettings;
   connections: SavedConnection[];
   activeConnectionId: string;
   switchConnection: (id: string) => void;
@@ -46,6 +53,12 @@ const defaultTraySettings: TraySettings = {
   showSecondsInTimer: true,
 };
 
+const defaultShortcutSettings: ShortcutSettings = {
+  shortcutTogglePopup: "",
+  shortcutStartStopTimer: "",
+  shortcutOpenSettings: "",
+};
+
 export function useKimaiClient(): UseKimaiClientResult {
   const [baseUrl, setBaseUrl] = useState("");
   const [token, setToken] = useState("");
@@ -58,6 +71,8 @@ export function useKimaiClient(): UseKimaiClientResult {
     useState<IdleSettings>(defaultIdleSettings);
   const [traySettings, setTraySettings] =
     useState<TraySettings>(defaultTraySettings);
+  const [shortcutSettings, setShortcutSettings] =
+    useState<ShortcutSettings>(defaultShortcutSettings);
 
   const baseUrlRef = useRef("");
 
@@ -84,6 +99,11 @@ export function useKimaiClient(): UseKimaiClientResult {
       showTaskNameInTray: s.showTaskNameInTray,
       menuBarLabelStyle: s.menuBarLabelStyle,
       showSecondsInTimer: s.showSecondsInTimer,
+    });
+    setShortcutSettings({
+      shortcutTogglePopup: s.shortcutTogglePopup,
+      shortcutStartStopTimer: s.shortcutStartStopTimer,
+      shortcutOpenSettings: s.shortcutOpenSettings,
     });
     if (s.kimaiUrl) {
       try {
@@ -159,6 +179,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     openKimaiInBrowser,
     idleSettings,
     traySettings,
+    shortcutSettings,
     connections,
     activeConnectionId,
     switchConnection,

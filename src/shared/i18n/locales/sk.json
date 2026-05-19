@@ -124,6 +124,21 @@
     "stopNow": "Zastaviť teraz",
     "stopAtAndNew": "Zastaviť o {{time}} a spustiť novú"
   },
+  "shortcuts": {
+    "title": "Skratky",
+    "description": "Nastavte globálne klávesové skratky, ktoré fungujú aj keď KimaiTray nie je v popredí.",
+    "togglePopup": "Prepnúť popup",
+    "togglePopupDescription": "Zobraziť alebo skryť vyskakovacie okno",
+    "startStopTimer": "Spustiť / Zastaviť časovač",
+    "startStopTimerDescription": "Zastaviť aktívny záznam",
+    "openSettings": "Otvoriť nastavenia",
+    "openSettingsDescription": "Otvoriť okno nastavení",
+    "recording": "Stlačte kombináciu klávesov…",
+    "notSet": "Nenastavené",
+    "clearShortcut": "Vymazať skratku",
+    "conflict": "Už sa používa pre \"{{action}}\"",
+    "invalid": "Neplatná skratka"
+  },
   "appearanceSettings": {
     "title": "Vzhľad",
     "description": "Prispôsobte si vzhľad aplikácie KimaiTray.",

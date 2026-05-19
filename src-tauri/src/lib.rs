@@ -1,5 +1,6 @@
 mod idle;
 mod keychain;
+mod shortcuts;
 mod tray;
 
 use log::{error, info};
@@ -44,6 +45,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
@@ -60,6 +62,7 @@ pub fn run() {
             tray::set_popup_corner_radius,
             tray::update_tray_menu,
             idle::get_idle_seconds,
+            shortcuts::register_shortcuts,
         ])
         .setup(|app| {
             info!(
@@ -68,6 +71,7 @@ pub fn run() {
             );
             tray::create_tray(app.handle())?;
             info!("System tray created");
+            shortcuts::register_from_store(app.handle());
             Ok(())
         })
         .on_window_event(|window, event| match window.label() {

@@ -124,6 +124,21 @@
     "stopNow": "Зупинити зараз",
     "stopAtAndNew": "Зупинити о {{time}} і запустити нове"
   },
+  "shortcuts": {
+    "title": "Гарячі клавіші",
+    "description": "Налаштуйте глобальні клавіатурні скорочення, які працюють навіть коли KimaiTray не в фокусі.",
+    "togglePopup": "Перемкнути спливаюче вікно",
+    "togglePopupDescription": "Показати або сховати спливаюче вікно",
+    "startStopTimer": "Запустити / Зупинити таймер",
+    "startStopTimerDescription": "Зупинити активний запис",
+    "openSettings": "Відкрити налаштування",
+    "openSettingsDescription": "Відкрити вікно налаштувань",
+    "recording": "Натисніть комбінацію клавіш…",
+    "notSet": "Не встановлено",
+    "clearShortcut": "Очистити скорочення",
+    "conflict": "Вже використовується для «{{action}}»",
+    "invalid": "Недійсне скорочення"
+  },
   "appearanceSettings": {
     "title": "Зовнішній вигляд",
     "description": "Налаштуйте зовнішній вигляд застосунку KimaiTray.",

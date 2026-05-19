@@ -42,6 +42,14 @@ export async function setPopupCornerRadius(radius: number): Promise<void> {
   }
 }
 
+export async function registerShortcuts(shortcuts: {
+  togglePopup: string;
+  startStopTimer: string;
+  openSettings: string;
+}): Promise<void> {
+  await invoke("register_shortcuts", shortcuts);
+}
+
 export async function updateTrayMenu(labels: {
   toggleLabel: string;
   settingsLabel: string;

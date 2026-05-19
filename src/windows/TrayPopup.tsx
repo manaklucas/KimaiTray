@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { getCurrentWindow, Window } from "@tauri-apps/api/window";
@@ -22,7 +22,7 @@ import { usePauseTimer } from "../hooks/usePauseTimer";
 import { useHiddenTasks } from "../hooks/useHiddenTasks";
 import { useDeleteTimesheet } from "../hooks/useDeleteTimesheet";
 import { useIdleDetection } from "../hooks/useIdleDetection";
-import { setTrayTooltip, setTrayTitle, setTrayIcon, updateTrayMenu } from "../api/trayApi";
+import { setTrayTooltip, setTrayTitle, setTrayIcon, updateTrayMenu, registerShortcuts } from "../api/trayApi";
 import { useAppearance } from "../hooks/useAppearance";
 import { useLanguageSync } from "../hooks/useLanguageSync";
 import { useUpdater } from "../hooks/useUpdater";
@@ -68,6 +68,7 @@ export default function TrayPopup() {
     openKimaiInBrowser,
     idleSettings,
     traySettings,
+    shortcutSettings,
     connections,
     activeConnectionId,
     switchConnection,
@@ -130,6 +131,37 @@ export default function TrayPopup() {
       });
     }).catch(() => {});
   }, [idleState]);
+
+  // Global shortcut: toggle timer
+  const timerRef = useRef(timer);
+  const clientRef = useRef(client);
+  timerRef.current = timer;
+  clientRef.current = client;
+
+  useEffect(() => {
+    const win = getCurrentWindow();
+    const unlisten = win.listen("kimai://toggle-timer", async () => {
+      const t = timerRef.current;
+      const c = clientRef.current;
+      if (t && c) {
+        try { await stopTimesheet(c, t.id); } catch { /* best-effort */ }
+      }
+    });
+    return () => { unlisten.then((fn) => fn()); };
+  }, []);
+
+  // Re-register global shortcuts when settings change
+  useEffect(() => {
+    registerShortcuts({
+      togglePopup: shortcutSettings.shortcutTogglePopup,
+      startStopTimer: shortcutSettings.shortcutStartStopTimer,
+      openSettings: shortcutSettings.shortcutOpenSettings,
+    }).catch(() => {});
+  }, [
+    shortcutSettings.shortcutTogglePopup,
+    shortcutSettings.shortcutStartStopTimer,
+    shortcutSettings.shortcutOpenSettings,
+  ]);
 
   // Auto-handle idle for non-"ask" actions
   useEffect(() => {
