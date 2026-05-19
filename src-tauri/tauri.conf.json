@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "KimaiTray",
+  "productName": "KimaiMate",
   "version": "0.1.0",
   "identifier": "eu.engazan.kimaimate",
   "build": {
@@ -14,7 +14,7 @@
     "windows": [
       {
         "label": "tray-popup",
-        "title": "KimaiTray",
+        "title": "KimaiMate",
         "url": "/",
         "width": 360,
         "height": 640,
@@ -28,7 +28,7 @@
       },
       {
         "label": "settings",
-        "title": "KimaiTray - Settings",
+        "title": "KimaiMate — Settings",
         "url": "/",
         "width": 780,
         "height": 600,
@@ -50,6 +50,36 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "category": "Productivity",
+    "shortDescription": "Kimai time-tracking tray companion",
+    "longDescription": "KimaiMate is a system tray companion for Kimai time tracking. Start, stop, pause, and switch timers without leaving your desktop. Supports multiple connections, idle detection, tags, and 5 languages.",
+    "copyright": "Copyright (c) 2025 KimaiMate contributors",
+    "publisher": "engazan",
+    "homepage": "https://github.com/Engazan/KimaiTray",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": true,
+        "languages": ["English", "Slovak", "Czech", "German", "Ukrainian"]
+      },
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "frameworks": [],
+      "exceptionDomain": null
+    },
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": false
+      },
+      "deb": {
+        "section": "utils",
+        "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"]
+      }
+    }
   }
 }

@@ -1,8 +1,8 @@
 [package]
 name = "kimaitray"
 version = "0.1.0"
-description = "KimaiTray - Kimai time-tracking tray app"
-authors = ["you"]
+description = "KimaiMate — Kimai time-tracking tray companion"
+authors = ["engazan"]
 edition = "2021"
 
 [lib]
@@ -15,11 +15,14 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 tauri = { version = "2", features = ["macos-private-api", "tray-icon"] }
 tauri-plugin-opener = "2"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
 tauri-plugin-store = "2.4.3"
 tauri-plugin-notification = "2"
 tauri-plugin-autostart = "2.5.1"
+tauri-plugin-log = "2"
+tauri-plugin-updater = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 objc = "0.2"
