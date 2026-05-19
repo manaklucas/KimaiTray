@@ -10,7 +10,6 @@ export interface StartTaskPayload {
   activityId: number;
   description?: string;
   tags?: string[];
-  begin?: string;
   label: string;
 }
 
@@ -48,7 +47,6 @@ export function useStartTask(
           tags: payload.tags?.length
             ? serializeKimaiTags(payload.tags)
             : undefined,
-          begin: payload.begin ?? new Date().toISOString(),
         });
       } catch (err) {
         throw new TaskSwitchError(err, stoppedExisting);

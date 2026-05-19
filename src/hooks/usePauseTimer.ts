@@ -100,7 +100,6 @@ export function usePauseTimer(
         description: data.description || undefined,
         tags:
           data.tags.length > 0 ? serializeKimaiTags(data.tags) : undefined,
-        begin: new Date().toISOString(),
       });
       await clearPausedTimer();
       return result;

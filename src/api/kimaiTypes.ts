@@ -72,12 +72,10 @@ export function extractId(val: number | { id: number }): number {
 // ── Request payloads ───────────────────────────────────────────
 
 export interface KimaiTimesheetCreate {
-  begin: string;
   project: number;
   activity: number;
   description?: string;
   tags?: string;
-  billable?: boolean;
 }
 
 export interface KimaiTimesheetUpdate {
@@ -87,7 +85,6 @@ export interface KimaiTimesheetUpdate {
   activity?: number;
   description?: string;
   tags?: string;
-  billable?: boolean;
 }
 
 // ── Query parameters ───────────────────────────────────────────

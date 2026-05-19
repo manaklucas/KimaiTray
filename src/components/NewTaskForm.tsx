@@ -93,10 +93,6 @@ export default function NewTaskForm({
       activityId: activityId!,
       description: description.trim() || undefined,
       tags: tags.length > 0 ? tags : undefined,
-      begin:
-        useCustomTime && beginTime
-          ? new Date(beginTime).toISOString()
-          : undefined,
       label: selectedProject?.name ?? `Project #${projectId}`,
     });
   };
