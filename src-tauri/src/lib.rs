@@ -63,7 +63,7 @@ pub fn run() {
         ])
         .setup(|app| {
             info!(
-                "KimaiMate v{} starting",
+                "KimaiTray v{} starting",
                 app.config().version.as_deref().unwrap_or("unknown")
             );
             tray::create_tray(app.handle())?;
@@ -86,7 +86,7 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .unwrap_or_else(|e| {
-            eprintln!("Fatal: failed to start KimaiMate: {e}");
+            eprintln!("Fatal: failed to start KimaiTray: {e}");
             std::process::exit(1);
         });
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "KimaiMate",
+  "productName": "KimaiTray",
   "version": "0.1.0",
   "identifier": "eu.engazan.kimaimate",
   "build": {
@@ -14,7 +14,7 @@
     "windows": [
       {
         "label": "tray-popup",
-        "title": "KimaiMate",
+        "title": "KimaiTray",
         "url": "/",
         "width": 360,
         "height": 640,
@@ -28,7 +28,7 @@
       },
       {
         "label": "settings",
-        "title": "KimaiMate — Settings",
+        "title": "KimaiTray — Settings",
         "url": "/",
         "width": 780,
         "height": 600,
@@ -54,8 +54,8 @@
     "createUpdaterArtifacts": true,
     "category": "Productivity",
     "shortDescription": "Kimai time-tracking tray companion",
-    "longDescription": "KimaiMate is a system tray companion for Kimai time tracking. Start, stop, pause, and switch timers without leaving your desktop. Supports multiple connections, idle detection, tags, and 5 languages.",
-    "copyright": "Copyright (c) 2025 KimaiMate contributors",
+    "longDescription": "KimaiTray is a system tray companion for Kimai time tracking. Start, stop, pause, and switch timers without leaving your desktop. Supports multiple connections, idle detection, tags, and 5 languages.",
+    "copyright": "Copyright (c) 2025 KimaiTray contributors",
     "publisher": "engazan",
     "homepage": "https://github.com/Engazan/KimaiTray",
     "windows": {

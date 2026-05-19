@@ -54,7 +54,7 @@ export default function HeaderStatus({
           />
         ) : (
           <span className="text-[11px] font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase truncate">
-            {active?.name ?? "KimaiMate"}
+            {active?.name ?? "KimaiTray"}
           </span>
         )}
       </div>
@@ -107,7 +107,7 @@ function ConnectionSwitcher({
         className="flex items-center gap-1 text-[11px] font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase truncate
           hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
       >
-        <span className="truncate">{active?.name ?? "KimaiMate"}</span>
+        <span className="truncate">{active?.name ?? "KimaiTray"}</span>
         <svg
           className={`h-3 w-3 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
           fill="none"

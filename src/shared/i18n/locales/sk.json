@@ -77,7 +77,7 @@
     "title": "Všeobecné",
     "description": "Nastavte správanie pri spustení a obnovu dát.",
     "launchAtLogin": "Spustiť pri prihlásení",
-    "launchAtLoginDescription": "Automaticky spustiť KimaiMate pri prihlásení",
+    "launchAtLoginDescription": "Automaticky spustiť KimaiTray pri prihlásení",
     "refreshInterval": "Interval obnovy",
     "refreshIntervalDescription": "Ako často synchronizovať dáta z Kimai",
     "seconds_15": "15 sekúnd",
@@ -125,7 +125,7 @@
   },
   "appearanceSettings": {
     "title": "Vzhľad",
-    "description": "Prispôsobte si vzhľad aplikácie KimaiMate.",
+    "description": "Prispôsobte si vzhľad aplikácie KimaiTray.",
     "theme": "Téma",
     "themeDescription": "Štýl pozadia popup okna",
     "light": "Svetlá",
@@ -145,16 +145,16 @@
   },
   "aboutSection": {
     "title": "O aplikácii",
-    "appName": "KimaiMate",
+    "appName": "KimaiTray",
     "version": "Verzia {{version}}",
     "appDescription": "Bezplatný open-source spoločník pre sledovanie času Kimai vo vašej lište. Postavený na Tauri, React a TypeScript.",
     "githubRepo": "GitHub repozitár",
     "website": "Webstránka",
     "reportIssue": "Nahlásiť problém",
     "privacyPolicy": "Zásady ochrany súkromia",
-    "supportTitle": "Podporte KimaiMate",
-    "supportDescription": "KimaiMate je zadarmo pre všetkých — žiadne prémiové úrovne, žiadne platby. Ak vám pomáha, zvážte podporu vývoja.",
-    "copyright": "Vytvorené s láskou. © 2025 Prispievatelia KimaiMate."
+    "supportTitle": "Podporte KimaiTray",
+    "supportDescription": "KimaiTray je zadarmo pre všetkých — žiadne prémiové úrovne, žiadne platby. Ak vám pomáha, zvážte podporu vývoja.",
+    "copyright": "Vytvorené s láskou. © 2025 Prispievatelia KimaiTray."
   },
   "newTask": {
     "title": "Nová úloha",

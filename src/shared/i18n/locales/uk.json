@@ -77,7 +77,7 @@
     "title": "Загальні",
     "description": "Налаштуйте поведінку при запуску та оновлення даних.",
     "launchAtLogin": "Запускати при вході",
-    "launchAtLoginDescription": "Автоматично запускати KimaiMate при вході в систему",
+    "launchAtLoginDescription": "Автоматично запускати KimaiTray при вході в систему",
     "refreshInterval": "Інтервал оновлення",
     "refreshIntervalDescription": "Як часто синхронізувати дані з Kimai",
     "seconds_15": "15 секунд",
@@ -125,7 +125,7 @@
   },
   "appearanceSettings": {
     "title": "Зовнішній вигляд",
-    "description": "Налаштуйте зовнішній вигляд застосунку KimaiMate.",
+    "description": "Налаштуйте зовнішній вигляд застосунку KimaiTray.",
     "theme": "Тема",
     "themeDescription": "Стиль фону спливаючого вікна",
     "light": "Світла",
@@ -145,16 +145,16 @@
   },
   "aboutSection": {
     "title": "Про застосунок",
-    "appName": "KimaiMate",
+    "appName": "KimaiTray",
     "version": "Версія {{version}}",
     "appDescription": "Безкоштовний застосунок з відкритим кодом для відстеження часу Kimai у вашій панелі меню. Створений з Tauri, React та TypeScript.",
     "githubRepo": "Репозиторій GitHub",
     "website": "Вебсайт",
     "reportIssue": "Повідомити про проблему",
     "privacyPolicy": "Політика конфіденційності",
-    "supportTitle": "Підтримайте KimaiMate",
-    "supportDescription": "KimaiMate безкоштовний для всіх — жодних преміум-рівнів, жодних платних стін. Якщо він вам корисний, розгляньте підтримку розробки.",
-    "copyright": "Створено з турботою. © 2025 Учасники KimaiMate."
+    "supportTitle": "Підтримайте KimaiTray",
+    "supportDescription": "KimaiTray безкоштовний для всіх — жодних преміум-рівнів, жодних платних стін. Якщо він вам корисний, розгляньте підтримку розробки.",
+    "copyright": "Створено з турботою. © 2025 Учасники KimaiTray."
   },
   "newTask": {
     "title": "Нове завдання",

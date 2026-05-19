@@ -77,7 +77,7 @@
     "title": "General",
     "description": "Configure startup behavior and data refresh.",
     "launchAtLogin": "Launch at login",
-    "launchAtLoginDescription": "Start KimaiMate automatically when you log in",
+    "launchAtLoginDescription": "Start KimaiTray automatically when you log in",
     "refreshInterval": "Refresh interval",
     "refreshIntervalDescription": "How often to sync data from Kimai",
     "seconds_15": "15 seconds",
@@ -125,7 +125,7 @@
   },
   "appearanceSettings": {
     "title": "Appearance",
-    "description": "Customize the look and feel of KimaiMate.",
+    "description": "Customize the look and feel of KimaiTray.",
     "theme": "Theme",
     "themeDescription": "Popup window background style",
     "light": "Light",
@@ -145,16 +145,16 @@
   },
   "aboutSection": {
     "title": "About",
-    "appName": "KimaiMate",
+    "appName": "KimaiTray",
     "version": "Version {{version}}",
     "appDescription": "A free, open-source Kimai time-tracking companion for your menu bar. Built with Tauri, React, and TypeScript.",
     "githubRepo": "GitHub Repository",
     "website": "Website",
     "reportIssue": "Report an Issue",
     "privacyPolicy": "Privacy Policy",
-    "supportTitle": "Support KimaiMate",
-    "supportDescription": "KimaiMate is free for everyone — no premium tiers, no paywalls. If you find it useful, consider supporting development.",
-    "copyright": "Made with care. © 2025 KimaiMate contributors."
+    "supportTitle": "Support KimaiTray",
+    "supportDescription": "KimaiTray is free for everyone — no premium tiers, no paywalls. If you find it useful, consider supporting development.",
+    "copyright": "Made with care. © 2025 KimaiTray contributors."
   },
   "newTask": {
     "title": "New Task",

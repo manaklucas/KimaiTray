@@ -1,4 +1,4 @@
-# KimaiMate
+# KimaiTray
 
 A system tray companion for [Kimai](https://www.kimai.org/) time tracking. Start, stop, pause and switch timers without leaving your desktop.
 
@@ -56,7 +56,7 @@ The tray icon appears in your menu bar / system tray. Click it to open the popup
 2. Go to your profile (click your avatar) -> **API Access**
 3. Click **Create** to generate a new API token
 4. Copy the token
-5. In KimaiMate, click the tray icon -> **Settings** -> **Connection**
+5. In KimaiTray, click the tray icon -> **Settings** -> **Connection**
 6. Enter your Kimai URL (e.g. `https://kimai.example.com`) and paste the token
 7. Click **Test & Save**
 
@@ -130,7 +130,7 @@ logger.info("Timer started");
 
 ## Auto-Updates
 
-KimaiMate checks for updates on startup via GitHub Releases. When a new version is available, an update banner appears in the tray popup.
+KimaiTray checks for updates on startup via GitHub Releases. When a new version is available, an update banner appears in the tray popup.
 
 **Setup for CI signing** (one-time):
 
@@ -169,12 +169,12 @@ Then review and publish the draft release on GitHub.
 **macOS: "app is damaged" or Gatekeeper warning**
 The app is not code-signed for distribution. Right-click -> Open, or run:
 ```sh
-xattr -cr /Applications/KimaiMate.app
+xattr -cr /Applications/KimaiTray.app
 ```
 
 **Linux: AppImage won't launch**
 ```sh
-chmod +x KimaiMate_*.AppImage
+chmod +x KimaiTray_*.AppImage
 ```
 If using Wayland, the tray icon may require an AppIndicator extension.
 

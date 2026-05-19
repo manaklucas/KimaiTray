@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Default capability for KimaiMate windows",
+  "description": "Default capability for KimaiTray windows",
   "windows": ["tray-popup", "settings"],
   "permissions": [
     "core:default",

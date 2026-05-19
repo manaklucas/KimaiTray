@@ -77,7 +77,7 @@
     "title": "Allgemein",
     "description": "Startverhalten und Datenaktualisierung konfigurieren.",
     "launchAtLogin": "Bei Anmeldung starten",
-    "launchAtLoginDescription": "KimaiMate automatisch bei der Anmeldung starten",
+    "launchAtLoginDescription": "KimaiTray automatisch bei der Anmeldung starten",
     "refreshInterval": "Aktualisierungsintervall",
     "refreshIntervalDescription": "Wie oft Daten von Kimai synchronisiert werden",
     "seconds_15": "15 Sekunden",
@@ -125,7 +125,7 @@
   },
   "appearanceSettings": {
     "title": "Erscheinungsbild",
-    "description": "Passen Sie das Aussehen von KimaiMate an.",
+    "description": "Passen Sie das Aussehen von KimaiTray an.",
     "theme": "Design",
     "themeDescription": "Hintergrundstil des Popup-Fensters",
     "light": "Hell",
@@ -145,16 +145,16 @@
   },
   "aboutSection": {
     "title": "Über",
-    "appName": "KimaiMate",
+    "appName": "KimaiTray",
     "version": "Version {{version}}",
     "appDescription": "Ein kostenloser, quelloffener Kimai-Zeiterfassungsbegleiter für Ihre Menüleiste. Erstellt mit Tauri, React und TypeScript.",
     "githubRepo": "GitHub-Repository",
     "website": "Webseite",
     "reportIssue": "Problem melden",
     "privacyPolicy": "Datenschutzrichtlinie",
-    "supportTitle": "KimaiMate unterstützen",
-    "supportDescription": "KimaiMate ist für alle kostenlos — keine Premium-Stufen, keine Bezahlschranken. Wenn es Ihnen nützlich ist, erwägen Sie die Unterstützung der Entwicklung.",
-    "copyright": "Mit Sorgfalt erstellt. © 2025 KimaiMate-Mitwirkende."
+    "supportTitle": "KimaiTray unterstützen",
+    "supportDescription": "KimaiTray ist für alle kostenlos — keine Premium-Stufen, keine Bezahlschranken. Wenn es Ihnen nützlich ist, erwägen Sie die Unterstützung der Entwicklung.",
+    "copyright": "Mit Sorgfalt erstellt. © 2025 KimaiTray-Mitwirkende."
   },
   "newTask": {
     "title": "Neue Aufgabe",
