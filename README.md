@@ -130,12 +130,21 @@ logger.info("Timer started");
 
 ## Auto-Updates
 
-The updater plugin is wired up but inactive (no endpoint configured). To enable:
+KimaiMate checks for updates on startup via GitHub Releases. When a new version is available, an update banner appears in the tray popup.
 
-1. Generate a signing key pair: `npx tauri signer generate`
-2. Set the public key in `tauri.conf.json` -> `plugins.updater.pubkey`
-3. Add your update server URL to `plugins.updater.endpoints`
-4. Set `TAURI_SIGNING_PRIVATE_KEY` in CI
+**Setup for CI signing** (one-time):
+
+1. The signing keys are already generated. The public key is in `tauri.conf.json` -> `plugins.updater.pubkey`
+2. Add the private key content (`src-tauri/signer.key`) as a GitHub Secret named `TAURI_SIGNING_PRIVATE_KEY`
+3. If the key has a password, also add `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
+
+The CI workflow automatically signs artifacts and generates `latest.json` on tagged releases.
+
+**To regenerate keys** (invalidates all previous versions):
+```sh
+npx tauri signer generate -w ./src-tauri/signer.key --ci
+```
+Update the `pubkey` in `tauri.conf.json` with the new public key.
 
 See the [Tauri Updater docs](https://tauri.app/plugin/updater/) for details.
 

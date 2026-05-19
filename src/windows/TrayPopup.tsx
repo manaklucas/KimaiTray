@@ -23,6 +23,7 @@ import { useIdleDetection } from "../hooks/useIdleDetection";
 import { setTrayTooltip, setTrayTitle, setTrayIcon, updateTrayMenu } from "../api/trayApi";
 import { useAppearance } from "../hooks/useAppearance";
 import { useLanguageSync } from "../hooks/useLanguageSync";
+import { useUpdater } from "../hooks/useUpdater";
 import { updateTimesheet, stopTimesheet } from "../api/timesheetApi";
 import { formatElapsed } from "../components/ActiveTimerCard";
 import type { RecentTask } from "../types";
@@ -35,6 +36,7 @@ export default function TrayPopup() {
 
   useAppearance();
   useLanguageSync();
+  const updater = useUpdater();
 
   useEffect(() => {
     const win = getCurrentWindow();
@@ -304,6 +306,23 @@ export default function TrayPopup() {
         activeConnectionId={activeConnectionId}
         onSwitchConnection={switchConnection}
       />
+
+      {updater.available && (
+        <button
+          onClick={() => updater.install?.()}
+          disabled={updater.downloading}
+          className="mx-3 mt-1.5 flex items-center gap-2 rounded-md bg-[var(--accent)]/10 border border-[var(--accent)]/20 px-2.5 py-1.5 text-[11px] text-[var(--accent)] hover:bg-[var(--accent)]/15 transition-colors disabled:opacity-60"
+        >
+          {updater.downloading ? (
+            <div className="h-3 w-3 animate-spin rounded-full border-2 border-[var(--accent)]/30 border-t-[var(--accent)]" />
+          ) : (
+            <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+          )}
+          <span className="font-medium">v{updater.version}</span>
+        </button>
+      )}
 
       {showNewTask && client ? (
         <NewTaskForm

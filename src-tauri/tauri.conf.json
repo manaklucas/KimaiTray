@@ -51,6 +51,7 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "createUpdaterArtifacts": true,
     "category": "Productivity",
     "shortDescription": "Kimai time-tracking tray companion",
     "longDescription": "KimaiMate is a system tray companion for Kimai time tracking. Start, stop, pause, and switch timers without leaving your desktop. Supports multiple connections, idle detection, tags, and 5 languages.",
@@ -80,6 +81,14 @@
         "section": "utils",
         "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"]
       }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI4QUMzRDIxQTI1RUU5OUEKUldTYTZWNmlJVDJzdUdQZHRpRFpJVWNKZ1pndWs1Q3dFZ29DNzlJZlFJbm1WczZBVnNyTXdKVVIK",
+      "endpoints": [
+        "https://github.com/Engazan/KimaiTray/releases/latest/download/latest.json"
+      ]
     }
   }
 }
