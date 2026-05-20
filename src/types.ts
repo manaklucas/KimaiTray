@@ -96,10 +96,9 @@ export interface TodayEntry {
 export type SettingsSection =
   | "connection"
   | "general"
+  | "appearance"
+  | "tray"
   | "features"
-  | "timer"
   | "idle"
   | "shortcuts"
-  | "update"
-  | "appearance"
   | "about";

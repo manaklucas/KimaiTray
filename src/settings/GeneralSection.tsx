@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
+import { check } from "@tauri-apps/plugin-updater";
 import type { AppSettings } from "../types";
 import i18n from "../shared/i18n";
 import { resolveLanguage, type LanguageSetting } from "../shared/i18n";
-import { setTrayClickActions, setDisplayMode } from "../api/trayApi";
 import {
   Divider,
   FieldGroup,
@@ -31,6 +31,9 @@ const LANGUAGE_OPTIONS: { value: string; label: string }[] = [
 export default function GeneralSection({ settings, update }: Props) {
   const { t } = useTranslation();
   const [autostart, setAutostart] = useState(settings.launchAtLogin);
+  const [checking, setChecking] = useState(false);
+  const [updateResult, setUpdateResult] = useState<"upToDate" | "available" | "error" | null>(null);
+  const [updateVersion, setUpdateVersion] = useState<string | null>(null);
 
   useEffect(() => {
     isEnabled().then(setAutostart).catch(() => {});
@@ -58,6 +61,27 @@ export default function GeneralSection({ settings, update }: Props) {
     },
     [update],
   );
+
+  const checkForUpdates = useCallback(async () => {
+    setChecking(true);
+    setUpdateResult(null);
+    try {
+      const upd = await check();
+      if (upd) {
+        setUpdateResult("available");
+        setUpdateVersion(upd.version);
+        await upd.downloadAndInstall();
+        const { relaunch } = await import("@tauri-apps/plugin-process");
+        await relaunch();
+      } else {
+        setUpdateResult("upToDate");
+      }
+    } catch {
+      setUpdateResult("error");
+    } finally {
+      setChecking(false);
+    }
+  }, []);
 
   const languageOptions = LANGUAGE_OPTIONS.map((opt) =>
     opt.value === "system"
@@ -117,106 +141,51 @@ export default function GeneralSection({ settings, update }: Props) {
 
       <Divider />
 
-      <FieldGroup label={t("general.trayLeftClick")} description={t("general.trayLeftClickDescription")} horizontal>
-        <Select
-          value={settings.trayLeftClickAction}
-          onChange={(v) => {
-            const val = v as AppSettings["trayLeftClickAction"];
-            update("trayLeftClickAction", val);
-            setTrayClickActions(val, settings.trayRightClickAction);
-          }}
-          options={[
-            { value: "popup", label: t("general.trayActionTogglePopup") },
-            { value: "nothing", label: t("general.trayActionDoNothing") },
-          ]}
+      <FieldGroup
+        label={t("updateSettings.autoUpdate")}
+        description={t("updateSettings.autoUpdateDescription")}
+        horizontal
+      >
+        <Toggle
+          checked={settings.autoUpdate}
+          onChange={(v) => update("autoUpdate", v)}
         />
       </FieldGroup>
 
       <Divider />
 
-      <FieldGroup label={t("general.trayRightClick")} description={t("general.trayRightClickDescription")} horizontal>
-        <Select
-          value={settings.trayRightClickAction}
-          onChange={(v) => {
-            const val = v as AppSettings["trayRightClickAction"];
-            update("trayRightClickAction", val);
-            setTrayClickActions(settings.trayLeftClickAction, val);
-          }}
-          options={[
-            { value: "menu", label: t("general.trayActionShowMenu") },
-            { value: "popup", label: t("general.trayActionTogglePopup") },
-          ]}
-        />
-      </FieldGroup>
-
-      <Divider />
-
-      <FieldGroup label={t("general.displayMode")} description={t("general.displayModeDescription")}>
-        <div className="flex gap-2 mt-1">
-          {([
-            { value: "tray" as const, label: t("general.displayModeTray"), desc: t("general.displayModeTrayDescription") },
-            { value: "detached" as const, label: t("general.displayModeDetached"), desc: t("general.displayModeDetachedDescription") },
-          ]).map((opt) => {
-            const active = settings.displayMode === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  update("displayMode", opt.value);
-                  setDisplayMode(opt.value);
-                }}
-                className={`flex-1 flex flex-col items-center gap-1.5 rounded-lg border px-3 py-3 transition-colors
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]
-                  ${
-                    active
-                      ? "border-[var(--accent)] bg-[var(--accent-light)]"
-                      : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                  }`}
-              >
-                <div className={`h-10 w-full rounded-md border flex items-center justify-center ${
-                  active
-                    ? "border-[var(--accent)]/30 bg-[var(--accent)]/5"
-                    : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-                }`}>
-                  {opt.value === "tray" ? (
-                    <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h18v2H3zM7 10h10v8a2 2 0 01-2 2H9a2 2 0 01-2-2v-8z" />
-                    </svg>
-                  ) : (
-                    <svg className="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8h18" />
-                      <circle cx="5.5" cy="7" r="0.5" fill="currentColor" />
-                      <circle cx="7.5" cy="7" r="0.5" fill="currentColor" />
-                    </svg>
-                  )}
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className={`inline-flex items-center justify-center h-3.5 w-3.5 rounded-full border shrink-0
-                      ${
-                        active
-                          ? "border-[var(--accent)]"
-                          : "border-gray-300 dark:border-gray-600"
-                      }`}
-                  >
-                    {active && (
-                      <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
-                    )}
-                  </span>
-                  <span className="text-[12px] text-gray-600 dark:text-gray-400">
-                    {opt.label}
-                  </span>
-                </div>
-                <span className="text-[10px] text-gray-400 dark:text-gray-500 text-center leading-tight">
-                  {opt.desc}
-                </span>
-              </button>
-            );
-          })}
+      <div className="py-2">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            disabled={checking}
+            onClick={checkForUpdates}
+            className="rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5 text-[12px] font-medium
+              text-gray-700 transition-colors
+              hover:bg-gray-100 active:bg-gray-150
+              focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400
+              dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700
+              disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {checking ? t("updateSettings.checking") : t("updateSettings.checkForUpdates")}
+          </button>
+          {updateResult === "upToDate" && (
+            <span className="text-[11px] text-green-600 dark:text-green-400">
+              {t("updateSettings.upToDate")}
+            </span>
+          )}
+          {updateResult === "available" && (
+            <span className="text-[11px] text-blue-600 dark:text-blue-400">
+              {t("updateSettings.updateAvailable", { version: updateVersion })}
+            </span>
+          )}
+          {updateResult === "error" && (
+            <span className="text-[11px] text-red-500 dark:text-red-400">
+              {t("updateSettings.checkFailed")}
+            </span>
+          )}
         </div>
-      </FieldGroup>
+      </div>
     </div>
   );
 }

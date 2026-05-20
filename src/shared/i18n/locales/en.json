@@ -80,7 +80,7 @@
   },
   "general": {
     "title": "General",
-    "description": "Configure startup behavior and data refresh.",
+    "description": "Configure startup behavior, data refresh, and automatic updates.",
     "launchAtLogin": "Launch at login",
     "launchAtLoginDescription": "Start KimaiTray automatically when you log in",
     "refreshInterval": "Refresh interval",
@@ -106,6 +106,12 @@
     "displayModeTrayDescription": "Popup attached to the tray icon",
     "displayModeDetached": "Detached window",
     "displayModeDetachedDescription": "Movable, resizable, pinnable window"
+  },
+  "traySettings": {
+    "title": "Tray & Menu Bar",
+    "description": "Configure tray icon behavior, menu bar display, and popup window mode.",
+    "macOnly": "Menu bar labels are only available on macOS.",
+    "linuxOnly": "Tray click actions are not available on Linux."
   },
   "timerSettings": {
     "title": "Timer",

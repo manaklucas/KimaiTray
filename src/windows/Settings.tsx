@@ -7,12 +7,11 @@ import { useAppearance } from "../hooks/useAppearance";
 import { useLanguageSync } from "../hooks/useLanguageSync";
 import ConnectionSection from "../settings/ConnectionSection";
 import GeneralSection from "../settings/GeneralSection";
-import FeaturesSection from "../settings/FeaturesSection";
-import TimerSection from "../settings/TimerSection";
-import IdleDetectionSection from "../settings/IdleDetectionSection";
 import AppearanceSection from "../settings/AppearanceSection";
+import TrayWindowSection from "../settings/TrayWindowSection";
+import FeaturesSection from "../settings/FeaturesSection";
+import IdleDetectionSection from "../settings/IdleDetectionSection";
 import ShortcutsSection from "../settings/ShortcutsSection";
-import UpdateSection from "../settings/UpdateSection";
 import AboutSection from "../settings/AboutSection";
 
 const NAV_ICONS: Record<SettingsSection, ReactNode> = {
@@ -26,14 +25,19 @@ const NAV_ICONS: Record<SettingsSection, ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
     </svg>
   ),
+  appearance: (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
+    </svg>
+  ),
+  tray: (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
+    </svg>
+  ),
   features: (
     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M6 13.5V3.75m0 9.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 9.75V10.5" />
-    </svg>
-  ),
-  timer: (
-    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
     </svg>
   ),
   idle: (
@@ -46,16 +50,6 @@ const NAV_ICONS: Record<SettingsSection, ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
     </svg>
   ),
-  update: (
-    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M21.015 4.356v4.992" />
-    </svg>
-  ),
-  appearance: (
-    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
-    </svg>
-  ),
   about: (
     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -66,24 +60,22 @@ const NAV_ICONS: Record<SettingsSection, ReactNode> = {
 const NAV_LABEL_KEYS: Record<SettingsSection, string> = {
   connection: "connection.title",
   general: "general.title",
+  appearance: "appearanceSettings.title",
+  tray: "traySettings.title",
   features: "featuresSettings.title",
-  timer: "timerSettings.title",
   idle: "idle.title",
   shortcuts: "shortcuts.title",
-  update: "updateSettings.title",
-  appearance: "appearanceSettings.title",
   about: "aboutSection.title",
 };
 
 const NAV_ORDER: SettingsSection[] = [
   "connection",
   "general",
+  "appearance",
+  "tray",
   "features",
-  "timer",
   "idle",
   "shortcuts",
-  "update",
-  "appearance",
   "about",
 ];
 
@@ -173,23 +165,20 @@ export default function Settings() {
           {section === "general" && (
             <GeneralSection settings={settings} update={update} />
           )}
+          {section === "appearance" && (
+            <AppearanceSection settings={settings} update={update} />
+          )}
+          {section === "tray" && (
+            <TrayWindowSection settings={settings} update={update} />
+          )}
           {section === "features" && (
             <FeaturesSection settings={settings} update={update} />
-          )}
-          {section === "timer" && (
-            <TimerSection settings={settings} update={update} />
           )}
           {section === "idle" && (
             <IdleDetectionSection settings={settings} update={update} />
           )}
           {section === "shortcuts" && (
             <ShortcutsSection settings={settings} update={update} />
-          )}
-          {section === "update" && (
-            <UpdateSection settings={settings} update={update} />
-          )}
-          {section === "appearance" && (
-            <AppearanceSection settings={settings} update={update} />
           )}
           {section === "about" && <AboutSection />}
         </div>

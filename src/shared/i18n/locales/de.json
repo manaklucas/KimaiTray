@@ -80,7 +80,7 @@
   },
   "general": {
     "title": "Allgemein",
-    "description": "Startverhalten und Datenaktualisierung konfigurieren.",
+    "description": "Startverhalten, Datenaktualisierung und automatische Updates konfigurieren.",
     "launchAtLogin": "Bei Anmeldung starten",
     "launchAtLoginDescription": "KimaiTray automatisch bei der Anmeldung starten",
     "refreshInterval": "Aktualisierungsintervall",
@@ -106,6 +106,12 @@
     "displayModeTrayDescription": "Popup am Tray-Symbol verankert",
     "displayModeDetached": "Eigenständiges Fenster",
     "displayModeDetachedDescription": "Verschiebbares, größenänderbares Fenster mit Anheften"
+  },
+  "traySettings": {
+    "title": "Tray & Menüleiste",
+    "description": "Konfigurieren Sie das Tray-Symbol-Verhalten, die Menüleisten-Anzeige und den Popup-Fenster-Modus.",
+    "macOnly": "Menüleisten-Beschriftungen sind nur unter macOS verfügbar.",
+    "linuxOnly": "Tray-Klick-Aktionen sind unter Linux nicht verfügbar."
   },
   "timerSettings": {
     "title": "Timer",

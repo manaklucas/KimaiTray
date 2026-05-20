@@ -80,7 +80,7 @@
   },
   "general": {
     "title": "Загальні",
-    "description": "Налаштуйте поведінку при запуску та оновлення даних.",
+    "description": "Налаштуйте поведінку при запуску, оновлення даних та автоматичні оновлення.",
     "launchAtLogin": "Запускати при вході",
     "launchAtLoginDescription": "Автоматично запускати KimaiTray при вході в систему",
     "refreshInterval": "Інтервал оновлення",
@@ -106,6 +106,12 @@
     "displayModeTrayDescription": "Popup прикріплений до іконки в треї",
     "displayModeDetached": "Окреме вікно",
     "displayModeDetachedDescription": "Переміщуване вікно зі зміною розміру та закріпленням"
+  },
+  "traySettings": {
+    "title": "Трей і панель меню",
+    "description": "Налаштуйте поведінку іконки в треї, відображення в панелі меню та режим popup вікна.",
+    "macOnly": "Підписи в панелі меню доступні лише на macOS.",
+    "linuxOnly": "Дії кліку на трей недоступні на Linux."
   },
   "timerSettings": {
     "title": "Таймер",

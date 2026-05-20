@@ -80,7 +80,7 @@
   },
   "general": {
     "title": "Všeobecné",
-    "description": "Nastavte správanie pri spustení a obnovu dát.",
+    "description": "Nastavte správanie pri spustení, obnovu dát a automatické aktualizácie.",
     "launchAtLogin": "Spustiť pri prihlásení",
     "launchAtLoginDescription": "Automaticky spustiť KimaiTray pri prihlásení",
     "refreshInterval": "Interval obnovy",
@@ -106,6 +106,12 @@
     "displayModeTrayDescription": "Popup pripnutý k ikone v traye",
     "displayModeDetached": "Odpojené okno",
     "displayModeDetachedDescription": "Presúvateľné, resizovateľné okno s možnosťou pripnutia"
+  },
+  "traySettings": {
+    "title": "Tray a lišta",
+    "description": "Nastavte správanie ikony v traye, zobrazenie v lište a mód popup okna.",
+    "macOnly": "Popis v lište je dostupný len na macOS.",
+    "linuxOnly": "Akcie kliknutia na tray nie sú dostupné na Linuxe."
   },
   "timerSettings": {
     "title": "Časovač",
