@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1] - 2026-05-20
+
+### Bug Fixes
+
+- Fixed duplicate "Recent" heading in the tray popup — thanks to [@4713n](https://github.com/4713n) for the contribution ([#1](https://github.com/engazan/KimaiTray/pull/1))
+
 ## [0.4.0] - 2026-05-20
 
 ### New Features
