@@ -3,9 +3,11 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{
     image::Image,
     menu::{MenuBuilder, MenuItem},
-    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
     AppHandle, Emitter, Manager, PhysicalPosition, WebviewWindow,
 };
+#[cfg(not(target_os = "linux"))]
+use tauri::tray::MouseButtonState;
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_store::StoreExt;
 
@@ -301,24 +303,41 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
             _ => {}
         })
         .on_tray_icon_event(|tray, event| {
-            if let TrayIconEvent::Click {
-                button: MouseButton::Left,
-                button_state: MouseButtonState::Up,
-                rect,
-                ..
-            } = event
+            #[cfg(target_os = "linux")]
             {
-                let app = tray.app_handle();
-                if let Some(popup) = app.get_webview_window("tray-popup") {
-                    if popup.is_visible().unwrap_or(false) {
-                        let _ = popup.hide();
-                    } else {
-                        if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
-                            return;
+                if let TrayIconEvent::Click {
+                    button: MouseButton::Left,
+                    ..
+                } = event
+                {
+                    if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
+                        return;
+                    }
+                    toggle_popup_window(tray.app_handle());
+                }
+            }
+
+            #[cfg(not(target_os = "linux"))]
+            {
+                if let TrayIconEvent::Click {
+                    button: MouseButton::Left,
+                    button_state: MouseButtonState::Up,
+                    rect,
+                    ..
+                } = event
+                {
+                    let app = tray.app_handle();
+                    if let Some(popup) = app.get_webview_window("tray-popup") {
+                        if popup.is_visible().unwrap_or(false) {
+                            let _ = popup.hide();
+                        } else {
+                            if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
+                                return;
+                            }
+                            let _ = position_popup(&popup, &rect);
+                            let _ = popup.show();
+                            let _ = popup.set_focus();
                         }
-                        let _ = position_popup(&popup, &rect);
-                        let _ = popup.show();
-                        let _ = popup.set_focus();
                     }
                 }
             }
