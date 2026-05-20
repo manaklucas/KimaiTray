@@ -691,6 +691,7 @@ export default function TrayPopup() {
                     disabled={isStarting || isStopping || isPausing || isResuming}
                     hiddenCount={hiddenCount}
                     onShowAll={clearHidden}
+                    showHeader={false}
                   />
                 ) : status !== "unconfigured" ? (
                   <TodaySection
@@ -757,6 +758,7 @@ export default function TrayPopup() {
                       disabled={isStarting || isStopping || isPausing || isResuming}
                       hiddenCount={hiddenCount}
                       onShowAll={clearHidden}
+                      showHeader={false}
                     />
                   )}
                 </div>
