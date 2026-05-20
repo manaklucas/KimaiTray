@@ -2,12 +2,11 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { getTimesheets } from "../api/timesheetApi";
-import { getProjects, getCustomers } from "../api/projectApi";
-import { getActivities } from "../api/activityApi";
 import type { TodayEntry } from "../types";
 import { extractId } from "../api/kimaiTypes";
 import { normalizeKimaiTags } from "../api/tagUtils";
 import { getLocalDayRange } from "../utils/time";
+import { useEntityLookup } from "./useEntityLookup";
 
 const DEFAULT_VISIBLE = 5;
 
@@ -37,32 +36,22 @@ export function useTodayTimesheets(
     staleTime: 15_000,
   });
 
-  const projectsQ = useQuery({
-    queryKey: ["projects", client?.baseUrl],
-    queryFn: () => getProjects(client!),
-    enabled,
-    staleTime: 5 * 60 * 1000,
-  });
+  const neededIds = useMemo(() => {
+    const raw = timesheetsQ.data ?? [];
+    const projectIds = [...new Set(raw.map((e) => extractId(e.project)))];
+    const activityIds = [...new Set(raw.map((e) => extractId(e.activity)))];
+    return { projectIds, activityIds };
+  }, [timesheetsQ.data]);
 
-  const activitiesQ = useQuery({
-    queryKey: ["activities", client?.baseUrl],
-    queryFn: () => getActivities(client!),
+  const { projects, activities, customers } = useEntityLookup(
+    client,
     enabled,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const customersQ = useQuery({
-    queryKey: ["customers", client?.baseUrl],
-    queryFn: () => getCustomers(client!),
-    enabled,
-    staleTime: 5 * 60 * 1000,
-  });
+    neededIds.projectIds,
+    neededIds.activityIds,
+  );
 
   const { entries, totalDuration } = useMemo(() => {
     const raw = timesheetsQ.data ?? [];
-    const projects = projectsQ.data ?? [];
-    const activities = activitiesQ.data ?? [];
-    const customers = customersQ.data ?? [];
 
     const mapped: TodayEntry[] = raw.map((entry) => {
       const projectId = extractId(entry.project);
@@ -111,13 +100,7 @@ export function useTodayTimesheets(
     }
 
     return { entries: sorted, totalDuration: total };
-  }, [
-    timesheetsQ.data,
-    projectsQ.data,
-    activitiesQ.data,
-    customersQ.data,
-    sortAsc,
-  ]);
+  }, [timesheetsQ.data, projects, activities, customers, sortAsc]);
 
   const visibleEntries = expanded
     ? entries

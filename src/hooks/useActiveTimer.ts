@@ -4,11 +4,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { KimaiApiError } from "../api/kimaiClient";
 import { getActiveTimesheets, stopTimesheet } from "../api/timesheetApi";
-import { getProjects } from "../api/projectApi";
-import { getActivities } from "../api/activityApi";
 import type { ActiveTimer } from "../types";
 import { extractId } from "../api/kimaiTypes";
 import { normalizeKimaiTags } from "../api/tagUtils";
+import { useEntityLookup } from "./useEntityLookup";
 
 export type ConnectionStatus =
   | "connected"
@@ -42,23 +41,20 @@ export function useActiveTimer(
     refetchInterval: refreshIntervalSec * 1000,
   });
 
-  const projectsQ = useQuery({
-    queryKey: ["projects", client?.baseUrl],
-    queryFn: () => getProjects(client!),
-    enabled,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const activitiesQ = useQuery({
-    queryKey: ["activities", client?.baseUrl],
-    queryFn: () => getActivities(client!),
-    enabled,
-    staleTime: 5 * 60 * 1000,
-  });
-
   const entries = activeQ.data ?? [];
-  const projects = projectsQ.data ?? [];
-  const activities = activitiesQ.data ?? [];
+
+  const neededIds = useMemo(() => {
+    const projectIds = [...new Set(entries.map((e) => extractId(e.project)))];
+    const activityIds = [...new Set(entries.map((e) => extractId(e.activity)))];
+    return { projectIds, activityIds };
+  }, [entries]);
+
+  const { projects, activities } = useEntityLookup(
+    client,
+    enabled,
+    neededIds.projectIds,
+    neededIds.activityIds,
+  );
 
   const timer = useMemo<ActiveTimer | null>(() => {
     if (entries.length === 0) return null;

@@ -2,11 +2,10 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { getRecentTimesheets } from "../api/timesheetApi";
-import { getProjects, getCustomers } from "../api/projectApi";
-import { getActivities } from "../api/activityApi";
 import type { RecentTask } from "../types";
 import { extractId } from "../api/kimaiTypes";
 import { normalizeKimaiTags } from "../api/tagUtils";
+import { useEntityLookup } from "./useEntityLookup";
 
 function formatRelativeDate(iso: string): string {
   const d = new Date(iso);
@@ -36,34 +35,24 @@ export function useRecentTasks(
     staleTime: 30_000,
   });
 
-  const projectsQ = useQuery({
-    queryKey: ["projects", client?.baseUrl],
-    queryFn: () => getProjects(client!),
-    enabled,
-    staleTime: 5 * 60 * 1000,
-  });
+  const neededIds = useMemo(() => {
+    const entries = recentQ.data ?? [];
+    const projectIds = [...new Set(entries.map((e) => extractId(e.project)))];
+    const activityIds = [...new Set(entries.map((e) => extractId(e.activity)))];
+    return { projectIds, activityIds };
+  }, [recentQ.data]);
 
-  const activitiesQ = useQuery({
-    queryKey: ["activities", client?.baseUrl],
-    queryFn: () => getActivities(client!),
+  const { projects, activities, customers } = useEntityLookup(
+    client,
     enabled,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const customersQ = useQuery({
-    queryKey: ["customers", client?.baseUrl],
-    queryFn: () => getCustomers(client!),
-    enabled,
-    staleTime: 5 * 60 * 1000,
-  });
+    neededIds.projectIds,
+    neededIds.activityIds,
+  );
 
   const tasks = useMemo<RecentTask[]>(() => {
     const entries = [...(recentQ.data ?? [])].sort(
       (a, b) => new Date(b.begin).getTime() - new Date(a.begin).getTime(),
     );
-    const projects = projectsQ.data ?? [];
-    const activities = activitiesQ.data ?? [];
-    const customers = customersQ.data ?? [];
 
     const seen = new Set<string>();
     const result: RecentTask[] = [];
@@ -100,7 +89,7 @@ export function useRecentTasks(
     }
 
     return result;
-  }, [recentQ.data, projectsQ.data, activitiesQ.data, customersQ.data, activeKey]);
+  }, [recentQ.data, projects, activities, customers, activeKey]);
 
   return {
     tasks,
