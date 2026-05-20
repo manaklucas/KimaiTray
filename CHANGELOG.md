@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.1] - 2026-05-20
+
+### Bug Fixes
+
+- Fixed tray icon click handling on Linux — platform-specific code paths for tray events (Linux lacks `MouseButtonState`, so click is handled without button state matching)
+
 ## [0.3.0] - 2026-05-19
 
 ### New Features
