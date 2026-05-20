@@ -30,6 +30,8 @@ const DEFAULT_MESSAGES: Record<KimaiErrorCode, string> = {
 
 export class KimaiApiError extends Error {
   readonly name = "KimaiApiError";
+  method?: string;
+  path?: string;
 
   constructor(
     readonly status: number,
@@ -42,6 +44,11 @@ export class KimaiApiError extends Error {
 
   get isAuth(): boolean {
     return this.code === "unauthorized" || this.code === "forbidden";
+  }
+
+  get endpoint(): string | undefined {
+    if (!this.method || !this.path) return undefined;
+    return `${this.method} ${this.path}`;
   }
 
   static fromResponse(
@@ -141,6 +148,12 @@ async function request<T>(
 ): Promise<T> {
   const url = buildApiUrl(baseUrl, path, params);
 
+  const withEndpoint = (err: KimaiApiError): KimaiApiError => {
+    err.method = method;
+    err.path = path;
+    return err;
+  };
+
   let response: Response;
   try {
     response = await fetch(url, {
@@ -153,15 +166,15 @@ async function request<T>(
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch {
-    throw new KimaiApiError(0, "Network Error", null, "network_error");
+    throw withEndpoint(
+      new KimaiApiError(0, "Network Error", null, "network_error"),
+    );
   }
 
   if (!response.ok) {
     const parsed = await safeParseJson(response);
-    throw KimaiApiError.fromResponse(
-      response.status,
-      response.statusText,
-      parsed,
+    throw withEndpoint(
+      KimaiApiError.fromResponse(response.status, response.statusText, parsed),
     );
   }
 
@@ -169,11 +182,8 @@ async function request<T>(
 
   const data = await safeParseJson(response);
   if (data === null) {
-    throw new KimaiApiError(
-      response.status,
-      "Parse Error",
-      null,
-      "parse_error",
+    throw withEndpoint(
+      new KimaiApiError(response.status, "Parse Error", null, "parse_error"),
     );
   }
 

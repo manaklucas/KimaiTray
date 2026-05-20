@@ -285,6 +285,11 @@
     "notFound": "Nicht gefunden",
     "validation": "Validierungsfehler",
     "server": "Serverfehler",
-    "failedToStopTimer": "Timer konnte nicht gestoppt werden"
+    "failedToStopTimer": "Timer konnte nicht gestoppt werden",
+    "apiErrorTitle": "Serverfehler",
+    "endpoint": "Endpunkt",
+    "statusCode": "Status",
+    "serverResponse": "Antwort",
+    "dismiss": "Schließen"
   }
 }

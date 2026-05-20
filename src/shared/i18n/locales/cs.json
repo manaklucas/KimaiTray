@@ -285,6 +285,11 @@
     "notFound": "Nenalezeno",
     "validation": "Chyba validace",
     "server": "Chyba serveru",
-    "failedToStopTimer": "Nepodařilo se zastavit časovač"
+    "failedToStopTimer": "Nepodařilo se zastavit časovač",
+    "apiErrorTitle": "Chyba serveru",
+    "endpoint": "Endpoint",
+    "statusCode": "Stav",
+    "serverResponse": "Odpověď",
+    "dismiss": "Zavřít"
   }
 }

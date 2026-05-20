@@ -40,6 +40,7 @@ pub fn run() {
                 } else {
                     log::LevelFilter::Info
                 })
+                .level_for("tauri_plugin_updater", log::LevelFilter::Info)
                 .build(),
         )
         .plugin(tauri_plugin_updater::Builder::new().build())

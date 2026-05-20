@@ -285,6 +285,11 @@
     "notFound": "Not found",
     "validation": "Validation error",
     "server": "Server error",
-    "failedToStopTimer": "Failed to stop timer"
+    "failedToStopTimer": "Failed to stop timer",
+    "apiErrorTitle": "Server Error",
+    "endpoint": "Endpoint",
+    "statusCode": "Status",
+    "serverResponse": "Response",
+    "dismiss": "Dismiss"
   }
 }

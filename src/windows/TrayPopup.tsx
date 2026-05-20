@@ -10,6 +10,7 @@ import RecentTasksList from "../components/RecentTasksList";
 import PopupFooterActions from "../components/PopupFooterActions";
 import NewTaskForm from "../components/NewTaskForm";
 import IdleDialog from "../components/IdleDialog";
+import ApiErrorDialog from "../components/ApiErrorDialog";
 import TodaySection from "../components/TodaySection";
 import { useKimaiClient } from "../hooks/useKimaiClient";
 import { useActiveTimer } from "../hooks/useActiveTimer";
@@ -824,6 +825,8 @@ export default function TrayPopup() {
           />
         </>
       )}
+
+      <ApiErrorDialog />
 
       {showIdleDialog && (
         <IdleDialog

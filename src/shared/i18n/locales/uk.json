@@ -285,6 +285,11 @@
     "notFound": "Не знайдено",
     "validation": "Помилка валідації",
     "server": "Помилка сервера",
-    "failedToStopTimer": "Не вдалося зупинити таймер"
+    "failedToStopTimer": "Не вдалося зупинити таймер",
+    "apiErrorTitle": "Помилка сервера",
+    "endpoint": "Ендпоінт",
+    "statusCode": "Статус",
+    "serverResponse": "Відповідь",
+    "dismiss": "Закрити"
   }
 }
