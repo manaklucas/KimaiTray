@@ -88,7 +88,14 @@
     "minutes_5": "5 minút",
     "minutes_10": "10 minút",
     "openKimaiInBrowser": "Otvoriť Kimai v prehliadači",
-    "openKimaiInBrowserDescription": "Otvoriť inštanciu Kimai v predvolenom prehliadači"
+    "openKimaiInBrowserDescription": "Otvoriť inštanciu Kimai v predvolenom prehliadači",
+    "trayLeftClick": "Akcia ľavého kliknutia",
+    "trayLeftClickDescription": "Čo sa stane pri ľavom kliknutí na ikonu v traye",
+    "trayRightClick": "Akcia pravého kliknutia",
+    "trayRightClickDescription": "Čo sa stane pri pravom kliknutí na ikonu v traye",
+    "trayActionTogglePopup": "Zobraziť/skryť popup",
+    "trayActionShowMenu": "Zobraziť kontextové menu",
+    "trayActionDoNothing": "Nerobiť nič"
   },
   "timerSettings": {
     "title": "Časovač",

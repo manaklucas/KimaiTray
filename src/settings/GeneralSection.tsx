@@ -4,6 +4,7 @@ import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import type { AppSettings } from "../types";
 import i18n from "../shared/i18n";
 import { resolveLanguage, type LanguageSetting } from "../shared/i18n";
+import { setTrayClickActions } from "../api/trayApi";
 import {
   Divider,
   FieldGroup,
@@ -111,6 +112,40 @@ export default function GeneralSection({ settings, update }: Props) {
         <Toggle
           checked={settings.openKimaiInBrowser}
           onChange={(v) => update("openKimaiInBrowser", v)}
+        />
+      </FieldGroup>
+
+      <Divider />
+
+      <FieldGroup label={t("general.trayLeftClick")} description={t("general.trayLeftClickDescription")} horizontal>
+        <Select
+          value={settings.trayLeftClickAction}
+          onChange={(v) => {
+            const val = v as AppSettings["trayLeftClickAction"];
+            update("trayLeftClickAction", val);
+            setTrayClickActions(val, settings.trayRightClickAction);
+          }}
+          options={[
+            { value: "popup", label: t("general.trayActionTogglePopup") },
+            { value: "nothing", label: t("general.trayActionDoNothing") },
+          ]}
+        />
+      </FieldGroup>
+
+      <Divider />
+
+      <FieldGroup label={t("general.trayRightClick")} description={t("general.trayRightClickDescription")} horizontal>
+        <Select
+          value={settings.trayRightClickAction}
+          onChange={(v) => {
+            const val = v as AppSettings["trayRightClickAction"];
+            update("trayRightClickAction", val);
+            setTrayClickActions(settings.trayLeftClickAction, val);
+          }}
+          options={[
+            { value: "menu", label: t("general.trayActionShowMenu") },
+            { value: "popup", label: t("general.trayActionTogglePopup") },
+          ]}
         />
       </FieldGroup>
     </div>

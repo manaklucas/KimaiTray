@@ -88,7 +88,14 @@
     "minutes_5": "5 Minuten",
     "minutes_10": "10 Minuten",
     "openKimaiInBrowser": "Kimai im Browser öffnen",
-    "openKimaiInBrowserDescription": "Kimai-Instanz im Standardbrowser öffnen"
+    "openKimaiInBrowserDescription": "Kimai-Instanz im Standardbrowser öffnen",
+    "trayLeftClick": "Linksklick-Aktion",
+    "trayLeftClickDescription": "Was beim Linksklick auf das Tray-Symbol passiert",
+    "trayRightClick": "Rechtsklick-Aktion",
+    "trayRightClickDescription": "Was beim Rechtsklick auf das Tray-Symbol passiert",
+    "trayActionTogglePopup": "Popup ein-/ausblenden",
+    "trayActionShowMenu": "Kontextmenü anzeigen",
+    "trayActionDoNothing": "Nichts tun"
   },
   "timerSettings": {
     "title": "Timer",

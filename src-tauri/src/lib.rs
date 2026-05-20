@@ -62,6 +62,7 @@ pub fn run() {
             tray::set_popup_size,
             tray::set_popup_corner_radius,
             tray::update_tray_menu,
+            tray::set_tray_click_actions,
             idle::get_idle_seconds,
             shortcuts::register_shortcuts,
         ])

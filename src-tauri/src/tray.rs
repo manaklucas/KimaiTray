@@ -1,8 +1,8 @@
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{
     image::Image,
-    menu::{MenuBuilder, MenuItem},
+    menu::{Menu, MenuBuilder, MenuItem},
     tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
     AppHandle, Emitter, Manager, PhysicalPosition, WebviewWindow,
 };
@@ -72,6 +72,10 @@ fn generate_state_icon(state: &str) -> Vec<u8> {
 }
 
 static LAST_POPUP_HIDE: AtomicU64 = AtomicU64::new(0);
+// 0 = popup, 1 = nothing
+static TRAY_LEFT_ACTION: AtomicU8 = AtomicU8::new(0);
+// 0 = menu, 1 = popup
+static TRAY_RIGHT_ACTION: AtomicU8 = AtomicU8::new(0);
 
 fn now_ms() -> u64 {
     SystemTime::now()
@@ -196,6 +200,30 @@ pub fn update_tray_menu(
     tray.set_menu(Some(menu)).map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+pub fn set_tray_click_actions(
+    app: AppHandle,
+    left_action: String,
+    right_action: String,
+) -> Result<(), String> {
+    let left = if left_action == "nothing" { 1u8 } else { 0u8 };
+    let right = if right_action == "popup" { 1u8 } else { 0u8 };
+
+    TRAY_LEFT_ACTION.store(left, Ordering::SeqCst);
+    TRAY_RIGHT_ACTION.store(right, Ordering::SeqCst);
+
+    let tray = app.tray_by_id("main").ok_or("Tray icon not found")?;
+    if right == 1 {
+        tray.set_menu(None::<Menu<tauri::Wry>>).map_err(|e| e.to_string())?;
+    } else {
+        let menu = build_tray_menu(&app, "Show/Hide", "Settings", "Open Kimai", "Refresh", "Quit")
+            .map_err(|e| e.to_string())?;
+        tray.set_menu(Some(menu)).map_err(|e| e.to_string())?;
+    }
+
+    Ok(())
+}
+
 fn build_tray_menu(
     app: &AppHandle,
     toggle_label: &str,
@@ -247,6 +275,25 @@ pub fn show_settings_window(app: &AppHandle) {
 }
 
 pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
+    // Read initial click action settings from store
+    let right_action_popup = if let Ok(store) = app.store(STORE_PATH) {
+        if let Some(serde_json::Value::Object(s)) = store.get("settings") {
+            let left = s.get("trayLeftClickAction")
+                .and_then(|v| v.as_str())
+                .unwrap_or("popup");
+            let right = s.get("trayRightClickAction")
+                .and_then(|v| v.as_str())
+                .unwrap_or("menu");
+            TRAY_LEFT_ACTION.store(if left == "nothing" { 1 } else { 0 }, Ordering::SeqCst);
+            TRAY_RIGHT_ACTION.store(if right == "popup" { 1 } else { 0 }, Ordering::SeqCst);
+            right == "popup"
+        } else {
+            false
+        }
+    } else {
+        false
+    };
+
     let toggle_i = MenuItem::with_id(app, "toggle_popup", "Show/Hide", true, None::<&str>)?;
     let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
     let open_kimai_i = MenuItem::with_id(app, "open_kimai", "Open Kimai", true, None::<&str>)?;
@@ -305,44 +352,61 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
         .on_tray_icon_event(|tray, event| {
             #[cfg(target_os = "linux")]
             {
-                if let TrayIconEvent::Click {
-                    button: MouseButton::Left,
-                    ..
-                } = event
-                {
-                    if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
-                        return;
+                if let TrayIconEvent::Click { button, .. } = event {
+                    let should_toggle = match button {
+                        MouseButton::Left => TRAY_LEFT_ACTION.load(Ordering::SeqCst) == 0,
+                        MouseButton::Right => TRAY_RIGHT_ACTION.load(Ordering::SeqCst) == 1,
+                        _ => false,
+                    };
+                    if should_toggle {
+                        if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
+                            return;
+                        }
+                        toggle_popup_window(tray.app_handle());
                     }
-                    toggle_popup_window(tray.app_handle());
                 }
             }
 
             #[cfg(not(target_os = "linux"))]
             {
                 if let TrayIconEvent::Click {
-                    button: MouseButton::Left,
+                    button,
                     button_state: MouseButtonState::Up,
                     rect,
                     ..
                 } = event
                 {
-                    let app = tray.app_handle();
-                    if let Some(popup) = app.get_webview_window("tray-popup") {
-                        if popup.is_visible().unwrap_or(false) {
-                            let _ = popup.hide();
-                        } else {
-                            if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
-                                return;
+                    let should_toggle = match button {
+                        MouseButton::Left => TRAY_LEFT_ACTION.load(Ordering::SeqCst) == 0,
+                        MouseButton::Right => TRAY_RIGHT_ACTION.load(Ordering::SeqCst) == 1,
+                        _ => false,
+                    };
+                    if should_toggle {
+                        let app = tray.app_handle();
+                        if let Some(popup) = app.get_webview_window("tray-popup") {
+                            if popup.is_visible().unwrap_or(false) {
+                                let _ = popup.hide();
+                            } else {
+                                if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
+                                    return;
+                                }
+                                let _ = position_popup(&popup, &rect);
+                                let _ = popup.show();
+                                let _ = popup.set_focus();
                             }
-                            let _ = position_popup(&popup, &rect);
-                            let _ = popup.show();
-                            let _ = popup.set_focus();
                         }
                     }
                 }
             }
         })
         .build(app)?;
+
+    // If right-click is configured to show popup, remove the attached menu
+    if right_action_popup {
+        if let Some(tray) = app.tray_by_id("main") {
+            let _ = tray.set_menu(None::<Menu<tauri::Wry>>);
+        }
+    }
 
     Ok(())
 }

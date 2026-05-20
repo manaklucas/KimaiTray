@@ -58,6 +58,14 @@ export async function registerShortcuts(shortcuts: {
   await invoke("register_shortcuts", shortcuts);
 }
 
+export async function setTrayClickActions(leftAction: string, rightAction: string): Promise<void> {
+  try {
+    await invoke("set_tray_click_actions", { leftAction, rightAction });
+  } catch {
+    // best-effort
+  }
+}
+
 export async function updateTrayMenu(labels: {
   toggleLabel: string;
   settingsLabel: string;

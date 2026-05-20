@@ -68,6 +68,9 @@ export interface AppSettings {
   shortcutStartStopTimer: string;
   shortcutOpenSettings: string;
 
+  trayLeftClickAction: "popup" | "nothing";
+  trayRightClickAction: "menu" | "popup";
+
   autoUpdate: boolean;
 }
 

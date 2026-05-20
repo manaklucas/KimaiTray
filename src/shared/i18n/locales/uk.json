@@ -88,7 +88,14 @@
     "minutes_5": "5 хвилин",
     "minutes_10": "10 хвилин",
     "openKimaiInBrowser": "Відкрити Kimai у браузері",
-    "openKimaiInBrowserDescription": "Відкрити екземпляр Kimai у браузері за замовчуванням"
+    "openKimaiInBrowserDescription": "Відкрити екземпляр Kimai у браузері за замовчуванням",
+    "trayLeftClick": "Дія лівого кліку",
+    "trayLeftClickDescription": "Що відбувається при лівому кліку на іконку в треї",
+    "trayRightClick": "Дія правого кліку",
+    "trayRightClickDescription": "Що відбувається при правому кліку на іконку в треї",
+    "trayActionTogglePopup": "Показати/приховати попап",
+    "trayActionShowMenu": "Показати контекстне меню",
+    "trayActionDoNothing": "Нічого не робити"
   },
   "timerSettings": {
     "title": "Таймер",

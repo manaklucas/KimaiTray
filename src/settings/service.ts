@@ -41,6 +41,9 @@ export const defaultSettings: AppSettings = {
   shortcutStartStopTimer: "",
   shortcutOpenSettings: "",
 
+  trayLeftClickAction: "popup",
+  trayRightClickAction: "menu",
+
   autoUpdate: true,
 };
 
