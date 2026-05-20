@@ -71,6 +71,8 @@ export interface AppSettings {
   trayLeftClickAction: "popup" | "nothing";
   trayRightClickAction: "menu" | "popup";
 
+  displayMode: "tray" | "detached";
+
   autoUpdate: boolean;
 }
 

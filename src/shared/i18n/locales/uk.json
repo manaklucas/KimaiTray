@@ -24,6 +24,10 @@
     "now": "Зараз",
     "since": "з {{time}}"
   },
+  "detached": {
+    "pin": "Закріпити зверху",
+    "unpin": "Відкріпити"
+  },
   "tray": {
     "noActiveTimer": "Немає активного таймера",
     "startHint": "Запустіть останнє завдання або створіть нове",
@@ -95,7 +99,13 @@
     "trayRightClickDescription": "Що відбувається при правому кліку на іконку в треї",
     "trayActionTogglePopup": "Показати/приховати попап",
     "trayActionShowMenu": "Показати контекстне меню",
-    "trayActionDoNothing": "Нічого не робити"
+    "trayActionDoNothing": "Нічого не робити",
+    "displayMode": "Режим відображення",
+    "displayModeDescription": "Виберіть спосіб відображення popup вікна",
+    "displayModeTray": "Tray popup",
+    "displayModeTrayDescription": "Popup прикріплений до іконки в треї",
+    "displayModeDetached": "Окреме вікно",
+    "displayModeDetachedDescription": "Переміщуване вікно зі зміною розміру та закріпленням"
   },
   "timerSettings": {
     "title": "Таймер",

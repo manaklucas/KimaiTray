@@ -76,6 +76,8 @@ static LAST_POPUP_HIDE: AtomicU64 = AtomicU64::new(0);
 static TRAY_LEFT_ACTION: AtomicU8 = AtomicU8::new(0);
 // 0 = menu, 1 = popup
 static TRAY_RIGHT_ACTION: AtomicU8 = AtomicU8::new(0);
+// 0 = tray, 1 = detached
+static DISPLAY_MODE: AtomicU8 = AtomicU8::new(0);
 
 fn now_ms() -> u64 {
     SystemTime::now()
@@ -85,8 +87,46 @@ fn now_ms() -> u64 {
 }
 
 pub fn on_popup_blur(window: &tauri::Window) {
+    if DISPLAY_MODE.load(Ordering::SeqCst) == 1 {
+        return;
+    }
     LAST_POPUP_HIDE.store(now_ms(), Ordering::SeqCst);
     let _ = window.hide();
+}
+
+pub fn is_detached() -> bool {
+    DISPLAY_MODE.load(Ordering::SeqCst) == 1
+}
+
+#[tauri::command]
+pub fn set_display_mode(app: AppHandle, mode: String) -> Result<(), String> {
+    let detached = mode == "detached";
+    DISPLAY_MODE.store(if detached { 1 } else { 0 }, Ordering::SeqCst);
+
+    let window = app
+        .get_webview_window("tray-popup")
+        .ok_or("Popup not found")?;
+
+    window.set_resizable(detached).map_err(|e| e.to_string())?;
+    window.set_always_on_top(!detached).map_err(|e| e.to_string())?;
+
+    #[cfg(not(target_os = "linux"))]
+    window.set_skip_taskbar(!detached).map_err(|e| e.to_string())?;
+
+    if detached {
+        let _ = window.center();
+        let _ = window.show();
+        let _ = window.set_focus();
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn set_always_on_top(app: AppHandle, pinned: bool) -> Result<(), String> {
+    let window = app
+        .get_webview_window("tray-popup")
+        .ok_or("Popup not found")?;
+    window.set_always_on_top(pinned).map_err(|e| e.to_string())
 }
 
 fn position_popup(window: &WebviewWindow, tray_rect: &tauri::Rect) -> tauri::Result<()> {
@@ -252,17 +292,25 @@ fn build_tray_menu(
 pub fn toggle_popup_window(app: &AppHandle) {
     if let Some(popup) = app.get_webview_window("tray-popup") {
         if popup.is_visible().unwrap_or(false) {
-            let _ = popup.hide();
-        } else {
-            // Move off-screen before showing to avoid flash at old position
-            let _ = popup.set_position(PhysicalPosition::new(-10000, -10000));
-            let _ = popup.show();
-            if let Some(tray) = app.tray_by_id("main") {
-                if let Ok(Some(rect)) = tray.rect() {
-                    let _ = position_popup(&popup, &rect);
-                }
+            if is_detached() {
+                let _ = popup.set_focus();
+            } else {
+                let _ = popup.hide();
             }
-            let _ = popup.set_focus();
+        } else {
+            if is_detached() {
+                let _ = popup.show();
+                let _ = popup.set_focus();
+            } else {
+                let _ = popup.set_position(PhysicalPosition::new(-10000, -10000));
+                let _ = popup.show();
+                if let Some(tray) = app.tray_by_id("main") {
+                    if let Ok(Some(rect)) = tray.rect() {
+                        let _ = position_popup(&popup, &rect);
+                    }
+                }
+                let _ = popup.set_focus();
+            }
         }
     }
 }
@@ -275,7 +323,7 @@ pub fn show_settings_window(app: &AppHandle) {
 }
 
 pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
-    // Read initial click action settings from store
+    // Read initial settings from store
     let right_action_popup = if let Ok(store) = app.store(STORE_PATH) {
         if let Some(serde_json::Value::Object(s)) = store.get("settings") {
             let left = s.get("trayLeftClickAction")
@@ -284,8 +332,12 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
             let right = s.get("trayRightClickAction")
                 .and_then(|v| v.as_str())
                 .unwrap_or("menu");
+            let display = s.get("displayMode")
+                .and_then(|v| v.as_str())
+                .unwrap_or("tray");
             TRAY_LEFT_ACTION.store(if left == "nothing" { 1 } else { 0 }, Ordering::SeqCst);
             TRAY_RIGHT_ACTION.store(if right == "popup" { 1 } else { 0 }, Ordering::SeqCst);
+            DISPLAY_MODE.store(if display == "detached" { 1 } else { 0 }, Ordering::SeqCst);
             right == "popup"
         } else {
             false
@@ -385,14 +437,23 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
                         let app = tray.app_handle();
                         if let Some(popup) = app.get_webview_window("tray-popup") {
                             if popup.is_visible().unwrap_or(false) {
-                                let _ = popup.hide();
+                                if is_detached() {
+                                    let _ = popup.set_focus();
+                                } else {
+                                    let _ = popup.hide();
+                                }
                             } else {
                                 if now_ms() - LAST_POPUP_HIDE.load(Ordering::SeqCst) < 300 {
                                     return;
                                 }
-                                let _ = position_popup(&popup, &rect);
-                                let _ = popup.show();
-                                let _ = popup.set_focus();
+                                if is_detached() {
+                                    let _ = popup.show();
+                                    let _ = popup.set_focus();
+                                } else {
+                                    let _ = position_popup(&popup, &rect);
+                                    let _ = popup.show();
+                                    let _ = popup.set_focus();
+                                }
                             }
                         }
                     }

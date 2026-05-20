@@ -24,6 +24,10 @@
     "now": "Nyní",
     "since": "od {{time}}"
   },
+  "detached": {
+    "pin": "Připnout navrch",
+    "unpin": "Odepnout"
+  },
   "tray": {
     "noActiveTimer": "Žádný aktivní časovač",
     "startHint": "Spusťte poslední úlohu nebo vytvořte novou",
@@ -95,7 +99,13 @@
     "trayRightClickDescription": "Co se stane při pravém kliknutí na ikonu v trayi",
     "trayActionTogglePopup": "Zobrazit/skrýt popup",
     "trayActionShowMenu": "Zobrazit kontextové menu",
-    "trayActionDoNothing": "Nic nedělat"
+    "trayActionDoNothing": "Nic nedělat",
+    "displayMode": "Režim zobrazení",
+    "displayModeDescription": "Zvolte způsob zobrazení popup okna",
+    "displayModeTray": "Tray popup",
+    "displayModeTrayDescription": "Popup připnutý k ikoně v trayi",
+    "displayModeDetached": "Odpojené okno",
+    "displayModeDetachedDescription": "Přesouvatelné, měnitelné okno s možností připnutí"
   },
   "timerSettings": {
     "title": "Časovač",

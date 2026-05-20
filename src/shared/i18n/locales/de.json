@@ -24,6 +24,10 @@
     "now": "Jetzt",
     "since": "seit {{time}}"
   },
+  "detached": {
+    "pin": "Oben anheften",
+    "unpin": "Lösen"
+  },
   "tray": {
     "noActiveTimer": "Kein aktiver Timer",
     "startHint": "Letzte Aufgabe starten oder neue erstellen",
@@ -95,7 +99,13 @@
     "trayRightClickDescription": "Was beim Rechtsklick auf das Tray-Symbol passiert",
     "trayActionTogglePopup": "Popup ein-/ausblenden",
     "trayActionShowMenu": "Kontextmenü anzeigen",
-    "trayActionDoNothing": "Nichts tun"
+    "trayActionDoNothing": "Nichts tun",
+    "displayMode": "Anzeigemodus",
+    "displayModeDescription": "Wählen Sie, wie das Popup-Fenster angezeigt wird",
+    "displayModeTray": "Tray-Popup",
+    "displayModeTrayDescription": "Popup am Tray-Symbol verankert",
+    "displayModeDetached": "Eigenständiges Fenster",
+    "displayModeDetachedDescription": "Verschiebbares, größenänderbares Fenster mit Anheften"
   },
   "timerSettings": {
     "title": "Timer",

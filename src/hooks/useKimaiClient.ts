@@ -46,6 +46,7 @@ interface UseKimaiClientResult {
   featureFlags: FeatureFlags;
   autoUpdate: boolean;
   popupLayout: PopupLayout;
+  displayMode: "tray" | "detached";
   connections: SavedConnection[];
   activeConnectionId: string;
   switchConnection: (id: string) => void;
@@ -85,6 +86,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     useState<TraySettings>(defaultTraySettings);
   const [autoUpdate, setAutoUpdate] = useState(true);
   const [popupLayout, setPopupLayout] = useState<PopupLayout>("classic");
+  const [displayMode, setDisplayMode] = useState<"tray" | "detached">("tray");
   const [featureFlags, setFeatureFlags] = useState<FeatureFlags>({
     featureNote: true,
     featureTags: false,
@@ -127,6 +129,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     });
     setAutoUpdate(s.autoUpdate);
     setPopupLayout(s.popupLayout ?? "classic");
+    setDisplayMode(s.displayMode ?? "tray");
     setFeatureFlags({
       featureNote: s.featureNote ?? true,
       featureTags: s.featureTags ?? false,
@@ -211,6 +214,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     featureFlags,
     autoUpdate,
     popupLayout,
+    displayMode,
     connections,
     activeConnectionId,
     switchConnection,

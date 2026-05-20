@@ -24,6 +24,10 @@
     "now": "Now",
     "since": "since {{time}}"
   },
+  "detached": {
+    "pin": "Pin on top",
+    "unpin": "Unpin"
+  },
   "tray": {
     "noActiveTimer": "No active timer",
     "startHint": "Start a recent task or create new",
@@ -95,7 +99,13 @@
     "trayRightClickDescription": "What happens when you right-click the tray icon",
     "trayActionTogglePopup": "Toggle popup",
     "trayActionShowMenu": "Show context menu",
-    "trayActionDoNothing": "Do nothing"
+    "trayActionDoNothing": "Do nothing",
+    "displayMode": "Display mode",
+    "displayModeDescription": "Choose how the popup window is displayed",
+    "displayModeTray": "Tray popup",
+    "displayModeTrayDescription": "Popup attached to the tray icon",
+    "displayModeDetached": "Detached window",
+    "displayModeDetachedDescription": "Movable, resizable, pinnable window"
   },
   "timerSettings": {
     "title": "Timer",

@@ -22,7 +22,7 @@ import { usePauseTimer } from "../hooks/usePauseTimer";
 import { useHiddenTasks } from "../hooks/useHiddenTasks";
 import { useDeleteTimesheet } from "../hooks/useDeleteTimesheet";
 import { useIdleDetection } from "../hooks/useIdleDetection";
-import { setTrayTooltip, setTrayTitle, setTrayIcon, updateTrayMenu, registerShortcuts } from "../api/trayApi";
+import { setTrayTooltip, setTrayTitle, setTrayIcon, updateTrayMenu, registerShortcuts, setAlwaysOnTop } from "../api/trayApi";
 import { formatAcceleratorForDisplay } from "../settings/Controls";
 import { useAppearance } from "../hooks/useAppearance";
 import { useLanguageSync } from "../hooks/useLanguageSync";
@@ -30,6 +30,123 @@ import { useUpdater } from "../hooks/useUpdater";
 import { updateTimesheet, stopTimesheet } from "../api/timesheetApi";
 import { formatElapsed } from "../components/ActiveTimerCard";
 import type { RecentTask } from "../types";
+
+const isMac = navigator.platform.toUpperCase().includes("MAC");
+
+function TrafficLight({ color, hoverColor, onClick, children }: {
+  color: string; hoverColor: string; onClick: () => void; children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group h-3 w-3 rounded-full flex items-center justify-center transition-colors focus:outline-none"
+      style={{ backgroundColor: color }}
+      onMouseEnter={(e) => { (e.currentTarget.style.backgroundColor) = hoverColor; }}
+      onMouseLeave={(e) => { (e.currentTarget.style.backgroundColor) = color; }}
+    >
+      <span className="hidden group-hover:block text-[8px] leading-none font-bold text-black/50">
+        {children}
+      </span>
+    </button>
+  );
+}
+
+function DetachedTitleBar({ pinned, onTogglePin, pinLabel, transparent }: {
+  pinned: boolean; onTogglePin: () => void; pinLabel: string; transparent?: boolean;
+}) {
+  const win = getCurrentWindow();
+  const barBg = transparent
+    ? "bg-white/30 dark:bg-black/20 backdrop-blur-sm"
+    : "bg-gray-50/80 dark:bg-[#141414]";
+
+  const pinButton = (
+    <button
+      type="button"
+      onClick={onTogglePin}
+      title={pinLabel}
+      className={`rounded p-1 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]
+        ${pinned
+          ? "text-[var(--accent)] bg-[var(--accent)]/10"
+          : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+        }`}
+    >
+      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        {pinned ? (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 4v4l2 2v2h-5l-1 8-1-8H6v-2l2-2V4a1 1 0 011-1h6a1 1 0 011 1z" />
+        ) : (
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 4v4l2 2v2h-5l-1 8-1-8H6v-2l2-2V4a1 1 0 011-1h6a1 1 0 011 1z" opacity={0.5} />
+        )}
+      </svg>
+    </button>
+  );
+
+  if (isMac) {
+    return (
+      <div
+        data-tauri-drag-region
+        className={`relative flex h-8 shrink-0 items-center border-b border-gray-100 dark:border-gray-800 ${barBg} px-2.5 select-none`}
+      >
+        <div className="flex items-center gap-1.5">
+          <TrafficLight color="#ff5f57" hoverColor="#ff3b30" onClick={() => win.hide()}>✕</TrafficLight>
+          <TrafficLight color="#febc2e" hoverColor="#f0a000" onClick={() => win.minimize()}>−</TrafficLight>
+          <TrafficLight color="#28c840" hoverColor="#1aab29" onClick={() => win.toggleMaximize()}>+</TrafficLight>
+        </div>
+        <span
+          data-tauri-drag-region
+          className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-gray-400 dark:text-gray-500 pointer-events-none"
+        >
+          KimaiTray
+        </span>
+        <div className="ml-auto">{pinButton}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      data-tauri-drag-region
+      className={`flex h-8 shrink-0 items-center justify-between border-b border-gray-100 dark:border-gray-800 ${barBg} px-2 select-none`}
+    >
+      <span
+        data-tauri-drag-region
+        className="text-[10px] font-medium text-gray-400 dark:text-gray-500 pointer-events-none"
+      >
+        KimaiTray
+      </span>
+      <div className="flex items-center gap-0.5">
+        {pinButton}
+        <button
+          type="button"
+          onClick={() => win.minimize()}
+          className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-200/60 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-700/60 transition-colors focus:outline-none"
+        >
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" d="M5 12h14" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          onClick={() => win.toggleMaximize()}
+          className="rounded p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-200/60 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-700/60 transition-colors focus:outline-none"
+        >
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <rect x="5" y="5" width="14" height="14" rx="1" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          onClick={() => win.hide()}
+          className="rounded p-1 text-gray-400 hover:text-red-500 hover:bg-red-100/60 dark:text-gray-500 dark:hover:text-red-400 dark:hover:bg-red-900/40 transition-colors focus:outline-none"
+        >
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function TrayPopup() {
   const { t, i18n } = useTranslation();
@@ -65,10 +182,18 @@ export default function TrayPopup() {
     featureFlags,
     autoUpdate,
     popupLayout,
+    displayMode,
     connections,
     activeConnectionId,
     switchConnection,
   } = useKimaiClient();
+  const isDetached = displayMode === "detached";
+  const [pinned, setPinned] = useState(false);
+
+  useEffect(() => {
+    if (!isDetached) setPinned(false);
+  }, [isDetached]);
+
   const updater = useUpdater(autoUpdate);
 
   useEffect(() => {
@@ -255,14 +380,14 @@ export default function TrayPopup() {
       if (e.key === "Escape") {
         if (showNewTask) {
           setShowNewTask(false);
-        } else {
+        } else if (!isDetached) {
           getCurrentWindow().hide();
         }
       }
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [showNewTask]);
+  }, [showNewTask, isDetached]);
 
   // Update tray icon state
   useEffect(() => {
@@ -368,8 +493,22 @@ export default function TrayPopup() {
     timer &&
     idleStartedAt;
 
+  const handleTogglePin = useCallback(() => {
+    const next = !pinned;
+    setPinned(next);
+    setAlwaysOnTop(next);
+  }, [pinned]);
+
   return (
     <div className="relative flex h-screen w-screen flex-col bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-gray-100">
+      {isDetached && (
+        <DetachedTitleBar
+          pinned={pinned}
+          onTogglePin={handleTogglePin}
+          pinLabel={pinned ? t("detached.unpin") : t("detached.pin")}
+          transparent={document.documentElement.dataset.theme === "transparent"}
+        />
+      )}
       <HeaderStatus
         status={status}
         errorMessage={errorMessage}

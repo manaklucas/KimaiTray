@@ -44,6 +44,8 @@ export const defaultSettings: AppSettings = {
   trayLeftClickAction: "popup",
   trayRightClickAction: "menu",
 
+  displayMode: "tray",
+
   autoUpdate: true,
 };
 

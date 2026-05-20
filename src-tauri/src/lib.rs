@@ -4,6 +4,7 @@ mod shortcuts;
 mod tray;
 
 use log::{error, info};
+use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -63,6 +64,8 @@ pub fn run() {
             tray::set_popup_corner_radius,
             tray::update_tray_menu,
             tray::set_tray_click_actions,
+            tray::set_display_mode,
+            tray::set_always_on_top,
             idle::get_idle_seconds,
             shortcuts::register_shortcuts,
         ])
@@ -73,6 +76,16 @@ pub fn run() {
             );
             tray::create_tray(app.handle())?;
             info!("System tray created");
+            if tray::is_detached() {
+                if let Some(w) = app.handle().get_webview_window("tray-popup") {
+                    let _ = w.set_resizable(true);
+                    let _ = w.set_always_on_top(false);
+                    #[cfg(not(target_os = "linux"))]
+                    let _ = w.set_skip_taskbar(false);
+                    let _ = w.center();
+                    let _ = w.show();
+                }
+            }
             shortcuts::register_from_store(app.handle());
             Ok(())
         })

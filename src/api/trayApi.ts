@@ -58,6 +58,22 @@ export async function registerShortcuts(shortcuts: {
   await invoke("register_shortcuts", shortcuts);
 }
 
+export async function setDisplayMode(mode: string): Promise<void> {
+  try {
+    await invoke("set_display_mode", { mode });
+  } catch {
+    // best-effort
+  }
+}
+
+export async function setAlwaysOnTop(pinned: boolean): Promise<void> {
+  try {
+    await invoke("set_always_on_top", { pinned });
+  } catch {
+    // best-effort
+  }
+}
+
 export async function setTrayClickActions(leftAction: string, rightAction: string): Promise<void> {
   try {
     await invoke("set_tray_click_actions", { leftAction, rightAction });

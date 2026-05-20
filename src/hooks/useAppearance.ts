@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { loadSettings, onSettingsChange } from "../settings/service";
-import { setPopupCornerRadius, setPopupSize, setPopupVibrancy } from "../api/trayApi";
+import { setPopupCornerRadius, setPopupSize, setPopupVibrancy, setDisplayMode } from "../api/trayApi";
 import type { AppSettings } from "../types";
 
 const POPUP_BASE_WIDTH = 360;
@@ -49,16 +49,23 @@ function apply(s: AppSettings) {
     mediaCleanup = () => mq.removeEventListener("change", handler);
   }
 
-  const scale = UI_SIZE_SCALE[s.uiSize];
-  setPopupSize(
-    Math.round(POPUP_BASE_WIDTH * scale),
-    Math.round(POPUP_BASE_HEIGHT * scale),
-    scale,
-  );
-  setPopupCornerRadius(s.roundedPopupCorners ? 10.0 : 0.0);
+  document.documentElement.dataset.displayMode = s.displayMode ?? "tray";
+
+  const isDetached = s.displayMode === "detached";
+
+  if (!isDetached) {
+    const scale = UI_SIZE_SCALE[s.uiSize];
+    setPopupSize(
+      Math.round(POPUP_BASE_WIDTH * scale),
+      Math.round(POPUP_BASE_HEIGHT * scale),
+      scale,
+    );
+  }
+  setPopupCornerRadius(s.roundedPopupCorners && !isDetached ? 10.0 : 0.0);
 
   if (document.documentElement.dataset.window === "tray-popup") {
     setPopupVibrancy(s.theme === "transparent");
+    setDisplayMode(s.displayMode ?? "tray");
   }
 }
 
