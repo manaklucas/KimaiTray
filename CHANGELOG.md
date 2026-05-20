@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.2] - 2026-05-20
+
+### New Features
+
+- **Configurable tray click actions** — left and right click behavior can now be set independently in General settings (toggle popup or do nothing for left; context menu or toggle popup for right); useful for Linux users where left click may not work
+
+### Bug Fixes
+
+- Fixed excessive empty space above and below active timer in Focus layout (removed forced `min-height` and vertical centering from timer area)
+
 ## [0.3.1] - 2026-05-20
 
 ### Bug Fixes
