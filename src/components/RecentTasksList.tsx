@@ -13,6 +13,7 @@ interface RecentTasksListProps {
   disabled?: boolean;
   hiddenCount?: number;
   onShowAll?: () => void;
+  showHeader?: boolean;
 }
 
 function LoadingSkeleton() {
@@ -38,17 +39,20 @@ export default function RecentTasksList({
   disabled,
   hiddenCount = 0,
   onShowAll,
+  showHeader = true,
 }: RecentTasksListProps) {
   const { t } = useTranslation();
 
   if (isLoading) {
     return (
-      <div className="mt-1.5">
-        <div className="px-3 py-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-            {t("tray.recentTasks")}
-          </span>
-        </div>
+      <div className={showHeader ? "mt-1.5" : ""}>
+        {showHeader && (
+          <div className="px-3 py-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              {t("tray.recentTasks")}
+            </span>
+          </div>
+        )}
         <div className="px-1.5 pb-1">
           <LoadingSkeleton />
           <LoadingSkeleton />
@@ -61,20 +65,32 @@ export default function RecentTasksList({
   if (tasks.length === 0 && hiddenCount === 0) return null;
 
   return (
-    <div className="mt-1.5">
-      <div className="px-3 py-1.5 flex items-center justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-          {t("tray.recentTasks")}
-        </span>
-        {hiddenCount > 0 && onShowAll && (
+    <div className={showHeader ? "mt-1.5" : ""}>
+      {showHeader && (
+        <div className="px-3 py-1.5 flex items-center justify-between">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+            {t("tray.recentTasks")}
+          </span>
+          {hiddenCount > 0 && onShowAll && (
+            <button
+              onClick={onShowAll}
+              className="text-[9px] text-gray-400 dark:text-gray-500 hover:text-[var(--accent)] transition-colors"
+            >
+              {t("recentActions.hiddenCount", { count: hiddenCount })} · {t("recentActions.showAll")}
+            </button>
+          )}
+        </div>
+      )}
+      {!showHeader && hiddenCount > 0 && onShowAll && (
+        <div className="px-3 pb-1 flex justify-end">
           <button
             onClick={onShowAll}
             className="text-[9px] text-gray-400 dark:text-gray-500 hover:text-[var(--accent)] transition-colors"
           >
             {t("recentActions.hiddenCount", { count: hiddenCount })} · {t("recentActions.showAll")}
           </button>
-        )}
-      </div>
+        </div>
+      )}
       <div className="px-1.5 pb-1">
         {tasks.map((task) => (
           <RecentTaskItem
