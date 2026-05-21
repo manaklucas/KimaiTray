@@ -341,6 +341,7 @@
     "assigneeOnlyDescription": "Zobraziť len úlohy priradené prihlásenému používateľovi",
     "filterLabels": "Filtrovať podľa štítkov",
     "filterLabelsDescription": "Zobraziť len úlohy s vybranými štítkami. Najskôr otestujte pripojenie na načítanie dostupných štítkov.",
+    "filterLabelsHint": "Otestujte pripojenie na načítanie dostupných štítkov.",
     "clearLabels": "Zrušiť všetky štítky",
     "syncTime": "Synchronizovať čas",
     "syncTimeDescription": "Zaznamenať strávený čas do prepojenej GitLab úlohy po zastavení časovača",

@@ -305,53 +305,62 @@ export default function IntegrationsSection({ settings, update }: Props) {
             />
           </FieldGroup>
 
-          {testStatus === "success" && availableLabels.length > 0 && (
-            <FieldGroup
-              label={t("integrations.filterLabels")}
-              description={t("integrations.filterLabelsDescription")}
-            >
-              <div className="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-2">
-                {availableLabels.map((label) => {
-                  const selected = (config.filterLabels ?? []).includes(label.name);
-                  return (
-                    <button
-                      key={label.name}
-                      type="button"
-                      onClick={() => {
-                        const current = config.filterLabels ?? [];
-                        const next = selected
-                          ? current.filter((l) => l !== label.name)
-                          : [...current, label.name];
-                        updateField("filterLabels", next);
-                      }}
-                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors
-                        border focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400
-                        ${selected
-                          ? "border-transparent text-white shadow-sm"
-                          : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        }`}
-                      style={selected ? { backgroundColor: label.color } : undefined}
-                    >
-                      <span
-                        className="inline-block h-2 w-2 rounded-full shrink-0"
-                        style={{ backgroundColor: label.color }}
-                      />
-                      {label.name}
-                    </button>
-                  );
-                })}
+          <FieldGroup
+            label={t("integrations.filterLabels")}
+            description={t("integrations.filterLabelsDescription")}
+          >
+            {availableLabels.length > 0 ? (
+              <>
+                <div className="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-2">
+                  {availableLabels.map((label) => {
+                    const selected = (config.filterLabels ?? []).includes(label.name);
+                    return (
+                      <button
+                        key={label.name}
+                        type="button"
+                        onClick={() => {
+                          const current = config.filterLabels ?? [];
+                          const next = selected
+                            ? current.filter((l) => l !== label.name)
+                            : [...current, label.name];
+                          updateField("filterLabels", next);
+                        }}
+                        disabled={disabled}
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors
+                          border focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400
+                          disabled:opacity-50 disabled:cursor-not-allowed
+                          ${selected
+                            ? "border-transparent text-white shadow-sm"
+                            : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          }`}
+                        style={selected ? { backgroundColor: label.color } : undefined}
+                      >
+                        <span
+                          className="inline-block h-2 w-2 rounded-full shrink-0"
+                          style={{ backgroundColor: label.color }}
+                        />
+                        {label.name}
+                      </button>
+                    );
+                  })}
+                </div>
+                {(config.filterLabels ?? []).length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => updateField("filterLabels", [])}
+                    disabled={disabled}
+                    className="mt-1.5 text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {t("integrations.clearLabels")}
+                  </button>
+                )}
+              </>
+            ) : (
+              <div className="rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-3 py-2.5 text-[11px] text-gray-400 dark:text-gray-500 italic">
+                {t("integrations.filterLabelsHint")}
               </div>
-              {(config.filterLabels ?? []).length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => updateField("filterLabels", [])}
-                  className="mt-1.5 text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                >
-                  {t("integrations.clearLabels")}
-                </button>
-              )}
-            </FieldGroup>
-          )}
+            )}
+          </FieldGroup>
 
           {config.provider === "gitlab" && (
             <FieldGroup

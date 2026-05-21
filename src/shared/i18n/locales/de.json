@@ -341,6 +341,7 @@
     "assigneeOnlyDescription": "Nur Issues anzeigen, die dem angemeldeten Benutzer zugewiesen sind",
     "filterLabels": "Nach Labels filtern",
     "filterLabelsDescription": "Nur Issues mit ausgewählten Labels anzeigen. Testen Sie zuerst die Verbindung, um verfügbare Labels zu laden.",
+    "filterLabelsHint": "Testen Sie die Verbindung, um verfügbare Labels zu laden.",
     "clearLabels": "Alle Labels löschen",
     "syncTime": "Zeit synchronisieren",
     "syncTimeDescription": "Aufgewendete Zeit im verknüpften GitLab-Issue protokollieren, wenn der Timer gestoppt wird",
