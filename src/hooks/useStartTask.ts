@@ -2,7 +2,11 @@ import { useState, useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { KimaiApiError } from "../api/kimaiClient";
-import { startTimesheet, stopTimesheet } from "../api/timesheetApi";
+import {
+  getActiveTimesheets,
+  startTimesheet,
+  stopTimesheet,
+} from "../api/timesheetApi";
 import { serializeKimaiTags } from "../api/tagUtils";
 
 export interface StartTaskPayload {
@@ -23,7 +27,6 @@ class TaskSwitchError extends Error {
 
 export function useStartTask(
   client: KimaiClient | null,
-  activeTimerId: number | null,
   onTaskStarted?: () => void,
 ) {
   const qc = useQueryClient();
@@ -34,8 +37,9 @@ export function useStartTask(
     mutationFn: async (payload: StartTaskPayload) => {
       let stoppedExisting = false;
 
-      if (activeTimerId != null) {
-        await stopTimesheet(client!, activeTimerId);
+      const active = await getActiveTimesheets(client!);
+      for (const entry of active) {
+        await stopTimesheet(client!, entry.id);
         stoppedExisting = true;
       }
 
@@ -72,8 +76,6 @@ export function useStartTask(
         setSwitchError(
           `Timer stopped but "${payload.label}" failed to start: ${err.message}`,
         );
-      } else if (activeTimerId != null) {
-        setSwitchError(`Failed to stop current timer: ${err.message}`);
       } else {
         setSwitchError(`Failed to start "${payload.label}": ${err.message}`);
       }

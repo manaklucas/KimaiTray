@@ -249,7 +249,7 @@ export default function TrayPopup() {
   const today = useTodayTimesheets(client, isConfigured, refreshInterval);
 
   const { startTask, startingKey, switchError, dismissError, isStarting } =
-    useStartTask(client, timer?.id ?? null, () => setShowNewTask(false));
+    useStartTask(client, () => setShowNewTask(false));
 
   const { editTimer, isSaving, saveError } = useEditTimer(client);
   const { hiddenKeys, hideTask, clearAll: clearHidden } = useHiddenTasks();
@@ -506,6 +506,8 @@ export default function TrayPopup() {
       {
         projectId: task.projectId,
         activityId: task.activityId,
+        description: task.description || undefined,
+        tags: task.tags?.length ? task.tags : undefined,
         label: task.project,
       },
       task.key,
