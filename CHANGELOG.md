@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.1] - 2026-05-21
+
+### Improvements
+
+- **Label filter always visible** — the "Filter by labels" field is now always shown in integration settings (disabled with a hint until connection is tested and labels are loaded)
+
 ## [0.5.0] - 2026-05-21
 
 ### New Features
