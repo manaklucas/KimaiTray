@@ -278,6 +278,11 @@
     "pausedSince": "paused at {{time}}",
     "discard": "Discard"
   },
+  "favorites": {
+    "title": "Favorites",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
+  },
   "recentActions": {
     "hideFromRecents": "Hide from recents",
     "deleteFromKimai": "Delete from Kimai",

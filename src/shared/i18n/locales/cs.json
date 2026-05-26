@@ -278,6 +278,11 @@
     "pausedSince": "pozastaveno v {{time}}",
     "discard": "Zahodit"
   },
+  "favorites": {
+    "title": "Oblíbené",
+    "addToFavorites": "Přidat do oblíbených",
+    "removeFromFavorites": "Odebrat z oblíbených"
+  },
   "recentActions": {
     "hideFromRecents": "Skrýt z nedávných",
     "deleteFromKimai": "Smazat z Kimai",

@@ -278,6 +278,11 @@
     "pausedSince": "призупинено о {{time}}",
     "discard": "Відхилити"
   },
+  "favorites": {
+    "title": "Обрані",
+    "addToFavorites": "Додати до обраних",
+    "removeFromFavorites": "Видалити з обраних"
+  },
   "recentActions": {
     "hideFromRecents": "Сховати з нещодавніх",
     "deleteFromKimai": "Видалити з Kimai",

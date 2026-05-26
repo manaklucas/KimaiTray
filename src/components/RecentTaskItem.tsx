@@ -9,6 +9,8 @@ interface RecentTaskItemProps {
   onStart: (task: RecentTask) => void;
   onHide: (task: RecentTask) => void;
   onDelete: (task: RecentTask) => void;
+  onToggleFavorite?: (task: RecentTask) => void;
+  isFavorite?: boolean;
   isStarting?: boolean;
   isDeleting?: boolean;
   disabled?: boolean;
@@ -20,6 +22,8 @@ export default function RecentTaskItem({
   onStart,
   onHide,
   onDelete,
+  onToggleFavorite,
+  isFavorite,
   isStarting,
   isDeleting,
   disabled,
@@ -111,6 +115,22 @@ export default function RecentTaskItem({
         </span>
 
         <div className="hidden group-hover:flex items-center gap-0.5">
+          {onToggleFavorite && (
+            <button
+              onClick={() => onToggleFavorite(task)}
+              disabled={disabled}
+              title={isFavorite ? t("favorites.removeFromFavorites") : t("favorites.addToFavorites")}
+              className={`p-1 rounded transition-colors disabled:opacity-50 ${
+                isFavorite
+                  ? "text-amber-400 hover:text-amber-500"
+                  : "text-gray-400 dark:text-gray-500 hover:text-amber-400 dark:hover:text-amber-400"
+              }`}
+            >
+              <svg className="h-3 w-3" fill={isFavorite ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </button>
+          )}
           <button
             onClick={() => onHide(task)}
             disabled={disabled}

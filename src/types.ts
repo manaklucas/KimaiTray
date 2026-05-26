@@ -96,6 +96,20 @@ export interface AppSettings {
   issueIntegrations: Record<string, IssueIntegrationSettings>;
 }
 
+export interface FavoriteTask {
+  key: string;
+  projectId: number;
+  activityId: number;
+  project: string;
+  activity: string;
+  customer: string;
+  description: string;
+  tags: string[];
+  projectColor: string;
+  activityColor: string;
+  customerColor: string;
+}
+
 export interface TodayEntry {
   id: number;
   projectId: number;

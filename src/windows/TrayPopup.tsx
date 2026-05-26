@@ -7,6 +7,7 @@ import ActiveTimerCard from "../components/ActiveTimerCard";
 import PausedTimerCard from "../components/PausedTimerCard";
 import EmptyTimerState from "../components/EmptyTimerState";
 import RecentTasksList from "../components/RecentTasksList";
+import FavoriteTasksList from "../components/FavoriteTasksList";
 import PopupFooterActions from "../components/PopupFooterActions";
 import NewTaskForm from "../components/NewTaskForm";
 import IdleDialog from "../components/IdleDialog";
@@ -21,6 +22,7 @@ import type { StartTaskPayload } from "../hooks/useStartTask";
 import { useEditTimer } from "../hooks/useEditTimer";
 import { usePauseTimer } from "../hooks/usePauseTimer";
 import { useHiddenTasks } from "../hooks/useHiddenTasks";
+import { useFavorites } from "../hooks/useFavorites";
 import { useDeleteTimesheet } from "../hooks/useDeleteTimesheet";
 import { useIdleDetection } from "../hooks/useIdleDetection";
 import { setTrayTooltip, setTrayTitle, setTrayIcon, updateTrayMenu, registerShortcuts, setAlwaysOnTop } from "../api/trayApi";
@@ -30,7 +32,7 @@ import { useLanguageSync } from "../hooks/useLanguageSync";
 import { useUpdater } from "../hooks/useUpdater";
 import { updateTimesheet, stopTimesheet } from "../api/timesheetApi";
 import { formatElapsed } from "../components/ActiveTimerCard";
-import type { RecentTask } from "../types";
+import type { RecentTask, FavoriteTask } from "../types";
 import type { ExternalIssue } from "../integrations/issues/types";
 import { createIssueProvider } from "../integrations/issues/issueProvider";
 import { logger } from "../utils/logger";
@@ -256,6 +258,7 @@ export default function TrayPopup() {
 
   const { editTimer, isSaving, saveError } = useEditTimer(client);
   const { hiddenKeys, hideTask, clearAll: clearHidden } = useHiddenTasks();
+  const { favorites, addFavorite: addFav, removeFavorite: removeFav, isFavorite } = useFavorites();
   const { deleteEntry, deletingId, deleteError: timesheetDeleteError, dismissError: dismissDeleteError } = useDeleteTimesheet(client);
 
   const {
@@ -491,6 +494,11 @@ export default function TrayPopup() {
     };
   }, [timer?.id, timer?.beginSeconds, timer?.project, timer?.activity, hasPausedTimers, pausedTimers, traySettings, t]);
 
+  const visibleFavorites = useMemo(
+    () => (activeKey ? favorites.filter((f) => f.key !== activeKey) : favorites),
+    [favorites, activeKey],
+  );
+
   const visibleTasks = useMemo(
     () => tasks.filter((t) => !hiddenKeys.has(t.key)),
     [tasks, hiddenKeys],
@@ -527,6 +535,50 @@ export default function TrayPopup() {
   const handleDeleteRecent = useCallback(
     (task: RecentTask) => deleteEntry(task.timesheetId),
     [deleteEntry],
+  );
+
+  const handleToggleFavorite = useCallback(
+    (task: RecentTask) => {
+      if (isFavorite(task.key)) {
+        removeFav(task.key);
+      } else {
+        addFav({
+          key: task.key,
+          projectId: task.projectId,
+          activityId: task.activityId,
+          project: task.project,
+          activity: task.activity,
+          customer: task.customer,
+          description: task.description,
+          tags: task.tags,
+          projectColor: task.projectColor,
+          activityColor: task.activityColor,
+          customerColor: task.customerColor,
+        });
+      }
+    },
+    [isFavorite, addFav, removeFav],
+  );
+
+  const handleStartFavorite = useCallback(
+    (task: FavoriteTask) => {
+      startTask(
+        {
+          projectId: task.projectId,
+          activityId: task.activityId,
+          description: task.description || undefined,
+          tags: task.tags?.length ? task.tags : undefined,
+          label: task.project,
+        },
+        task.key,
+      );
+    },
+    [startTask],
+  );
+
+  const handleRemoveFavorite = useCallback(
+    (task: FavoriteTask) => removeFav(task.key),
+    [removeFav],
   );
 
   const handleNewTaskSubmit = (payload: StartTaskPayload) => {
@@ -690,12 +742,22 @@ export default function TrayPopup() {
                     {t("today.title")}
                   </button>
                 </div>
+                <FavoriteTasksList
+                  tasks={visibleFavorites}
+                  onStart={handleStartFavorite}
+                  onRemove={handleRemoveFavorite}
+                  startingKey={startingKey}
+                  disabled={isStarting || isStoppingActive || isPausing || resumingId !== null}
+                  colorMode={colorMode}
+                />
                 {focusTab === "recent" ? (
                   <RecentTasksList
                     tasks={visibleTasks}
                     onStart={handleStartRecent}
                     onHide={handleHideRecent}
                     onDelete={handleDeleteRecent}
+                    onToggleFavorite={handleToggleFavorite}
+                    isFavorite={isFavorite}
                     isLoading={status !== "unconfigured" && tasksLoading}
                     startingKey={startingKey}
                     deletingId={deletingId}
@@ -744,6 +806,14 @@ export default function TrayPopup() {
                     <div className="mx-3 border-t border-gray-100 dark:border-gray-800" />
                   </>
                 )}
+                <FavoriteTasksList
+                  tasks={visibleFavorites}
+                  onStart={handleStartFavorite}
+                  onRemove={handleRemoveFavorite}
+                  startingKey={startingKey}
+                  disabled={isStarting || isStoppingActive || isPausing || resumingId !== null}
+                  colorMode={colorMode}
+                />
                 {/* Collapsible recent tasks */}
                 <div className="mt-1.5">
                   <button
@@ -766,6 +836,8 @@ export default function TrayPopup() {
                       onStart={handleStartRecent}
                       onHide={handleHideRecent}
                       onDelete={handleDeleteRecent}
+                      onToggleFavorite={handleToggleFavorite}
+                      isFavorite={isFavorite}
                       isLoading={status !== "unconfigured" && tasksLoading}
                       startingKey={startingKey}
                       deletingId={deletingId}
@@ -780,11 +852,21 @@ export default function TrayPopup() {
               </>
             ) : popupLayout === "taskbar" ? (
               <>
+                <FavoriteTasksList
+                  tasks={visibleFavorites}
+                  onStart={handleStartFavorite}
+                  onRemove={handleRemoveFavorite}
+                  startingKey={startingKey}
+                  disabled={isStarting || isStoppingActive || isPausing || resumingId !== null}
+                  colorMode={colorMode}
+                />
                 <RecentTasksList
                   tasks={visibleTasks}
                   onStart={handleStartRecent}
                   onHide={handleHideRecent}
                   onDelete={handleDeleteRecent}
+                  onToggleFavorite={handleToggleFavorite}
+                  isFavorite={isFavorite}
                   isLoading={status !== "unconfigured" && tasksLoading}
                   startingKey={startingKey}
                   deletingId={deletingId}
@@ -842,11 +924,21 @@ export default function TrayPopup() {
             ) : (
               /* Classic layout */
               <>
+                <FavoriteTasksList
+                  tasks={visibleFavorites}
+                  onStart={handleStartFavorite}
+                  onRemove={handleRemoveFavorite}
+                  startingKey={startingKey}
+                  disabled={isStarting || isStoppingActive || isPausing || resumingId !== null}
+                  colorMode={colorMode}
+                />
                 <RecentTasksList
                   tasks={visibleTasks}
                   onStart={handleStartRecent}
                   onHide={handleHideRecent}
                   onDelete={handleDeleteRecent}
+                  onToggleFavorite={handleToggleFavorite}
+                  isFavorite={isFavorite}
                   isLoading={status !== "unconfigured" && tasksLoading}
                   startingKey={startingKey}
                   deletingId={deletingId}

@@ -7,6 +7,8 @@ interface RecentTasksListProps {
   onStart: (task: RecentTask) => void;
   onHide: (task: RecentTask) => void;
   onDelete: (task: RecentTask) => void;
+  onToggleFavorite?: (task: RecentTask) => void;
+  isFavorite?: (key: string) => boolean;
   isLoading?: boolean;
   startingKey?: string | null;
   deletingId?: number | null;
@@ -34,6 +36,8 @@ export default function RecentTasksList({
   onStart,
   onHide,
   onDelete,
+  onToggleFavorite,
+  isFavorite,
   isLoading,
   startingKey,
   deletingId,
@@ -101,6 +105,8 @@ export default function RecentTasksList({
             onStart={onStart}
             onHide={onHide}
             onDelete={onDelete}
+            onToggleFavorite={onToggleFavorite}
+            isFavorite={isFavorite?.(task.key)}
             isStarting={startingKey === task.key}
             isDeleting={deletingId === task.timesheetId}
             disabled={disabled}
