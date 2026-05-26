@@ -31,6 +31,7 @@ export const defaultSettings: AppSettings = {
   reduceVisualEffects: false,
   accentStyle: "blue",
   popupLayout: "classic",
+  colorMode: "kimai",
 
   featureNote: true,
   featureTags: false,

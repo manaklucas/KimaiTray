@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { TodayEntry } from "../types";
+import type { TodayEntry, ColorMode } from "../types";
 import TodayEntryItem from "./TodayEntryItem";
 import { formatDuration } from "../utils/time";
 
@@ -15,6 +15,7 @@ interface TodaySectionProps {
   isLoading: boolean;
   isError: boolean;
   onRetry: () => void;
+  colorMode?: ColorMode;
 }
 
 function LoadingSkeleton() {
@@ -40,6 +41,7 @@ export default function TodaySection({
   isLoading,
   isError,
   onRetry,
+  colorMode = "kimai",
 }: TodaySectionProps) {
   const { t } = useTranslation();
 
@@ -97,7 +99,7 @@ export default function TodaySection({
         ) : (
           <>
             {entries.map((entry) => (
-              <TodayEntryItem key={entry.id} entry={entry} />
+              <TodayEntryItem key={entry.id} entry={entry} colorMode={colorMode} />
             ))}
             {hasMore && !expanded && (
               <button

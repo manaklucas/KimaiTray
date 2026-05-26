@@ -179,7 +179,16 @@
     "layoutTaskbar": "Taskbar",
     "layoutTaskbarDescription": "Quick task switching, compact timer",
     "layoutTimeline": "Timeline",
-    "layoutTimelineDescription": "Today's log first, tasks collapsed"
+    "layoutTimelineDescription": "Today's log first, tasks collapsed",
+    "colorMode": "Color indicator",
+    "colorModeDescription": "Choose which color to show next to entries",
+    "colorModeKimai": "Kimai auto (activity → project → customer)",
+    "colorModeActivity": "Activity color",
+    "colorModeProject": "Project color",
+    "colorModeCustomer": "Customer color",
+    "colorModeActivityProject": "Activity + Project",
+    "colorModeActivityCustomer": "Activity + Customer",
+    "colorModeProjectCustomer": "Project + Customer"
   },
   "shortcuts": {
     "title": "Shortcuts",

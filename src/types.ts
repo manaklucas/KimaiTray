@@ -2,12 +2,23 @@ import type { IssueIntegrationSettings } from "./integrations/issues/types";
 
 export type { IssueIntegrationSettings };
 
+export type ColorMode =
+  | "kimai"
+  | "activity"
+  | "project"
+  | "customer"
+  | "activity-project"
+  | "activity-customer"
+  | "project-customer";
+
 export interface ActiveTimer {
   id: number;
   projectId: number;
   activityId: number;
   project: string;
   projectColor: string;
+  activityColor: string;
+  customerColor: string;
   activity: string;
   description: string;
   tags: string[];
@@ -22,6 +33,8 @@ export interface RecentTask {
   timesheetId: number;
   project: string;
   projectColor: string;
+  activityColor: string;
+  customerColor: string;
   customer: string;
   activity: string;
   description: string;
@@ -62,6 +75,7 @@ export interface AppSettings {
   reduceVisualEffects: boolean;
   accentStyle: "blue" | "green" | "purple" | "orange" | "red";
   popupLayout: "classic" | "focus" | "taskbar" | "timeline";
+  colorMode: ColorMode;
 
   featureNote: boolean;
   featureTags: boolean;
@@ -88,6 +102,8 @@ export interface TodayEntry {
   activityId: number;
   project: string;
   projectColor: string;
+  activityColor: string;
+  customerColor: string;
   customer: string;
   activity: string;
   description: string;

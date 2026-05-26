@@ -206,7 +206,16 @@
     "layoutTaskbar": "Panel úloh",
     "layoutTaskbarDescription": "Rýchle prepínanie úloh, kompaktný časovač",
     "layoutTimeline": "Časová os",
-    "layoutTimelineDescription": "Dnešný prehľad prvý, úlohy zbalené"
+    "layoutTimelineDescription": "Dnešný prehľad prvý, úlohy zbalené",
+    "colorMode": "Farebný indikátor",
+    "colorModeDescription": "Vyberte, ktorá farba sa zobrazí vedľa záznamov",
+    "colorModeKimai": "Kimai auto (aktivita → projekt → zákazník)",
+    "colorModeActivity": "Farba aktivity",
+    "colorModeProject": "Farba projektu",
+    "colorModeCustomer": "Farba zákazníka",
+    "colorModeActivityProject": "Aktivita + Projekt",
+    "colorModeActivityCustomer": "Aktivita + Zákazník",
+    "colorModeProjectCustomer": "Projekt + Zákazník"
   },
   "featuresSettings": {
     "title": "Funkcie",

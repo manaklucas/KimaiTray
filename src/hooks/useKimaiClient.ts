@@ -3,7 +3,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { createKimaiClient, type KimaiClient } from "../api/kimaiClient";
 import { getApiToken } from "../api/secureStore";
 import { loadSettings, onSettingsChange, saveSettings } from "../settings/service";
-import type { SavedConnection } from "../types";
+import type { SavedConnection, ColorMode } from "../types";
 import type { IssueIntegrationSettings } from "../integrations/issues/types";
 import { getIssueToken } from "../integrations/issues/issueTokenStore";
 
@@ -48,6 +48,7 @@ interface UseKimaiClientResult {
   featureFlags: FeatureFlags;
   autoUpdate: boolean;
   popupLayout: PopupLayout;
+  colorMode: ColorMode;
   displayMode: "tray" | "detached";
   connections: SavedConnection[];
   activeConnectionId: string;
@@ -90,6 +91,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     useState<TraySettings>(defaultTraySettings);
   const [autoUpdate, setAutoUpdate] = useState(true);
   const [popupLayout, setPopupLayout] = useState<PopupLayout>("classic");
+  const [colorMode, setColorMode] = useState<ColorMode>("kimai");
   const [displayMode, setDisplayMode] = useState<"tray" | "detached">("tray");
   const [featureFlags, setFeatureFlags] = useState<FeatureFlags>({
     featureNote: true,
@@ -147,6 +149,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     });
     setAutoUpdate(s.autoUpdate);
     setPopupLayout(s.popupLayout ?? "classic");
+    setColorMode(s.colorMode ?? "kimai");
     setDisplayMode(s.displayMode ?? "tray");
     setFeatureFlags({
       featureNote: s.featureNote ?? true,
@@ -253,6 +256,7 @@ export function useKimaiClient(): UseKimaiClientResult {
     featureFlags,
     autoUpdate,
     popupLayout,
+    colorMode,
     displayMode,
     connections,
     activeConnectionId,

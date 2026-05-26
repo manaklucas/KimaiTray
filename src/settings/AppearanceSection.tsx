@@ -434,6 +434,69 @@ export default function AppearanceSection({ settings, update }: Props) {
           ))}
         </div>
       </FieldGroup>
+
+      <Divider />
+
+      <FieldGroup label={t("appearanceSettings.colorMode")} description={t("appearanceSettings.colorModeDescription")}>
+        <div className="flex flex-col gap-1.5 mt-1">
+          {([
+            { value: "kimai" as const, label: t("appearanceSettings.colorModeKimai"), dots: 1 },
+            { value: "activity" as const, label: t("appearanceSettings.colorModeActivity"), dots: 1 },
+            { value: "project" as const, label: t("appearanceSettings.colorModeProject"), dots: 1 },
+            { value: "customer" as const, label: t("appearanceSettings.colorModeCustomer"), dots: 1 },
+            { value: "activity-project" as const, label: t("appearanceSettings.colorModeActivityProject"), dots: 2 },
+            { value: "activity-customer" as const, label: t("appearanceSettings.colorModeActivityCustomer"), dots: 2 },
+            { value: "project-customer" as const, label: t("appearanceSettings.colorModeProjectCustomer"), dots: 2 },
+          ]).map((opt) => {
+            const active = settings.colorMode === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => update("colorMode", opt.value)}
+                className={`flex items-center gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]
+                  ${
+                    active
+                      ? "border-[var(--accent)] bg-[var(--accent-light)]"
+                      : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                  }`}
+              >
+                <span
+                  className={`inline-flex items-center justify-center h-3.5 w-3.5 rounded-full border shrink-0
+                    ${
+                      active
+                        ? "border-[var(--accent)]"
+                        : "border-gray-300 dark:border-gray-600"
+                    }`}
+                >
+                  {active && (
+                    <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+                  )}
+                </span>
+                <span className="flex items-center gap-1.5 min-w-0">
+                  <span className="inline-flex gap-0.5 shrink-0">
+                    {Array.from({ length: opt.dots }, (_, i) => (
+                      <span
+                        key={i}
+                        className="inline-block h-2 w-2 rounded-full"
+                        style={{
+                          backgroundColor: opt.dots === 1
+                            ? "#10b981"
+                            : i === 0 ? "#10b981" : "#3b82f6",
+                        }}
+                      />
+                    ))}
+                  </span>
+                  <span className="text-[12px] text-gray-600 dark:text-gray-400 truncate">
+                    {opt.label}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </FieldGroup>
     </div>
   );
 }

@@ -206,7 +206,16 @@
     "layoutTaskbar": "Панель завдань",
     "layoutTaskbarDescription": "Швидке перемикання завдань, компактний таймер",
     "layoutTimeline": "Хронологія",
-    "layoutTimelineDescription": "Огляд дня першим, завдання згорнуті"
+    "layoutTimelineDescription": "Огляд дня першим, завдання згорнуті",
+    "colorMode": "Кольоровий індикатор",
+    "colorModeDescription": "Виберіть, який колір відображати біля записів",
+    "colorModeKimai": "Kimai авто (активність → проєкт → клієнт)",
+    "colorModeActivity": "Колір активності",
+    "colorModeProject": "Колір проєкту",
+    "colorModeCustomer": "Колір клієнта",
+    "colorModeActivityProject": "Активність + Проєкт",
+    "colorModeActivityCustomer": "Активність + Клієнт",
+    "colorModeProjectCustomer": "Проєкт + Клієнт"
   },
   "featuresSettings": {
     "title": "Функції",

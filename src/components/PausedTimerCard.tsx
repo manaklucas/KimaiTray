@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import type { PausedTimerData } from "../api/pauseStore";
+import type { ColorMode } from "../types";
 import TagsList from "./TagsList";
+import ColorDots from "./ColorDots";
 
 interface PausedTimerCardProps {
   paused: PausedTimerData;
@@ -11,6 +13,7 @@ interface PausedTimerCardProps {
   error?: string | null;
   onDismissError?: () => void;
   compact?: boolean;
+  colorMode?: ColorMode;
 }
 
 function formatPausedAt(iso: string): string {
@@ -29,6 +32,7 @@ export default function PausedTimerCard({
   error,
   onDismissError,
   compact,
+  colorMode = "kimai",
 }: PausedTimerCardProps) {
   const { t } = useTranslation();
   const busy = !!isResuming || !!isStopping;
@@ -37,9 +41,11 @@ export default function PausedTimerCard({
     return (
       <div className="mx-3 mt-1.5 rounded-lg bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/40">
         <div className="px-2.5 py-1.5 flex items-center gap-2">
-          <span
-            className="inline-block h-2 w-2 rounded-full shrink-0"
-            style={{ backgroundColor: paused.projectColor }}
+          <ColorDots
+            activityColor={paused.activityColor ?? ""}
+            projectColor={paused.projectColor}
+            customerColor={paused.customerColor ?? ""}
+            colorMode={colorMode}
           />
           <span className="text-[11px] font-medium text-gray-800 dark:text-gray-200 truncate">
             {paused.project}
@@ -83,9 +89,11 @@ export default function PausedTimerCard({
       <div className="px-3 py-2.5">
         {/* Row 1: Project + Activity + Paused badge */}
         <div className="flex items-center gap-2 mb-1">
-          <span
-            className="inline-block h-2 w-2 rounded-full shrink-0"
-            style={{ backgroundColor: paused.projectColor }}
+          <ColorDots
+            activityColor={paused.activityColor ?? ""}
+            projectColor={paused.projectColor}
+            customerColor={paused.customerColor ?? ""}
+            colorMode={colorMode}
           />
           <span className="text-xs font-medium text-gray-800 dark:text-gray-200 truncate">
             {paused.project}

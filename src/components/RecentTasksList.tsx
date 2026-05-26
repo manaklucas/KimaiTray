@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { RecentTask } from "../types";
+import type { RecentTask, ColorMode } from "../types";
 import RecentTaskItem from "./RecentTaskItem";
 
 interface RecentTasksListProps {
@@ -14,6 +14,7 @@ interface RecentTasksListProps {
   hiddenCount?: number;
   onShowAll?: () => void;
   showHeader?: boolean;
+  colorMode?: ColorMode;
 }
 
 function LoadingSkeleton() {
@@ -40,6 +41,7 @@ export default function RecentTasksList({
   hiddenCount = 0,
   onShowAll,
   showHeader = true,
+  colorMode = "kimai",
 }: RecentTasksListProps) {
   const { t } = useTranslation();
 
@@ -102,6 +104,7 @@ export default function RecentTasksList({
             isStarting={startingKey === task.key}
             isDeleting={deletingId === task.timesheetId}
             disabled={disabled}
+            colorMode={colorMode}
           />
         ))}
       </div>

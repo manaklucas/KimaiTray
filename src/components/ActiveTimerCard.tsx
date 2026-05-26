@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import type { ActiveTimer } from "../types";
+import type { ActiveTimer, ColorMode } from "../types";
 import TagsList from "./TagsList";
 import TagsInput from "./TagsInput";
 import DateTimePicker from "./DateTimePicker";
+import ColorDots from "./ColorDots";
 
 interface ActiveTimerCardProps {
   timer: ActiveTimer;
@@ -23,6 +24,7 @@ interface ActiveTimerCardProps {
   showNote?: boolean;
   showTags?: boolean;
   issueUrl?: string | null;
+  colorMode?: ColorMode;
 }
 
 function formatElapsed(seconds: number, showSeconds = true): string {
@@ -62,6 +64,7 @@ export default function ActiveTimerCard({
   showNote = true,
   showTags = true,
   issueUrl,
+  colorMode = "kimai",
 }: ActiveTimerCardProps) {
   const { t } = useTranslation();
   const [elapsed, setElapsed] = useState(() =>
@@ -179,9 +182,12 @@ export default function ActiveTimerCard({
     return (
       <div className="mx-3 mt-1.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40">
         <div className="px-2.5 py-1.5 flex items-center gap-2">
-          <span
-            className="inline-block h-2 w-2 rounded-full shrink-0 animate-pulse"
-            style={{ backgroundColor: timer.projectColor }}
+          <ColorDots
+            activityColor={timer.activityColor}
+            projectColor={timer.projectColor}
+            customerColor={timer.customerColor}
+            colorMode={colorMode}
+            pulse
           />
           <span className="text-[11px] font-medium text-gray-800 dark:text-gray-200 truncate">
             {timer.project}
@@ -228,9 +234,12 @@ export default function ActiveTimerCard({
       <div className="px-3 py-2.5">
         {/* Row 1: Project + Activity + badges */}
         <div className="flex items-center gap-2 mb-1">
-          <span
-            className="inline-block h-2 w-2 rounded-full shrink-0 animate-pulse"
-            style={{ backgroundColor: timer.projectColor }}
+          <ColorDots
+            activityColor={timer.activityColor}
+            projectColor={timer.projectColor}
+            customerColor={timer.customerColor}
+            colorMode={colorMode}
+            pulse
           />
           <span className="text-xs font-medium text-gray-800 dark:text-gray-200 truncate">
             {timer.project}

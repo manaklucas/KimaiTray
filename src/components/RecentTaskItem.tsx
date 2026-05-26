@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { RecentTask } from "../types";
+import type { RecentTask, ColorMode } from "../types";
 import TagsList from "./TagsList";
+import ColorDots from "./ColorDots";
 
 interface RecentTaskItemProps {
   task: RecentTask;
@@ -11,6 +12,7 @@ interface RecentTaskItemProps {
   isStarting?: boolean;
   isDeleting?: boolean;
   disabled?: boolean;
+  colorMode?: ColorMode;
 }
 
 export default function RecentTaskItem({
@@ -21,6 +23,7 @@ export default function RecentTaskItem({
   isStarting,
   isDeleting,
   disabled,
+  colorMode = "kimai",
 }: RecentTaskItemProps) {
   const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
@@ -73,9 +76,11 @@ export default function RecentTaskItem({
           focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] rounded
           disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span
-          className="inline-block h-2 w-2 shrink-0 rounded-full"
-          style={{ backgroundColor: task.projectColor }}
+        <ColorDots
+          activityColor={task.activityColor}
+          projectColor={task.projectColor}
+          customerColor={task.customerColor}
+          colorMode={colorMode}
         />
 
         <div className="flex-1 min-w-0 text-left">

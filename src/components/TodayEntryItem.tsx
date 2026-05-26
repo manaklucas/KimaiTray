@@ -1,13 +1,15 @@
 import { useTranslation } from "react-i18next";
-import type { TodayEntry } from "../types";
+import type { TodayEntry, ColorMode } from "../types";
 import TagsList from "./TagsList";
+import ColorDots from "./ColorDots";
 import { formatTime, formatDuration } from "../utils/time";
 
 interface TodayEntryItemProps {
   entry: TodayEntry;
+  colorMode?: ColorMode;
 }
 
-export default function TodayEntryItem({ entry }: TodayEntryItemProps) {
+export default function TodayEntryItem({ entry, colorMode = "kimai" }: TodayEntryItemProps) {
   const { t } = useTranslation();
 
   const duration = entry.isRunning
@@ -43,11 +45,13 @@ export default function TodayEntryItem({ entry }: TodayEntryItemProps) {
         </div>
 
         {/* Color dot */}
-        <span
-          className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${
-            entry.isRunning ? "animate-pulse" : ""
-          }`}
-          style={{ backgroundColor: entry.projectColor }}
+        <ColorDots
+          activityColor={entry.activityColor}
+          projectColor={entry.projectColor}
+          customerColor={entry.customerColor}
+          colorMode={colorMode}
+          size="sm"
+          pulse={entry.isRunning}
         />
 
         {/* Project + Activity */}

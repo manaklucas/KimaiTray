@@ -206,7 +206,16 @@
     "layoutTaskbar": "Taskleiste",
     "layoutTaskbarDescription": "Schnelles Aufgabenwechseln, kompakter Timer",
     "layoutTimeline": "Zeitachse",
-    "layoutTimelineDescription": "Tagesübersicht zuerst, Aufgaben eingeklappt"
+    "layoutTimelineDescription": "Tagesübersicht zuerst, Aufgaben eingeklappt",
+    "colorMode": "Farbindikator",
+    "colorModeDescription": "Wählen Sie, welche Farbe neben Einträgen angezeigt wird",
+    "colorModeKimai": "Kimai auto (Aktivität → Projekt → Kunde)",
+    "colorModeActivity": "Aktivitätsfarbe",
+    "colorModeProject": "Projektfarbe",
+    "colorModeCustomer": "Kundenfarbe",
+    "colorModeActivityProject": "Aktivität + Projekt",
+    "colorModeActivityCustomer": "Aktivität + Kunde",
+    "colorModeProjectCustomer": "Projekt + Kunde"
   },
   "featuresSettings": {
     "title": "Funktionen",

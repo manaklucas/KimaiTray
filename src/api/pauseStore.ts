@@ -13,6 +13,8 @@ export interface PausedTimerData {
   activityId: number;
   project: string;
   projectColor: string;
+  activityColor: string;
+  customerColor: string;
   activity: string;
   description: string;
   tags: string[];

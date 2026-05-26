@@ -186,6 +186,7 @@ export default function TrayPopup() {
     featureFlags,
     autoUpdate,
     popupLayout,
+    colorMode,
     displayMode,
     connections,
     activeConnectionId,
@@ -625,6 +626,7 @@ export default function TrayPopup() {
                 showNote={featureFlags.featureNote}
                 showTags={featureFlags.featureTags}
                 issueUrl={timerIssueUrl}
+                colorMode={colorMode}
               />
             ) : !hasPausedTimers ? (
               <EmptyTimerState compact={compactTimer} />
@@ -640,6 +642,7 @@ export default function TrayPopup() {
                 error={pauseError}
                 onDismissError={dismissPauseError}
                 compact={!!timer || compactTimer}
+                colorMode={colorMode}
               />
             ))}
           </div>
@@ -700,6 +703,7 @@ export default function TrayPopup() {
                     hiddenCount={hiddenCount}
                     onShowAll={clearHidden}
                     showHeader={false}
+                    colorMode={colorMode}
                   />
                 ) : status !== "unconfigured" ? (
                   <TodaySection
@@ -714,6 +718,7 @@ export default function TrayPopup() {
                     isLoading={today.isLoading}
                     isError={today.isError}
                     onRetry={() => today.refetch()}
+                    colorMode={colorMode}
                   />
                 ) : null}
               </>
@@ -734,6 +739,7 @@ export default function TrayPopup() {
                       isLoading={today.isLoading}
                       isError={today.isError}
                       onRetry={() => today.refetch()}
+                      colorMode={colorMode}
                     />
                     <div className="mx-3 border-t border-gray-100 dark:border-gray-800" />
                   </>
@@ -767,6 +773,7 @@ export default function TrayPopup() {
                       hiddenCount={hiddenCount}
                       onShowAll={clearHidden}
                       showHeader={false}
+                      colorMode={colorMode}
                     />
                   )}
                 </div>
@@ -784,6 +791,7 @@ export default function TrayPopup() {
                   disabled={isStarting || isStoppingActive || isPausing || resumingId !== null}
                   hiddenCount={hiddenCount}
                   onShowAll={clearHidden}
+                  colorMode={colorMode}
                 />
                 {status !== "unconfigured" && (
                   <>
@@ -824,6 +832,7 @@ export default function TrayPopup() {
                           isLoading={today.isLoading}
                           isError={today.isError}
                           onRetry={() => today.refetch()}
+                          colorMode={colorMode}
                         />
                       )}
                     </div>
@@ -844,6 +853,7 @@ export default function TrayPopup() {
                   disabled={isStarting || isStoppingActive || isPausing || resumingId !== null}
                   hiddenCount={hiddenCount}
                   onShowAll={clearHidden}
+                  colorMode={colorMode}
                 />
                 {status !== "unconfigured" && (
                   <>
@@ -860,6 +870,7 @@ export default function TrayPopup() {
                       isLoading={today.isLoading}
                       isError={today.isError}
                       onRetry={() => today.refetch()}
+                      colorMode={colorMode}
                     />
                   </>
                 )}

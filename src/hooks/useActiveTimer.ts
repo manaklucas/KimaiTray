@@ -49,7 +49,7 @@ export function useActiveTimer(
     return { projectIds, activityIds };
   }, [entries]);
 
-  const { projects, activities } = useEntityLookup(
+  const { projects, activities, customers } = useEntityLookup(
     client,
     enabled,
     neededIds.projectIds,
@@ -63,19 +63,24 @@ export function useActiveTimer(
     const activityId = extractId(entry.activity);
     const proj = projects.find((p) => p.id === projectId);
     const act = activities.find((a) => a.id === activityId);
+    const cust = proj
+      ? customers.find((c) => c.id === proj.customer)
+      : undefined;
     return {
       id: entry.id,
       projectId,
       activityId,
       project: proj?.name ?? `Project #${projectId}`,
-      projectColor: proj?.color ?? "#6b7280",
+      projectColor: proj?.color ?? "",
+      activityColor: act?.color ?? "",
+      customerColor: cust?.color ?? "",
       activity: act?.name ?? `Activity #${activityId}`,
       description: entry.description ?? "",
       tags: normalizeKimaiTags(entry.tags),
       beginSeconds: Math.floor(new Date(entry.begin).getTime() / 1000),
       beginIso: entry.begin,
     };
-  }, [entries, projects, activities]);
+  }, [entries, projects, activities, customers]);
 
   const stopMut = useMutation({
     mutationFn: (id: number) => stopTimesheet(client!, id),
