@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.7.1] - 2026-05-27
+
+### Bug Fixes
+
+- **Fixed Windows build warning** — gated macOS-only vibrancy static behind `cfg(target_os = "macos")` to silence unused import warning on Windows builds
+
 ## [0.7.0] - 2026-05-27
 
 ### New Features
