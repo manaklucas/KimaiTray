@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.7.0] - 2026-05-27
+
+### New Features
+
+- **Auto-insert issue URL** — new toggle in integration settings to automatically add the issue URL to the timer description when selecting an issue in the new task form
+- **Timer card animations** — smooth slide-in/fade entry and exit animations on active timer, paused timer, and empty state cards (respects "reduce visual effects" setting)
+
+### Bug Fixes
+
+- **Reduced popup flickering** — position the popup window before showing instead of show-then-reposition, eliminating the visible flash on open
+- **Batched query invalidation** — consolidated triple `invalidateQueries` calls into a single predicate-based invalidation across all hooks to reduce cascading re-renders
+- **Skipped redundant native calls** — `useAppearance` now caches previous values and skips unchanged `setPopupSize`/`setPopupVibrancy`/`setPopupCornerRadius`/`setDisplayMode` calls
+- **Fixed horizontal scroll in new task form** — prevented overflow when selecting an issue with a long title in the issue picker
+
+### Translations
+
+- Added auto-insert URL translations for EN, SK, CS, DE, UK
+
 ## [0.6.0] - 2026-05-26
 
 ### New Features
