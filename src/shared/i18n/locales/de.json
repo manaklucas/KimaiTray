@@ -224,6 +224,8 @@
     "noteDescription": "Beschreibungsfeld beim Erstellen oder Bearbeiten eines Timers",
     "tags": "Tags",
     "tagsDescription": "Tag-Eingabe beim Erstellen oder Bearbeiten eines Timers",
+    "pausedDescriptionHover": "Beschreibung pausierter Timer",
+    "pausedDescriptionHoverDescription": "Beim Hover die Beschreibung des pausierten Timers statt des Aktivitätsnamens anzeigen",
     "customerSelect": "Kundenfilter",
     "customerSelectDescription": "Kunden-Dropdown zum Filtern von Projekten im Formular für neue Aufgaben",
     "customStartTime": "Benutzerdefinierte Startzeit",

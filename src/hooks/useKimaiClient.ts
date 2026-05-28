@@ -32,6 +32,7 @@ type PopupLayout = "classic" | "focus" | "taskbar" | "timeline";
 interface FeatureFlags {
   featureNote: boolean;
   featureTags: boolean;
+  featurePausedTimerDescriptionHover: boolean;
   featureCustomerSelect: boolean;
   featureCustomStartTime: boolean;
 }
@@ -96,6 +97,7 @@ export function useKimaiClient(): UseKimaiClientResult {
   const [featureFlags, setFeatureFlags] = useState<FeatureFlags>({
     featureNote: true,
     featureTags: false,
+    featurePausedTimerDescriptionHover: false,
     featureCustomerSelect: true,
     featureCustomStartTime: true,
   });
@@ -155,6 +157,8 @@ export function useKimaiClient(): UseKimaiClientResult {
     setFeatureFlags({
       featureNote: s.featureNote ?? true,
       featureTags: s.featureTags ?? false,
+      featurePausedTimerDescriptionHover:
+        s.featurePausedTimerDescriptionHover ?? false,
       featureCustomerSelect: s.featureCustomerSelect ?? true,
       featureCustomStartTime: s.featureCustomStartTime ?? true,
     });

@@ -41,6 +41,15 @@ export default function FeaturesSection({ settings, update }: Props) {
 
       <Divider />
 
+      <FieldGroup label={t("featuresSettings.pausedDescriptionHover")} description={t("featuresSettings.pausedDescriptionHoverDescription")} horizontal>
+        <Toggle
+          checked={settings.featurePausedTimerDescriptionHover}
+          onChange={(v) => update("featurePausedTimerDescriptionHover", v)}
+        />
+      </FieldGroup>
+
+      <Divider />
+
       <FieldGroup label={t("featuresSettings.customerSelect")} description={t("featuresSettings.customerSelectDescription")} horizontal>
         <Toggle
           checked={settings.featureCustomerSelect}

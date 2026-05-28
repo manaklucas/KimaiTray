@@ -35,6 +35,7 @@ export const defaultSettings: AppSettings = {
 
   featureNote: true,
   featureTags: false,
+  featurePausedTimerDescriptionHover: false,
   featureCustomerSelect: true,
   featureCustomStartTime: true,
 

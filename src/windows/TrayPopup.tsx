@@ -675,6 +675,9 @@ export default function TrayPopup() {
                 onDismissError={dismissPauseError}
                 compact={!!timer || compactTimer}
                 colorMode={colorMode}
+                showDescriptionOnHover={
+                  featureFlags.featurePausedTimerDescriptionHover
+                }
               />
             ))}
           </div>

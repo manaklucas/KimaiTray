@@ -224,6 +224,8 @@
     "noteDescription": "Pole popisu při vytváření nebo úpravě časovače",
     "tags": "Tagy",
     "tagsDescription": "Vstup tagů při vytváření nebo úpravě časovače",
+    "pausedDescriptionHover": "Popis pozastaveného časovače",
+    "pausedDescriptionHoverDescription": "Při najetí zobrazit popis pozastaveného časovače místo názvu aktivity",
     "customerSelect": "Filtr zákazníků",
     "customerSelectDescription": "Výběr zákazníka pro filtrování projektů ve formuláři nového úkolu",
     "customStartTime": "Vlastní čas spuštění",

@@ -14,6 +14,7 @@ interface PausedTimerCardProps {
   onDismissError?: () => void;
   compact?: boolean;
   colorMode?: ColorMode;
+  showDescriptionOnHover?: boolean;
 }
 
 function formatPausedAt(iso: string): string {
@@ -33,10 +34,13 @@ export default function PausedTimerCard({
   onDismissError,
   compact,
   colorMode = "kimai",
+  showDescriptionOnHover = false,
 }: PausedTimerCardProps) {
   const { t } = useTranslation();
   const busy = !!isResuming || !!isStopping;
   const cardAnim = busy ? "animate-card-out" : "animate-card-in";
+  const description = paused.description.trim();
+  const hasDescription = showDescriptionOnHover && description.length > 0;
 
   if (compact) {
     return (
@@ -48,13 +52,29 @@ export default function PausedTimerCard({
             customerColor={paused.customerColor ?? ""}
             colorMode={colorMode}
           />
-          <span className="text-[11px] font-medium text-gray-800 dark:text-gray-200 truncate">
-            {paused.project}
-          </span>
-          <span className="text-[10px] text-gray-400 dark:text-gray-500 truncate">
-            {paused.activity}
-          </span>
-          <span className="ml-auto rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-semibold text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 shrink-0">
+          <div className="min-w-0 flex flex-1 items-center gap-2">
+            <span className="min-w-0 max-w-[55%] shrink truncate text-[11px] font-medium leading-4 text-gray-800 dark:text-gray-200">
+              {paused.project}
+            </span>
+            <span
+              title={hasDescription ? description : undefined}
+              className="group relative h-4 min-w-0 flex-1 overflow-hidden text-[10px] leading-4 text-gray-400 dark:text-gray-500"
+            >
+              {hasDescription ? (
+                <>
+                  <span className="absolute inset-0 truncate opacity-100 transition-opacity duration-150 ease-out group-hover:opacity-0">
+                    {paused.activity}
+                  </span>
+                  <span className="absolute inset-0 truncate opacity-0 transition-opacity duration-150 ease-out group-hover:opacity-100">
+                    {description}
+                  </span>
+                </>
+              ) : (
+                <span className="block truncate">{paused.activity}</span>
+              )}
+            </span>
+          </div>
+          <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-semibold text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 shrink-0">
             {t("pause.paused")}
           </span>
           <div className="flex items-center gap-1.5 shrink-0">

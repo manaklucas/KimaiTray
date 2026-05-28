@@ -79,6 +79,7 @@ export interface AppSettings {
 
   featureNote: boolean;
   featureTags: boolean;
+  featurePausedTimerDescriptionHover: boolean;
   featureCustomerSelect: boolean;
   featureCustomStartTime: boolean;
 
