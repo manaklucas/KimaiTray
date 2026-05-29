@@ -352,10 +352,12 @@ export default function TrayPopup() {
           // Do nothing, just dismiss
         } else if (idleSettings.idleAction === "stop") {
           await stopTimesheet(client, timer.id);
+          invalidateTimesheets(qc);
         } else if (idleSettings.idleAction === "discard" && idleStartedAt) {
           await updateTimesheet(client, timer.id, {
             end: idleStartedAt.toISOString(),
           });
+          invalidateTimesheets(qc);
         }
       } catch {
         // Ignore errors for auto-actions
@@ -378,24 +380,32 @@ export default function TrayPopup() {
       await updateTimesheet(client, timer.id, {
         end: idleStartedAt.toISOString(),
       });
+      invalidateTimesheets(qc);
     } catch {
       // fallback: just stop now
-      try { await stopTimesheet(client, timer.id); } catch {}
+      try {
+        await stopTimesheet(client, timer.id);
+        invalidateTimesheets(qc);
+      } catch {}
     } finally {
       setIdleProcessing(false);
       dismissIdle();
     }
-  }, [client, timer, idleStartedAt, dismissIdle]);
+  }, [client, timer, idleStartedAt, dismissIdle, qc]);
 
   const handleIdleStopNow = useCallback(async () => {
     if (!client || !timer) return;
     setIdleProcessing(true);
     try {
       await stopTimesheet(client, timer.id);
-    } catch {}
-    setIdleProcessing(false);
-    dismissIdle();
-  }, [client, timer, dismissIdle]);
+      invalidateTimesheets(qc);
+    } catch {
+      // stop failed, still dismiss
+    } finally {
+      setIdleProcessing(false);
+      dismissIdle();
+    }
+  }, [client, timer, dismissIdle, qc]);
 
   const handleIdleStopAndNew = useCallback(async () => {
     if (!client || !timer || !idleStartedAt) return;
@@ -404,13 +414,18 @@ export default function TrayPopup() {
       await updateTimesheet(client, timer.id, {
         end: idleStartedAt.toISOString(),
       });
+      invalidateTimesheets(qc);
     } catch {
-      try { await stopTimesheet(client, timer.id); } catch {}
+      try {
+        await stopTimesheet(client, timer.id);
+        invalidateTimesheets(qc);
+      } catch {}
+    } finally {
+      setIdleProcessing(false);
+      dismissIdle();
     }
-    setIdleProcessing(false);
-    dismissIdle();
     setShowNewTask(true);
-  }, [client, timer, idleStartedAt, dismissIdle]);
+  }, [client, timer, idleStartedAt, dismissIdle, qc]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -572,6 +587,7 @@ export default function TrayPopup() {
   const compactTimer = popupLayout === "taskbar" || popupLayout === "timeline";
 
   const showIdleDialog =
+    !!client &&
     idleState === "returned" &&
     idleSettings.idleAction === "ask" &&
     timer &&
