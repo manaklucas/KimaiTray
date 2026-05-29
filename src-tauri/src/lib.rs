@@ -69,6 +69,8 @@ pub fn run() {
             tray::set_always_on_top,
             tray::start_tray_ticker,
             tray::stop_tray_ticker,
+            tray::list_monitors,
+            tray::set_popup_monitor,
             idle::get_idle_seconds,
             shortcuts::register_shortcuts,
         ])

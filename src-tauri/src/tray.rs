@@ -180,6 +180,12 @@ static TRAY_LEFT_ACTION: AtomicU8 = AtomicU8::new(0);
 static TRAY_RIGHT_ACTION: AtomicU8 = AtomicU8::new(0);
 // 0 = tray, 1 = detached
 static DISPLAY_MODE: AtomicU8 = AtomicU8::new(0);
+// 0 = active monitor, 1 = specific monitor (Linux only)
+static POPUP_MONITOR_MODE: AtomicU8 = AtomicU8::new(0);
+// index of the monitor to use in specific mode
+static POPUP_MONITOR_INDEX: AtomicU8 = AtomicU8::new(0);
+// 0=bottom-right, 1=bottom-left, 2=top-right, 3=top-left, 4=center
+static POPUP_MONITOR_POS: AtomicU8 = AtomicU8::new(0);
 
 fn now_ms() -> u64 {
     SystemTime::now()
@@ -229,6 +235,93 @@ pub fn set_always_on_top(app: AppHandle, pinned: bool) -> Result<(), String> {
         .get_webview_window("tray-popup")
         .ok_or("Popup not found")?;
     window.set_always_on_top(pinned).map_err(|e| e.to_string())
+}
+
+/// Position the popup on a specific monitor at the given corner/center.
+/// `pos`: 0=bottom-right, 1=bottom-left, 2=top-right, 3=top-left, 4=center
+fn position_on_monitor(window: &WebviewWindow, monitor_index: u8, pos: u8) -> tauri::Result<()> {
+    let monitors = window.available_monitors()?;
+    let win_size = window.outer_size()?;
+    const MARGIN: i32 = 8;
+
+    let monitor = monitors
+        .get(monitor_index as usize)
+        .or_else(|| monitors.iter().find(|m| {
+            window.primary_monitor().ok().flatten().as_ref()
+                .map(|p| p.name() == m.name())
+                .unwrap_or(false)
+        }))
+        .or_else(|| monitors.first());
+
+    let monitor = match monitor {
+        Some(m) => m,
+        None => return Ok(()),
+    };
+
+    let mon_pos = monitor.position();
+    let mon_size = monitor.size();
+
+    let x = match pos {
+        1 | 3 => mon_pos.x + MARGIN,                                                           // left
+        4 => mon_pos.x + (mon_size.width as i32 - win_size.width as i32) / 2,                 // center-x
+        _ => mon_pos.x + mon_size.width as i32 - win_size.width as i32 - MARGIN,              // right (0, 2)
+    };
+
+    let y = match pos {
+        2 | 3 => mon_pos.y + MARGIN,                                                           // top
+        4 => mon_pos.y + (mon_size.height as i32 - win_size.height as i32) / 2,               // center-y
+        _ => mon_pos.y + mon_size.height as i32 - win_size.height as i32 - MARGIN,            // bottom (0, 1)
+    };
+
+    window.set_position(PhysicalPosition::new(x, y))?;
+    Ok(())
+}
+
+#[derive(serde::Serialize)]
+pub struct MonitorInfo {
+    pub index: usize,
+    pub name: String,
+    pub primary: bool,
+}
+
+#[tauri::command]
+pub fn list_monitors(app: AppHandle) -> Result<Vec<MonitorInfo>, String> {
+    let window = app
+        .get_webview_window("tray-popup")
+        .ok_or("Popup not found")?;
+    let monitors = window.available_monitors().map_err(|e| e.to_string())?;
+    let primary_name = window
+        .primary_monitor()
+        .ok()
+        .flatten()
+        .and_then(|m| m.name().map(|n| n.to_string()));
+    Ok(monitors
+        .iter()
+        .enumerate()
+        .map(|(i, m)| {
+            let name = m
+                .name()
+                .map(|n| n.to_string())
+                .unwrap_or_else(|| format!("Monitor {}", i + 1));
+            let primary = primary_name.as_deref() == m.name().map(|x| x.as_str());
+            MonitorInfo { index: i, name, primary }
+        })
+        .collect())
+}
+
+#[tauri::command]
+pub fn set_popup_monitor(mode: String, index: u8, position: String) -> Result<(), String> {
+    POPUP_MONITOR_MODE.store(if mode == "specific" { 1 } else { 0 }, Ordering::SeqCst);
+    POPUP_MONITOR_INDEX.store(index, Ordering::SeqCst);
+    let pos_code: u8 = match position.as_str() {
+        "bottom-left" => 1,
+        "top-right"   => 2,
+        "top-left"    => 3,
+        "center"      => 4,
+        _             => 0, // bottom-right default
+    };
+    POPUP_MONITOR_POS.store(pos_code, Ordering::SeqCst);
+    Ok(())
 }
 
 fn position_popup(window: &WebviewWindow, tray_rect: &tauri::Rect) -> tauri::Result<()> {
@@ -405,7 +498,11 @@ pub fn toggle_popup_window(app: &AppHandle) {
                 let _ = popup.show();
                 let _ = popup.set_focus();
             } else {
-                if let Some(tray) = app.tray_by_id("main") {
+                if POPUP_MONITOR_MODE.load(Ordering::SeqCst) == 1 {
+                    let idx = POPUP_MONITOR_INDEX.load(Ordering::SeqCst);
+                    let pos = POPUP_MONITOR_POS.load(Ordering::SeqCst);
+                    let _ = position_on_monitor(&popup, idx, pos);
+                } else if let Some(tray) = app.tray_by_id("main") {
                     if let Ok(Some(rect)) = tray.rect() {
                         let _ = position_popup(&popup, &rect);
                     }
@@ -437,9 +534,27 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
             let display = s.get("displayMode")
                 .and_then(|v| v.as_str())
                 .unwrap_or("tray");
+            let mon_mode = s.get("popupMonitorMode")
+                .and_then(|v| v.as_str())
+                .unwrap_or("active");
+            let mon_index = s.get("popupMonitorIndex")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as u8;
+            let mon_pos = s.get("popupMonitorPosition")
+                .and_then(|v| v.as_str())
+                .unwrap_or("bottom-right");
             TRAY_LEFT_ACTION.store(if left == "nothing" { 1 } else { 0 }, Ordering::SeqCst);
             TRAY_RIGHT_ACTION.store(if right == "popup" { 1 } else { 0 }, Ordering::SeqCst);
             DISPLAY_MODE.store(if display == "detached" { 1 } else { 0 }, Ordering::SeqCst);
+            POPUP_MONITOR_MODE.store(if mon_mode == "specific" { 1 } else { 0 }, Ordering::SeqCst);
+            POPUP_MONITOR_INDEX.store(mon_index, Ordering::SeqCst);
+            POPUP_MONITOR_POS.store(match mon_pos {
+                "bottom-left" => 1,
+                "top-right"   => 2,
+                "top-left"    => 3,
+                "center"      => 4,
+                _             => 0,
+            }, Ordering::SeqCst);
             right == "popup"
         } else {
             false

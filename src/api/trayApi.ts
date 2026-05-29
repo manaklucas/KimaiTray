@@ -104,6 +104,28 @@ export async function setTrayClickActions(leftAction: string, rightAction: strin
   }
 }
 
+export interface MonitorInfo {
+  index: number;
+  name: string;
+  primary: boolean;
+}
+
+export async function listMonitors(): Promise<MonitorInfo[]> {
+  try {
+    return await invoke<MonitorInfo[]>("list_monitors");
+  } catch {
+    return [];
+  }
+}
+
+export async function setPopupMonitor(mode: string, index: number, position: string): Promise<void> {
+  try {
+    await invoke("set_popup_monitor", { mode, index, position });
+  } catch {
+    // best-effort
+  }
+}
+
 export async function updateTrayMenu(labels: {
   toggleLabel: string;
   settingsLabel: string;

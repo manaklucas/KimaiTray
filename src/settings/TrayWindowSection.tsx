@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
 import type { AppSettings } from "../types";
-import { setTrayClickActions, setDisplayMode } from "../api/trayApi";
+import { setTrayClickActions, setDisplayMode, listMonitors, setPopupMonitor } from "../api/trayApi";
+import type { MonitorInfo } from "../api/trayApi";
 import {
   Divider,
   FieldGroup,
@@ -28,6 +30,13 @@ function TrayDot() {
 
 export default function TrayWindowSection({ settings, update }: Props) {
   const { t } = useTranslation();
+  const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
+
+  useEffect(() => {
+    if (isLinux) {
+      listMonitors().then(setMonitors);
+    }
+  }, []);
 
   const menuBarOptions: {
     value: AppSettings["menuBarLabelStyle"];
@@ -114,6 +123,82 @@ export default function TrayWindowSection({ settings, update }: Props) {
           })}
         </div>
       </FieldGroup>
+
+      {isLinux && (
+        <>
+          <Divider />
+
+          <FieldGroup
+            label={t("traySettings.popupMonitorMode")}
+            description={t("traySettings.popupMonitorModeDescription")}
+            horizontal
+          >
+            <Select
+              value={settings.popupMonitorMode}
+              onChange={(v) => {
+                const val = v as AppSettings["popupMonitorMode"];
+                update("popupMonitorMode", val);
+                setPopupMonitor(val, settings.popupMonitorIndex, settings.popupMonitorPosition);
+              }}
+              options={[
+                { value: "active", label: t("traySettings.popupMonitorModeActive") },
+                { value: "specific", label: t("traySettings.popupMonitorModeSpecific") },
+              ]}
+            />
+          </FieldGroup>
+
+          {settings.popupMonitorMode === "specific" && (
+            <>
+              <Divider />
+              <FieldGroup
+                label={t("traySettings.popupMonitorIndex")}
+                description={t("traySettings.popupMonitorIndexDescription")}
+                horizontal
+              >
+                <Select
+                  value={settings.popupMonitorIndex}
+                  onChange={(v) => {
+                    const val = Number(v);
+                    update("popupMonitorIndex", val);
+                    setPopupMonitor("specific", val, settings.popupMonitorPosition);
+                  }}
+                  options={
+                    monitors.length > 0
+                      ? monitors.map((m) => ({
+                          value: m.index,
+                          label: m.primary ? `${m.name} (primary)` : m.name,
+                        }))
+                      : [{ value: 0, label: "Monitor 1" }]
+                  }
+                />
+              </FieldGroup>
+
+              <Divider />
+              <FieldGroup
+                label={t("traySettings.popupMonitorPosition")}
+                description={t("traySettings.popupMonitorPositionDescription")}
+                horizontal
+              >
+                <Select
+                  value={settings.popupMonitorPosition}
+                  onChange={(v) => {
+                    const val = v as AppSettings["popupMonitorPosition"];
+                    update("popupMonitorPosition", val);
+                    setPopupMonitor("specific", settings.popupMonitorIndex, val);
+                  }}
+                  options={[
+                    { value: "bottom-right", label: t("traySettings.popupMonitorPositionBottomRight") },
+                    { value: "bottom-left",  label: t("traySettings.popupMonitorPositionBottomLeft") },
+                    { value: "top-right",    label: t("traySettings.popupMonitorPositionTopRight") },
+                    { value: "top-left",     label: t("traySettings.popupMonitorPositionTopLeft") },
+                    { value: "center",       label: t("traySettings.popupMonitorPositionCenter") },
+                  ]}
+                />
+              </FieldGroup>
+            </>
+          )}
+        </>
+      )}
 
       <Divider />
 

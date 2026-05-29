@@ -92,6 +92,10 @@ export interface AppSettings {
 
   displayMode: "tray" | "detached";
 
+  popupMonitorMode: "active" | "specific";
+  popupMonitorIndex: number;
+  popupMonitorPosition: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "center";
+
   autoUpdate: boolean;
 
   issueIntegrations: Record<string, IssueIntegrationSettings>;

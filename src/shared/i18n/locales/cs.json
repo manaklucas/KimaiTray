@@ -112,7 +112,20 @@
     "title": "Tray a lišta",
     "description": "Nastavte chování ikony v trayi, zobrazení v liště a režim popup okna.",
     "macOnly": "Popis v liště je dostupný pouze na macOS.",
-    "linuxOnly": "Akce kliknutí na tray nejsou dostupné na Linuxu."
+    "linuxOnly": "Akce kliknutí na tray nejsou dostupné na Linuxu.",
+    "popupMonitorMode": "Monitor pro popup okno",
+    "popupMonitorModeDescription": "Zvolte, na kterém monitoru se zobrazí popup okno.",
+    "popupMonitorModeActive": "Aktivní monitor",
+    "popupMonitorModeSpecific": "Konkrétní monitor",
+    "popupMonitorIndex": "Monitor",
+    "popupMonitorIndexDescription": "Vyberte monitor, kde se má popup zobrazovat.",
+    "popupMonitorPosition": "Pozice na monitoru",
+    "popupMonitorPositionDescription": "Místo na monitoru, kde se popup umístí.",
+    "popupMonitorPositionBottomRight": "Pravý dolní roh",
+    "popupMonitorPositionBottomLeft": "Levý dolní roh",
+    "popupMonitorPositionTopRight": "Pravý horní roh",
+    "popupMonitorPositionTopLeft": "Levý horní roh",
+    "popupMonitorPositionCenter": "Střed"
   },
   "timerSettings": {
     "title": "Časovač",

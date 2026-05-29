@@ -48,6 +48,10 @@ export const defaultSettings: AppSettings = {
 
   displayMode: "tray",
 
+  popupMonitorMode: "active",
+  popupMonitorIndex: 0,
+  popupMonitorPosition: "bottom-right",
+
   autoUpdate: true,
 
   issueIntegrations: {},
