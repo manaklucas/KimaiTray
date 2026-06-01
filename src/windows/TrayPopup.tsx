@@ -652,94 +652,97 @@ export default function TrayPopup() {
         />
       ) : (
         <>
-          {/* Timer area */}
-          <div className={popupLayout === "focus" ? "timer-area" : undefined}>
-            {status === "loading" ? (
-              <EmptyTimerState variant="loading" compact={compactTimer} />
-            ) : status === "unconfigured" ? (
-              <EmptyTimerState variant="unconfigured" compact={compactTimer} />
-            ) : timer ? (
-              <ActiveTimerCard
-                timer={timer}
-                onStop={stopActiveTimer}
-                onPause={pauseTimer}
-                isStopping={isStoppingActive}
-                isPausing={isPausing}
-                multipleActive={multipleActive}
-                onEdit={editTimer}
-                isSaving={isSaving}
-                saveError={saveError}
-                compact={compactTimer}
-                focusMode={popupLayout === "focus"}
-                showNote={featureFlags.featureNote}
-                showTags={featureFlags.featureTags}
-                issueUrl={timerIssueUrl}
-                colorMode={colorMode}
-              />
-            ) : !hasPausedTimers ? (
-              <EmptyTimerState compact={compactTimer} />
-            ) : null}
-            {pausedTimers.map((pt) => (
-              <PausedTimerCard
-                key={pt.id}
-                paused={pt}
-                onResume={() => resumeTimer(pt.id)}
-                onStop={() => discardPausedTimer(pt.id)}
-                isResuming={resumingId === pt.id}
-                isStopping={discardingId === pt.id}
-                error={pauseError}
-                onDismissError={dismissPauseError}
-                compact={!!timer || compactTimer}
-                colorMode={colorMode}
-                showDescriptionOnHover={
-                  featureFlags.featurePausedTimerDescriptionHover
-                }
-              />
-            ))}
-          </div>
-
-          {(switchError || pauseError || timesheetDeleteError) && (
-            <div className="mx-3 mt-1.5 flex items-start gap-2 rounded-md bg-red-50 dark:bg-red-950/30 border border-red-200/60 dark:border-red-800/40 px-2.5 py-2">
-              <span className="text-[11px] text-red-600 dark:text-red-400 flex-1 leading-snug">
-                {switchError || pauseError || timesheetDeleteError}
-              </span>
-              <button
-                onClick={switchError ? dismissError : timesheetDeleteError ? dismissDeleteError : dismissPauseError}
-                className="text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-300 text-xs leading-none shrink-0 p-0.5"
-              >
-                ✕
-              </button>
+          <div className="flex flex-1 min-h-0 flex-col">
+            {/* Timer area */}
+            <div className="timer-area max-h-[50%] min-h-0 shrink-0 overflow-y-auto overscroll-contain">
+              {status === "loading" ? (
+                <EmptyTimerState variant="loading" compact={compactTimer} />
+              ) : status === "unconfigured" ? (
+                <EmptyTimerState variant="unconfigured" compact={compactTimer} />
+              ) : timer ? (
+                <ActiveTimerCard
+                  timer={timer}
+                  onStop={stopActiveTimer}
+                  onPause={pauseTimer}
+                  isStopping={isStoppingActive}
+                  isPausing={isPausing}
+                  multipleActive={multipleActive}
+                  onEdit={editTimer}
+                  isSaving={isSaving}
+                  saveError={saveError}
+                  compact={compactTimer}
+                  focusMode={popupLayout === "focus"}
+                  showNote={featureFlags.featureNote}
+                  showTags={featureFlags.featureTags}
+                  issueUrl={timerIssueUrl}
+                  colorMode={colorMode}
+                />
+              ) : !hasPausedTimers ? (
+                <EmptyTimerState compact={compactTimer} />
+              ) : null}
+              {pausedTimers.map((pt) => (
+                <PausedTimerCard
+                  key={pt.id}
+                  paused={pt}
+                  onResume={() => resumeTimer(pt.id)}
+                  onStop={() => discardPausedTimer(pt.id)}
+                  isResuming={resumingId === pt.id}
+                  isStopping={discardingId === pt.id}
+                  error={pauseError}
+                  onDismissError={dismissPauseError}
+                  compact={!!timer || compactTimer}
+                  colorMode={colorMode}
+                  showDescriptionOnHover={
+                    featureFlags.featurePausedTimerDescriptionHover
+                  }
+                />
+              ))}
             </div>
-          )}
 
-          <div className="mx-3 mt-2 border-t border-gray-100 dark:border-gray-800" />
+            {(switchError || pauseError || timesheetDeleteError) && (
+              <div className="mx-3 mt-1.5 flex items-start gap-2 rounded-md bg-red-50 dark:bg-red-950/30 border border-red-200/60 dark:border-red-800/40 px-2.5 py-2">
+                <span className="text-[11px] text-red-600 dark:text-red-400 flex-1 leading-snug">
+                  {switchError || pauseError || timesheetDeleteError}
+                </span>
+                <button
+                  onClick={switchError ? dismissError : timesheetDeleteError ? dismissDeleteError : dismissPauseError}
+                  className="text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-300 text-xs leading-none shrink-0 p-0.5"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
 
-          {/* Scrollable content — layout-dependent */}
-          <div className="flex-1 min-h-0 overflow-y-auto">
+            <div className="mx-3 mt-2 border-t border-gray-100 dark:border-gray-800" />
+
+            {/* Scrollable content — layout-dependent */}
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
             {popupLayout === "focus" ? (
               <>
                 {/* Tab bar */}
-                <div className="mx-3 mt-1.5 mb-1 flex gap-1">
-                  <button
-                    onClick={() => setFocusTab("recent")}
-                    className={`flex-1 rounded-md px-2 py-1 text-[10px] font-medium transition-colors focus:outline-none ${
-                      focusTab === "recent"
-                        ? "bg-[var(--accent)]/10 text-[var(--accent)]"
-                        : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                    }`}
-                  >
-                    {t("tray.recentTasks")}
-                  </button>
-                  <button
-                    onClick={() => setFocusTab("today")}
-                    className={`flex-1 rounded-md px-2 py-1 text-[10px] font-medium transition-colors focus:outline-none ${
-                      focusTab === "today"
-                        ? "bg-[var(--accent)]/10 text-[var(--accent)]"
-                        : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                    }`}
-                  >
-                    {t("today.title")}
-                  </button>
+                <div className="sticky top-0 z-10 bg-white/95 py-1.5 backdrop-blur-sm dark:bg-[#1a1a1a]/95">
+                  <div className="mx-3 flex gap-1">
+                    <button
+                      onClick={() => setFocusTab("recent")}
+                      className={`flex-1 rounded-md px-2 py-1 text-[10px] font-medium transition-colors focus:outline-none ${
+                        focusTab === "recent"
+                          ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                          : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                      }`}
+                    >
+                      {t("tray.recentTasks")}
+                    </button>
+                    <button
+                      onClick={() => setFocusTab("today")}
+                      className={`flex-1 rounded-md px-2 py-1 text-[10px] font-medium transition-colors focus:outline-none ${
+                        focusTab === "today"
+                          ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                          : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                      }`}
+                    >
+                      {t("today.title")}
+                    </button>
+                  </div>
                 </div>
                 <FavoriteTasksList
                   tasks={visibleFavorites}
@@ -967,6 +970,7 @@ export default function TrayPopup() {
                 )}
               </>
             )}
+            </div>
           </div>
 
           <PopupFooterActions
