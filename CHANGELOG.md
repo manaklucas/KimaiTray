@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.8.0] - 2026-06-12
+
+### New Features
+
+- **Configurable Linux popup monitor placement** — added tray popup settings for choosing the active monitor or a specific monitor, with corner/center placement options
+
+### Improvements
+
+- **README preview image** — added an application preview image to the README
+
+### Bug Fixes
+
+- **Fixed custom start time picker clipping** — rendered the date/time picker as an overlay so it stays usable inside constrained popup layouts — thanks to [@4713n](https://github.com/4713n) ([#4](https://github.com/Engazan/KimaiTray/pull/4))
+- **Fixed tray content accessibility with multiple paused timers** — made the timer area scroll independently so recent tasks and today entries remain reachable — thanks to [@4713n](https://github.com/4713n) ([#5](https://github.com/Engazan/KimaiTray/pull/5))
+- **Fixed idle dialog refresh after stopping timers** — invalidated timesheet cache after idle-dialog stop/discard actions and guarded dialog display when no Kimai client is available
+
+### Translations
+
+- Added popup monitor placement translations for EN, SK, CS, DE, UK
+
 ## [0.7.2] - 2026-05-28
 
 ### New Features
