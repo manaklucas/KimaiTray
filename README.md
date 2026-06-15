@@ -119,9 +119,9 @@ src-tauri/              # Tauri / Rust backend
 ## Logging
 
 **Rust side**: Uses `tauri-plugin-log` — writes to stdout, log directory, and webview console.
-- macOS logs: `~/Library/Logs/eu.engazan.kimaimate/`
-- Linux logs: `~/.local/share/eu.engazan.kimaimate/logs/`
-- Windows logs: `%APPDATA%/eu.engazan.kimaimate/logs/`
+- macOS logs: `~/Library/Logs/eu.engazan.kimaitray/`
+- Linux logs: `~/.local/share/eu.engazan.kimaitray/logs/`
+- Windows logs: `%APPDATA%/eu.engazan.kimaitray/logs/`
 
 **Frontend**: Import `logger` from `src/utils/logger.ts`. Log level controlled by `VITE_LOG_LEVEL`.
 

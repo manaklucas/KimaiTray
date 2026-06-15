@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Bug Fixes
+
+- **Completed the KimaiMate → KimaiTray rename** — fixed the bundle identifier (`eu.engazan.kimaimate` → `eu.engazan.kimaitray`) and the window title so the app and its data directory are consistently named KimaiTray. Existing settings, API tokens, favorites, hidden tasks and paused timers are migrated automatically on first launch after updating
+- **Fixed Recent/Today tab bar background in transparent theme** — replaced the opaque background with frosted glass so vibrancy shows through on macOS
+- **Updated the application icon** — new icon with proper macOS safe-area padding so it no longer renders oversized in the Dock and app switcher
+
 ## [0.8.0] - 2026-06-12
 
 ### New Features

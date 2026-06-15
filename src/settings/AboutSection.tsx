@@ -84,7 +84,7 @@ export default function AboutSection() {
         />
         <LinkButton
           label={t("aboutSection.website")}
-          href="https://kimaimate.app"
+          href="https://kimaitray.app"
           icon={<ExternalIcon />}
           disabled
         />
@@ -95,7 +95,7 @@ export default function AboutSection() {
         />
         <LinkButton
           label={t("aboutSection.privacyPolicy")}
-          href="https://kimaimate.app/privacy"
+          href="https://kimaitray.app/privacy"
           icon={<ExternalIcon />}
           disabled
         />
@@ -114,7 +114,7 @@ export default function AboutSection() {
           <DonateButton
             label="Ko-fi"
             color="#FF5E5B"
-            onClick={() => openUrl("https://ko-fi.com/kimaimate").catch(() => {})}
+            onClick={() => openUrl("https://ko-fi.com/kimaitray").catch(() => {})}
             disabled
           />
           <DonateButton
@@ -126,7 +126,7 @@ export default function AboutSection() {
             label="Buy Me a Coffee"
             color="#FFDD00"
             textDark
-            onClick={() => openUrl("https://buymeacoffee.com/kimaimate").catch(() => {})}
+            onClick={() => openUrl("https://buymeacoffee.com/kimaitray").catch(() => {})}
             disabled
           />
         </div>

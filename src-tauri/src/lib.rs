@@ -7,6 +7,50 @@ use log::{error, info};
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
+/// Bundle identifier used before the KimaiMate → KimaiTray rename.
+/// Old installs stored their data under this identifier.
+const LEGACY_IDENTIFIER: &str = "eu.engazan.kimaimate";
+
+/// Migrate user data from the pre-rename data directory.
+///
+/// The store file (`settings.json`) holds everything the user cares about —
+/// connection settings, API tokens, favorites, hidden tasks and paused timers.
+/// Tauri keys the app data dir by the bundle identifier, so renaming the
+/// identifier would otherwise orphan all existing data. On first launch after
+/// the update we copy the legacy `settings.json` into the new location.
+///
+/// Idempotent and non-destructive: it only runs when the new data dir has no
+/// `settings.json` yet and the legacy one exists, and it never deletes the old
+/// copy. Must run before anything reads the store (tray, shortcuts).
+fn migrate_legacy_data(app: &tauri::AppHandle) {
+    let Ok(new_dir) = app.path().app_data_dir() else {
+        return;
+    };
+    let Some(base) = new_dir.parent() else {
+        return;
+    };
+    let old_dir = base.join(LEGACY_IDENTIFIER);
+    // Nothing to do for fresh installs, or if the identifier was never renamed.
+    if old_dir == new_dir || !old_dir.exists() {
+        return;
+    }
+
+    let new_settings = new_dir.join("settings.json");
+    let old_settings = old_dir.join("settings.json");
+    if new_settings.exists() || !old_settings.exists() {
+        return;
+    }
+
+    if let Err(e) = std::fs::create_dir_all(&new_dir) {
+        error!("data migration: failed to create {new_dir:?}: {e}");
+        return;
+    }
+    match std::fs::copy(&old_settings, &new_settings) {
+        Ok(_) => info!("Migrated settings.json from legacy data dir {old_dir:?}"),
+        Err(e) => error!("data migration: failed to copy settings.json: {e}"),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let default_hook = std::panic::take_hook();
@@ -79,6 +123,8 @@ pub fn run() {
                 "KimaiTray v{} starting",
                 app.config().version.as_deref().unwrap_or("unknown")
             );
+            // Must run before tray/shortcuts read the store.
+            migrate_legacy_data(app.handle());
             tray::create_tray(app.handle())?;
             info!("System tray created");
             if tray::is_detached() {
