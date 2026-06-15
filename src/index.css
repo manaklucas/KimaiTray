@@ -163,6 +163,18 @@ body {
   border-color: rgba(245, 158, 11, 0.15) !important;
 }
 
+/* Focus-layout sticky tab bar (Recent / Today) → frosted glass instead of
+   the opaque bg-white/95 it uses to mask content scrolling beneath it */
+[data-theme="transparent"][data-window="tray-popup"] .bg-white\/95 {
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+[data-theme="transparent"][data-window="tray-popup"].dark .dark\:bg-\[\#1a1a1a\]\/95 {
+  background: rgba(26, 26, 26, 0.4) !important;
+}
+
 /* ── Transparent theme: text readability ─────────────────────── */
 /* Light vibrancy: boost grays that are too faint on glass */
 [data-theme="transparent"][data-window="tray-popup"]:not(.dark) {
