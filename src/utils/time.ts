@@ -1,5 +1,18 @@
+/**
+ * Parses a Kimai datetime string into a Date.
+ *
+ * Kimai serializes timezone offsets WITHOUT a colon (e.g. "2026-06-17T10:00:00+0200",
+ * PHP's DATE_ISO8601 / `Y-m-d\TH:i:sO`). That form is not part of the ECMAScript
+ * date format, so WKWebView (Tauri's engine on macOS) does not parse it reliably —
+ * which throws off "elapsed since begin" calculations. Normalize "+0200" → "+02:00"
+ * so every engine parses the same absolute instant.
+ */
+export function parseKimaiDate(iso: string): Date {
+  return new Date(iso.replace(/([+-]\d{2})(\d{2})$/, "$1:$2"));
+}
+
 export function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString(undefined, {
+  return parseKimaiDate(iso).toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
   });

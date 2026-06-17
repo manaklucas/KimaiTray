@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { TodayEntry, ColorMode } from "../types";
 import TagsList from "./TagsList";
 import ColorDots from "./ColorDots";
-import { formatTime, formatDuration } from "../utils/time";
+import { formatTime, formatDuration, parseKimaiDate } from "../utils/time";
 
 interface TodayEntryItemProps {
   entry: TodayEntry;
@@ -13,7 +13,7 @@ export default function TodayEntryItem({ entry, colorMode = "kimai" }: TodayEntr
   const { t } = useTranslation();
 
   const duration = entry.isRunning
-    ? Math.max(0, Math.floor((Date.now() - new Date(entry.beginIso).getTime()) / 1000))
+    ? Math.max(0, Math.floor((Date.now() - parseKimaiDate(entry.beginIso).getTime()) / 1000))
     : (entry.duration ?? 0);
 
   const subtitle = [entry.customer, entry.description]

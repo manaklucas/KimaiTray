@@ -5,7 +5,7 @@ import { getTimesheets } from "../api/timesheetApi";
 import type { TodayEntry } from "../types";
 import { extractId } from "../api/kimaiTypes";
 import { normalizeKimaiTags } from "../api/tagUtils";
-import { getLocalDayRange } from "../utils/time";
+import { getLocalDayRange, parseKimaiDate } from "../utils/time";
 import { useEntityLookup } from "./useEntityLookup";
 
 const DEFAULT_VISIBLE = 5;
@@ -66,7 +66,7 @@ export function useTodayTimesheets(
       let duration = entry.duration;
       if (isRunning) {
         duration = Math.floor(
-          (Date.now() - new Date(entry.begin).getTime()) / 1000,
+          (Date.now() - parseKimaiDate(entry.begin).getTime()) / 1000,
         );
       }
 
@@ -92,7 +92,7 @@ export function useTodayTimesheets(
 
     const sorted = [...mapped].sort((a, b) => {
       const diff =
-        new Date(a.beginIso).getTime() - new Date(b.beginIso).getTime();
+        parseKimaiDate(a.beginIso).getTime() - parseKimaiDate(b.beginIso).getTime();
       return sortAsc ? diff : -diff;
     });
 

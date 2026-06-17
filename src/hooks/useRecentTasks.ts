@@ -5,10 +5,11 @@ import { getRecentTimesheets } from "../api/timesheetApi";
 import type { RecentTask } from "../types";
 import { extractId } from "../api/kimaiTypes";
 import { normalizeKimaiTags } from "../api/tagUtils";
+import { parseKimaiDate } from "../utils/time";
 import { useEntityLookup } from "./useEntityLookup";
 
 function formatRelativeDate(iso: string): string {
-  const d = new Date(iso);
+  const d = parseKimaiDate(iso);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const target = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -51,7 +52,7 @@ export function useRecentTasks(
 
   const tasks = useMemo<RecentTask[]>(() => {
     const entries = [...(recentQ.data ?? [])].sort(
-      (a, b) => new Date(b.begin).getTime() - new Date(a.begin).getTime(),
+      (a, b) => parseKimaiDate(b.begin).getTime() - parseKimaiDate(a.begin).getTime(),
     );
 
     const seen = new Set<string>();

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import type { ActiveTimer, ColorMode } from "../types";
 import type { KimaiTag } from "../api/tagApi";
+import { parseKimaiDate } from "../utils/time";
 import TagsList from "./TagsList";
 import TagsInput from "./TagsInput";
 import DateTimePicker from "./DateTimePicker";
@@ -40,13 +41,13 @@ function formatElapsed(seconds: number, showSeconds = true): string {
 }
 
 function toDatetimeLocal(iso: string): string {
-  const d = new Date(iso);
+  const d = parseKimaiDate(iso);
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function formatStartTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString(undefined, {
+  return parseKimaiDate(iso).toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
   });
