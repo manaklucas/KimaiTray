@@ -256,7 +256,7 @@ export default function TrayPopup() {
 
   const { editTimer, isSaving, saveError } = useEditTimer(client);
   const { hiddenKeys, hideTask, clearAll: clearHidden } = useHiddenTasks();
-  const { favorites, addFavorite: addFav, removeFavorite: removeFav, isFavorite } = useFavorites();
+  const { favorites, addFavorite: addFav, removeFavorite: removeFav, isFavorite } = useFavorites(baseUrl);
   const { deleteEntry, deletingId, deleteError: timesheetDeleteError, dismissError: dismissDeleteError } = useDeleteTimesheet(client);
 
   const {

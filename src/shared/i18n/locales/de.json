@@ -381,5 +381,19 @@
     "autoInsertUrl": "Issue-URL automatisch einfügen",
     "autoInsertUrlDescription": "Issue-URL automatisch zur Timer-Beschreibung hinzufügen, wenn ein Issue ausgewählt wird",
     "perConnectionHint": "Diese Einstellungen gelten nur für die aktuell gewählte Verbindung"
+  },
+  "testSection": {
+    "title": "Test",
+    "description": "Experimentelle Werkzeuge zum Testen und Warten.",
+    "moveFavorites": "Favoriten zwischen Verbindungen verschieben",
+    "moveFavoritesDescription": "Verschiebt favorisierte Aufgaben von einer Verbindung in eine andere. Nützlich beim Wechsel zu einem neuen Kimai-Server.",
+    "from": "Von",
+    "to": "Nach",
+    "count": "Favoriten auf der Quellverbindung: {{count}}",
+    "move": "Favoriten verschieben",
+    "needTwo": "Fügen Sie mindestens zwei Verbindungen hinzu, um Favoriten zu verschieben.",
+    "moved": "{{count}} Favorit(en) verschoben.",
+    "nothing": "Keine Favoriten auf der Quellverbindung zum Verschieben.",
+    "error": "Verschieben der Favoriten fehlgeschlagen."
   }
 }

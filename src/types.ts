@@ -103,6 +103,7 @@ export interface AppSettings {
 
 export interface FavoriteTask {
   key: string;
+  baseUrl?: string;
   projectId: number;
   activityId: number;
   project: string;
@@ -143,4 +144,5 @@ export type SettingsSection =
   | "integrations"
   | "idle"
   | "shortcuts"
+  | "test"
   | "about";

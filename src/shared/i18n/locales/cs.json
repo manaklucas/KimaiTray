@@ -381,5 +381,19 @@
     "autoInsertUrl": "Automaticky vložit URL úlohy",
     "autoInsertUrlDescription": "Automaticky přidat URL úlohy do popisu časovače při výběru úlohy",
     "perConnectionHint": "Tato nastavení platí pouze pro aktuálně zvolené připojení"
+  },
+  "testSection": {
+    "title": "Test",
+    "description": "Experimentální nástroje pro testování a údržbu.",
+    "moveFavorites": "Přesun oblíbených mezi připojeními",
+    "moveFavoritesDescription": "Přesune oblíbené úkoly z jednoho připojení na druhé. Užitečné při přechodu na nový Kimai server.",
+    "from": "Z",
+    "to": "Na",
+    "count": "Oblíbené na zdrojovém připojení: {{count}}",
+    "move": "Přesunout oblíbené",
+    "needTwo": "Pro přesun oblíbených přidejte alespoň dvě připojení.",
+    "moved": "Přesunuto: {{count}} oblíbených.",
+    "nothing": "Na zdrojovém připojení nejsou žádné oblíbené.",
+    "error": "Přesun oblíbených selhal."
   }
 }

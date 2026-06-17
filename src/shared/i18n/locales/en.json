@@ -381,5 +381,19 @@
     "autoInsertUrl": "Auto-insert issue URL",
     "autoInsertUrlDescription": "Automatically add the issue URL to the timer description when an issue is selected",
     "perConnectionHint": "These settings apply only to the currently active connection"
+  },
+  "testSection": {
+    "title": "Test",
+    "description": "Experimental tools for testing and maintenance.",
+    "moveFavorites": "Move favorites between connections",
+    "moveFavoritesDescription": "Move favorite tasks from one connection to another. Useful when migrating to a new Kimai server.",
+    "from": "From",
+    "to": "To",
+    "count": "Favorites on source connection: {{count}}",
+    "move": "Move favorites",
+    "needTwo": "Add at least two connections to move favorites.",
+    "moved": "Moved {{count}} favorite(s).",
+    "nothing": "No favorites to move on the source connection.",
+    "error": "Failed to move favorites."
   }
 }
