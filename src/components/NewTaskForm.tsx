@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
 import { getCustomers, getProjects } from "../api/projectApi";
 import { getActivities } from "../api/activityApi";
+import { useKimaiTags } from "../hooks/useKimaiTags";
 import type { StartTaskPayload } from "../hooks/useStartTask";
 import type { IssueIntegrationSettings } from "../integrations/issues/types";
 import type { ExternalIssue } from "../integrations/issues/types";
@@ -84,6 +85,8 @@ export default function NewTaskForm({
     queryFn: () => getActivities(client),
     staleTime: 5 * 60 * 1000,
   });
+
+  const tagSuggestions = useKimaiTags(client);
 
   const customers = customersQ.data ?? [];
 
@@ -243,7 +246,13 @@ export default function NewTaskForm({
             <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
               {t("tags.label")}
             </label>
-            <TagsInput tags={tags} onChange={setTags} disabled={isSubmitting} />
+            <TagsInput
+              tags={tags}
+              onChange={setTags}
+              disabled={isSubmitting}
+              suggestions={tagSuggestions}
+              size="md"
+            />
           </div>
         )}
 

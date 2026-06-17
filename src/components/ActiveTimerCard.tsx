@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import type { ActiveTimer, ColorMode } from "../types";
+import type { KimaiTag } from "../api/tagApi";
 import TagsList from "./TagsList";
 import TagsInput from "./TagsInput";
 import DateTimePicker from "./DateTimePicker";
@@ -24,6 +25,7 @@ interface ActiveTimerCardProps {
   focusMode?: boolean;
   showNote?: boolean;
   showTags?: boolean;
+  tagSuggestions?: KimaiTag[];
   issueUrl?: string | null;
   colorMode?: ColorMode;
 }
@@ -64,6 +66,7 @@ export default function ActiveTimerCard({
   focusMode,
   showNote = true,
   showTags = true,
+  tagSuggestions = [],
   issueUrl,
   colorMode = "kimai",
 }: ActiveTimerCardProps) {
@@ -332,7 +335,7 @@ export default function ActiveTimerCard({
                   commitTags();
                 }
               }}>
-                <TagsInput tags={tagsValue} onChange={saveTags} onCommit={commitTags} />
+                <TagsInput tags={tagsValue} onChange={saveTags} onCommit={commitTags} suggestions={tagSuggestions} />
               </div>
             ) : timer.tags.length > 0 ? (
               <div

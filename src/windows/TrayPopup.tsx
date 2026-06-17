@@ -23,6 +23,7 @@ import { useEditTimer } from "../hooks/useEditTimer";
 import { usePauseTimer } from "../hooks/usePauseTimer";
 import { useHiddenTasks } from "../hooks/useHiddenTasks";
 import { useFavorites } from "../hooks/useFavorites";
+import { useKimaiTags } from "../hooks/useKimaiTags";
 import { useDeleteTimesheet } from "../hooks/useDeleteTimesheet";
 import { useIdleDetection } from "../hooks/useIdleDetection";
 import { setTrayTooltip, setTrayTitle, setTrayIcon, startTrayTicker, stopTrayTicker, updateTrayMenu, registerShortcuts, setAlwaysOnTop } from "../api/trayApi";
@@ -257,6 +258,7 @@ export default function TrayPopup() {
   const { editTimer, isSaving, saveError } = useEditTimer(client);
   const { hiddenKeys, hideTask, clearAll: clearHidden } = useHiddenTasks();
   const { favorites, addFavorite: addFav, removeFavorite: removeFav, isFavorite } = useFavorites(baseUrl);
+  const tagSuggestions = useKimaiTags(client);
   const { deleteEntry, deletingId, deleteError: timesheetDeleteError, dismissError: dismissDeleteError } = useDeleteTimesheet(client);
 
   const {
@@ -674,6 +676,7 @@ export default function TrayPopup() {
                   focusMode={popupLayout === "focus"}
                   showNote={featureFlags.featureNote}
                   showTags={featureFlags.featureTags}
+                  tagSuggestions={tagSuggestions}
                   issueUrl={timerIssueUrl}
                   colorMode={colorMode}
                 />

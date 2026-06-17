@@ -284,7 +284,9 @@
   "tags": {
     "label": "Štítky",
     "placeholder": "Přidat štítek…",
-    "addTags": "Přidat štítky…"
+    "addTags": "Přidat štítky…",
+    "noTags": "Žádné dostupné štítky",
+    "noMatch": "Žádné odpovídající štítky"
   },
   "pause": {
     "pause": "Pauza",

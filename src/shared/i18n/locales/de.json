@@ -284,7 +284,9 @@
   "tags": {
     "label": "Tags",
     "placeholder": "Tag hinzufügen…",
-    "addTags": "Tags hinzufügen…"
+    "addTags": "Tags hinzufügen…",
+    "noTags": "Keine Tags verfügbar",
+    "noMatch": "Keine passenden Tags"
   },
   "pause": {
     "pause": "Pause",
