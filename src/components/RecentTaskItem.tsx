@@ -36,42 +36,14 @@ export default function RecentTaskItem({
     .filter(Boolean)
     .join(" · ");
 
-  if (confirming) {
-    return (
-      <div className="flex items-center gap-2 rounded-md px-2.5 py-1.5 bg-red-50 dark:bg-red-950/30 border border-red-200/60 dark:border-red-800/40">
-        <span className="flex-1 text-[11px] text-red-600 dark:text-red-400">
-          {t("recentActions.confirmDelete")}
-        </span>
-        <button
-          onClick={() => {
-            onDelete(task);
-            setConfirming(false);
-          }}
-          disabled={isDeleting}
-          className="text-[10px] font-medium text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 disabled:opacity-50 transition-colors"
-        >
-          {isDeleting ? (
-            <div className="h-3 w-3 animate-spin rounded-full border-2 border-red-400/30 border-t-red-500" />
-          ) : (
-            t("common.delete")
-          )}
-        </button>
-        <button
-          onClick={() => setConfirming(false)}
-          className="text-[10px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-        >
-          {t("common.cancel")}
-        </button>
-      </div>
-    );
-  }
-
   return (
+    <div className="relative">
     <div
-      className="group flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5
+      className={`group flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5
         text-left transition-colors
         hover:bg-gray-100 dark:hover:bg-white/[0.06]
-        focus-within:bg-gray-100 dark:focus-within:bg-white/[0.06]"
+        focus-within:bg-gray-100 dark:focus-within:bg-white/[0.06]
+        ${confirming ? "invisible" : ""}`}
     >
       <button
         onClick={() => onStart(task)}
@@ -173,6 +145,35 @@ export default function RecentTaskItem({
           </button>
         )}
       </div>
+    </div>
+
+      {confirming && (
+        <div className="absolute inset-0 flex items-center gap-2 rounded-md px-2.5 bg-red-50 dark:bg-red-950/30 border border-red-200/60 dark:border-red-800/40">
+          <span className="flex-1 text-[11px] text-red-600 dark:text-red-400">
+            {t("recentActions.confirmDelete")}
+          </span>
+          <button
+            onClick={() => {
+              onDelete(task);
+              setConfirming(false);
+            }}
+            disabled={isDeleting}
+            className="text-[10px] font-medium text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 disabled:opacity-50 transition-colors"
+          >
+            {isDeleting ? (
+              <div className="h-3 w-3 animate-spin rounded-full border-2 border-red-400/30 border-t-red-500" />
+            ) : (
+              t("common.delete")
+            )}
+          </button>
+          <button
+            onClick={() => setConfirming(false)}
+            className="text-[10px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          >
+            {t("common.cancel")}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
