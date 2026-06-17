@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.0] - 2026-06-17
+
+### New Features
+
+- **Pick tags from existing Kimai tags** — the tag field is now a searchable select that lists the tags already defined in Kimai, complete with their colors, and supports adding multiple tags. Kimai only attaches tags that already exist, so picking from the list ensures the tags actually stick
+- **Per-connection favorites** — favorite tasks are now scoped to the active connection instead of being shared globally; existing favorites are migrated onto the current connection on first launch
+- **Test settings section** — a new section with a tool to move favorites from one connection to another (handy when migrating to a new Kimai server)
+- **Refresh button in the New Task form** — reloads the projects, activities and tags lists on demand
+
+### Bug Fixes
+
+- **Fixed elapsed time calculation on macOS** — Kimai serializes timezone offsets without a colon (e.g. `+0200`), which the macOS webview did not parse reliably; datetimes are now normalized so the elapsed time is correct
+- **Fixed UI jumping when deleting a recent task** — the delete confirmation now keeps the row's original height instead of collapsing to a single line
+
 ## [0.8.2] - 2026-06-17
 
 ### Improvements
