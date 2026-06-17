@@ -270,7 +270,8 @@
     "optionalNote": "Optionale Notiz…",
     "startTime": "Startzeit",
     "useNow": "Jetzt",
-    "custom": "Benutzerdefiniert"
+    "custom": "Benutzerdefiniert",
+    "refreshLists": "Projekte, Aktivitäten und Tags aktualisieren"
   },
   "status": {
     "connecting": "Verbindung wird hergestellt…",

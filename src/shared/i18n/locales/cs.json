@@ -270,7 +270,8 @@
     "optionalNote": "Volitelná poznámka…",
     "startTime": "Čas spuštění",
     "useNow": "Nyní",
-    "custom": "Vlastní"
+    "custom": "Vlastní",
+    "refreshLists": "Obnovit projekty, aktivity a štítky"
   },
   "status": {
     "connecting": "Připojování…",

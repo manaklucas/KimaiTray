@@ -270,7 +270,8 @@
     "optionalNote": "Optional note…",
     "startTime": "Start time",
     "useNow": "Use now",
-    "custom": "Custom"
+    "custom": "Custom",
+    "refreshLists": "Refresh projects, activities and tags"
   },
   "status": {
     "connecting": "Connecting…",
