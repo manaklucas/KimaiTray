@@ -102,13 +102,17 @@ src/                    # React frontend
   api/                  # Kimai REST API client
   components/           # UI components
   hooks/                # Custom React hooks
+  integrations/         # Issue tracker integrations
+  providers/            # React context providers (React Query)
   settings/             # Settings UI & service
   windows/              # TrayPopup & Settings windows
   shared/i18n/          # Translations (5 languages)
   utils/                # Logger, time formatting
 src-tauri/              # Tauri / Rust backend
   src/lib.rs            # App setup, plugin registration
+  src/main.rs           # Binary entry point
   src/tray.rs           # System tray, icon generation
+  src/shortcuts.rs      # Global keyboard shortcuts
   src/keychain.rs       # API token storage
   src/idle.rs           # Platform idle detection
   tauri.conf.json       # App metadata & bundle config
@@ -154,7 +158,7 @@ See the [Tauri Updater docs](https://tauri.app/plugin/updater/) for details.
 
 GitHub Actions workflow at `.github/workflows/build.yml`:
 
-- Builds on push to `main` and on PRs
+- Triggers on version tags (`v*`) and manual `workflow_dispatch` runs
 - Cross-platform matrix: macOS (ARM + Intel), Linux, Windows
 - On version tags (`v*`), creates a draft GitHub Release with all platform artifacts
 
