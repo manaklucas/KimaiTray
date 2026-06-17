@@ -1,8 +1,18 @@
+<div align="center">
+
 # KimaiTray
+
+A system tray companion for [Kimai](https://www.kimai.org/) time tracking. Start, stop, pause and switch timers without leaving your desktop.
+
+[![Download](https://img.shields.io/github/v/release/Engazan/KimaiTray?label=Download&style=for-the-badge&logo=github)](https://github.com/Engazan/KimaiTray/releases)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](#license)
+![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=for-the-badge)
+
+### ⬇️ [**Download the latest release**](https://github.com/Engazan/KimaiTray/releases)
 
 ![KimaiTray preview](kimai-preview.png)
 
-A system tray companion for [Kimai](https://www.kimai.org/) time tracking. Start, stop, pause and switch timers without leaving your desktop.
+</div>
 
 Built with [Tauri 2](https://tauri.app/), React 19 and TypeScript.
 
