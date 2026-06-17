@@ -9,7 +9,7 @@ export const defaultSettings: AppSettings = {
   connections: [],
   activeConnectionId: "",
 
-  language: "sk",
+  language: "en",
 
   launchAtLogin: false,
   refreshInterval: 60,
