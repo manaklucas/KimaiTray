@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0] - 2026-06-24
+
+### Improvements
+
+- **Connections moved into the settings sidebar** — your saved Kimai connections are now listed directly in the settings sidebar, each showing its name, URL and an indicator for the active connection. Click a connection to jump straight to editing it
+- **Refined issue integration settings layout** — reorganized the Integrations settings for a cleaner, easier-to-scan layout
+
 ## [0.10.0] - 2026-06-24
 
 ### New Features
