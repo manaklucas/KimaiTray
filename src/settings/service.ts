@@ -47,6 +47,7 @@ export const defaultSettings: AppSettings = {
   trayRightClickAction: "menu",
 
   displayMode: "tray",
+  trueTrayMode: false,
 
   popupMonitorMode: "active",
   popupMonitorIndex: 0,

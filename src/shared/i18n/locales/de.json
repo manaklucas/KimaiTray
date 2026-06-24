@@ -125,7 +125,10 @@
     "popupMonitorPositionBottomLeft": "Links unten",
     "popupMonitorPositionTopRight": "Rechts oben",
     "popupMonitorPositionTopLeft": "Links oben",
-    "popupMonitorPositionCenter": "Mitte"
+    "popupMonitorPositionCenter": "Mitte",
+    "trueTray": "True-Tray-Modus",
+    "trueTrayDescription": "Blendet die App aus dem Dock und dem Cmd+Tab-Umschalter aus (nur Menüleiste).",
+    "trueTrayRestartNote": "Wird nach einem Neustart der App wirksam."
   },
   "timerSettings": {
     "title": "Timer",

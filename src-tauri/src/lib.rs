@@ -127,6 +127,10 @@ pub fn run() {
             migrate_legacy_data(app.handle());
             tray::create_tray(app.handle())?;
             info!("System tray created");
+            // Apply the "True Tray" preference (macOS): when enabled, hide the
+            // app from the Dock and the Cmd+Tab switcher.
+            #[cfg(target_os = "macos")]
+            tray::apply_true_tray_from_store(app.handle());
             if tray::is_detached() {
                 if let Some(w) = app.handle().get_webview_window("tray-popup") {
                     let _ = w.set_resizable(true);

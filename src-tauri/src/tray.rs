@@ -237,6 +237,28 @@ pub fn set_always_on_top(app: AppHandle, pinned: bool) -> Result<(), String> {
     window.set_always_on_top(pinned).map_err(|e| e.to_string())
 }
 
+/// Apply the persisted "True Tray" preference at startup (macOS only). When
+/// enabled, the activation policy is set to `Accessory` so the app is a true
+/// menu-bar app — hidden from the Dock and the Cmd+Tab switcher. When disabled
+/// the default `Regular` policy is kept. Applied once at launch, so changes take
+/// effect after restarting the app. No-op on other platforms.
+#[cfg(target_os = "macos")]
+pub fn apply_true_tray_from_store(app: &AppHandle) {
+    let enabled = app
+        .store(STORE_PATH)
+        .ok()
+        .and_then(|store| store.get("settings"))
+        .and_then(|v| v.as_object().cloned())
+        .and_then(|s| s.get("trueTrayMode").and_then(|v| v.as_bool()))
+        .unwrap_or(false);
+
+    if enabled {
+        if let Err(e) = app.set_activation_policy(tauri::ActivationPolicy::Accessory) {
+            log::error!("Failed to apply True Tray activation policy: {e}");
+        }
+    }
+}
+
 /// Position the popup on a specific monitor at the given corner/center.
 /// `pos`: 0=bottom-right, 1=bottom-left, 2=top-right, 3=top-left, 4=center
 fn position_on_monitor(window: &WebviewWindow, monitor_index: u8, pos: u8) -> tauri::Result<()> {

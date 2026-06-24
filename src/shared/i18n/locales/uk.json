@@ -125,7 +125,10 @@
     "popupMonitorPositionBottomLeft": "Лівий нижній кут",
     "popupMonitorPositionTopRight": "Правий верхній кут",
     "popupMonitorPositionTopLeft": "Лівий верхній кут",
-    "popupMonitorPositionCenter": "Центр"
+    "popupMonitorPositionCenter": "Центр",
+    "trueTray": "Режим True Tray",
+    "trueTrayDescription": "Приховує застосунок з Dock і перемикача Cmd+Tab (лише в рядку меню).",
+    "trueTrayRestartNote": "Набуває чинності після перезапуску застосунку."
   },
   "timerSettings": {
     "title": "Таймер",

@@ -91,6 +91,7 @@ export interface AppSettings {
   trayRightClickAction: "menu" | "popup";
 
   displayMode: "tray" | "detached";
+  trueTrayMode: boolean;
 
   popupMonitorMode: "active" | "specific";
   popupMonitorIndex: number;

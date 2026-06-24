@@ -9,6 +9,7 @@ import {
   SectionDescription,
   SectionTitle,
   Select,
+  Toggle,
 } from "./Controls";
 
 const isMac = navigator.platform.toUpperCase().includes("MAC");
@@ -123,6 +124,26 @@ export default function TrayWindowSection({ settings, update }: Props) {
           })}
         </div>
       </FieldGroup>
+
+      {isMac && (
+        <>
+          <Divider />
+
+          <FieldGroup
+            label={t("traySettings.trueTray")}
+            description={t("traySettings.trueTrayDescription")}
+            horizontal
+          >
+            <Toggle
+              checked={settings.trueTrayMode}
+              onChange={(v) => update("trueTrayMode", v)}
+            />
+          </FieldGroup>
+          <p className="-mt-1 text-[10px] text-amber-600 dark:text-amber-500/80">
+            {t("traySettings.trueTrayRestartNote")}
+          </p>
+        </>
+      )}
 
       {isLinux && (
         <>

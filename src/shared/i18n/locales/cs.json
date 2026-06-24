@@ -125,7 +125,10 @@
     "popupMonitorPositionBottomLeft": "Levý dolní roh",
     "popupMonitorPositionTopRight": "Pravý horní roh",
     "popupMonitorPositionTopLeft": "Levý horní roh",
-    "popupMonitorPositionCenter": "Střed"
+    "popupMonitorPositionCenter": "Střed",
+    "trueTray": "Režim True Tray",
+    "trueTrayDescription": "Skryje aplikaci z Docku a z přepínače Cmd+Tab (jen v liště nabídek).",
+    "trueTrayRestartNote": "Projeví se po opětovném spuštění aplikace."
   },
   "timerSettings": {
     "title": "Časovač",
