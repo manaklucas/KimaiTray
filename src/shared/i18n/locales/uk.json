@@ -342,6 +342,7 @@
     "enabledDescription": "Показувати вибір задач у формі нової задачі",
     "provider": "Постачальник",
     "providerDescription": "Сервіс відстеження задач",
+    "apiVersionHint": "Створено для API {{version}}",
     "gitlab": "GitLab",
     "github": "GitHub",
     "gitea": "Gitea",

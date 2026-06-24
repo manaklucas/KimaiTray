@@ -342,6 +342,7 @@
     "enabledDescription": "Issue-Auswahl im Formular für neue Aufgaben anzeigen",
     "provider": "Anbieter",
     "providerDescription": "Issue-Tracking-Dienst",
+    "apiVersionHint": "Erstellt für API {{version}}",
     "gitlab": "GitLab",
     "github": "GitHub",
     "gitea": "Gitea",

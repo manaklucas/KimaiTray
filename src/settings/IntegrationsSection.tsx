@@ -16,6 +16,12 @@ import {
   Toggle,
 } from "./Controls";
 
+const PROVIDER_API_VERSION: Record<IssueIntegrationSettings["provider"], string> = {
+  gitlab: "v4",
+  github: "REST v3 (2022-11-28)",
+  gitea: "v1",
+};
+
 const emptyConfig: IssueIntegrationSettings = {
   enabled: false,
   provider: "gitlab",
@@ -202,6 +208,11 @@ export default function IntegrationsSection({ settings, update }: Props) {
               ]}
               disabled={disabled}
             />
+            <div className="mt-1.5 text-[11px] text-gray-400 dark:text-gray-500">
+              {t("integrations.apiVersionHint", {
+                version: PROVIDER_API_VERSION[config.provider],
+              })}
+            </div>
           </FieldGroup>
 
           <FieldGroup

@@ -342,6 +342,7 @@
     "enabledDescription": "Show issue picker in the new task form",
     "provider": "Provider",
     "providerDescription": "Issue tracker service",
+    "apiVersionHint": "Built for API {{version}}",
     "gitlab": "GitLab",
     "github": "GitHub",
     "gitea": "Gitea",

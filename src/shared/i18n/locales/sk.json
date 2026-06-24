@@ -342,6 +342,7 @@
     "enabledDescription": "Zobraziť výber úloh vo formulári novej úlohy",
     "provider": "Poskytovateľ",
     "providerDescription": "Služba na sledovanie úloh",
+    "apiVersionHint": "Vytvorené pre API {{version}}",
     "gitlab": "GitLab",
     "github": "GitHub",
     "gitea": "Gitea",
