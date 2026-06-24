@@ -178,7 +178,7 @@ export default function Settings() {
 
       {/* Content */}
       <main className="flex-1 overflow-y-auto px-8 py-6">
-        <div className="max-w-lg">
+        <div className={section === "integrations" ? "max-w-2xl" : "max-w-lg"}>
           {section === "connection" && (
             <ConnectionSection
               settings={settings}
