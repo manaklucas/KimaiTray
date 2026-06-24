@@ -9,6 +9,8 @@
 
 ### Improvements
 
+- **Pick the project / repository from a list** — instead of typing the project path or repo by hand, load and search the projects/repositories your token can access (GitLab projects, GitHub & Gitea repos) and pick one; manual entry is still available as a fallback. The settings field is now the **default repository**, and the new-timer form has its own repository picker so you can browse another repo's issues per timer without changing the default
+- **Pick the connection to configure directly in Integrations settings** — a connection picker (as tabs) at the top of the Integrations section lets you edit any connection's issue-integration settings without first switching the active connection elsewhere; the active connection is marked
 - **API version shown per integration provider** — the Integrations settings now display which API version each provider targets (GitLab v4, GitHub REST v3, Gitea v1) under the provider selector
 - **Issue integration requests now go through the native HTTP layer** — GitLab, GitHub and Gitea API calls are routed via the Tauri HTTP plugin instead of the webview's `fetch`, so they are no longer subject to browser CORS restrictions. This fixes "Connection failed" against self-hosted instances (e.g. a local Gitea at `http://localhost:3000`) that don't send permissive CORS headers
 

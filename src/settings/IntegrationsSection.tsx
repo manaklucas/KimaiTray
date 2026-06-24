@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AppSettings } from "../types";
-import type { IssueIntegrationSettings, ExternalLabel } from "../integrations/issues/types";
+import type { IssueIntegrationSettings, ExternalLabel, ExternalRepo } from "../integrations/issues/types";
 import { createIssueProvider } from "../integrations/issues/issueProvider";
+import SearchableSelect from "../components/SearchableSelect";
 import {
   getIssueToken,
   saveIssueToken,
@@ -43,9 +44,17 @@ interface Props {
 
 export default function IntegrationsSection({ settings, update }: Props) {
   const { t } = useTranslation();
-  const connectionId = settings.activeConnectionId;
+  const [selectedConnectionId, setSelectedConnectionId] = useState(
+    settings.activeConnectionId,
+  );
+  // Keep the selection valid if connections change (e.g. one is deleted),
+  // falling back to the active connection or the first available one.
+  const connectionId = settings.connections.some(
+    (c) => c.id === selectedConnectionId,
+  )
+    ? selectedConnectionId
+    : settings.activeConnectionId || settings.connections[0]?.id || "";
   const config = settings.issueIntegrations[connectionId] ?? emptyConfig;
-  const activeConn = settings.connections.find((c) => c.id === connectionId);
 
   const [issueToken, setIssueToken] = useState("");
   const [showToken, setShowToken] = useState(false);
@@ -54,6 +63,9 @@ export default function IntegrationsSection({ settings, update }: Props) {
   >("idle");
   const [testMessage, setTestMessage] = useState("");
   const [availableLabels, setAvailableLabels] = useState<ExternalLabel[]>([]);
+  const [availableRepos, setAvailableRepos] = useState<ExternalRepo[]>([]);
+  const [reposLoading, setReposLoading] = useState(false);
+  const [manualRepo, setManualRepo] = useState(false);
 
   useEffect(() => {
     if (!connectionId) {
@@ -67,7 +79,40 @@ export default function IntegrationsSection({ settings, update }: Props) {
     setTestMessage("");
     setShowToken(false);
     setAvailableLabels([]);
+    setAvailableRepos([]);
+    setReposLoading(false);
+    setManualRepo(false);
   }, [connectionId]);
+
+  const loadRepos = useCallback(async () => {
+    if (!config.baseUrl || !issueToken) return;
+    setReposLoading(true);
+    try {
+      const provider = createIssueProvider(config, issueToken);
+      const repos = provider.fetchRepos ? await provider.fetchRepos() : [];
+      setAvailableRepos(repos);
+      setManualRepo(repos.length === 0);
+    } catch {
+      setAvailableRepos([]);
+      setManualRepo(true);
+    } finally {
+      setReposLoading(false);
+    }
+  }, [config, issueToken]);
+
+  const repoOptions = useMemo(() => {
+    const opts = availableRepos.map((r) => ({ value: r.id, label: r.label }));
+    if (
+      config.projectPathOrRepo &&
+      !opts.some((o) => o.value === config.projectPathOrRepo)
+    ) {
+      opts.unshift({
+        value: config.projectPathOrRepo,
+        label: config.projectPathOrRepo,
+      });
+    }
+    return opts;
+  }, [availableRepos, config.projectPathOrRepo]);
 
   const updateField = useCallback(
     <K extends keyof IssueIntegrationSettings>(
@@ -120,6 +165,14 @@ export default function IntegrationsSection({ settings, update }: Props) {
             .then(setAvailableLabels)
             .catch(() => {});
         }
+        if (provider.fetchRepos) {
+          provider.fetchRepos()
+            .then((repos) => {
+              setAvailableRepos(repos);
+              if (repos.length > 0) setManualRepo(false);
+            })
+            .catch(() => {});
+        }
       } else {
         setTestStatus("error");
         setTestMessage(result.error ?? t("integrations.connectionFailed"));
@@ -142,35 +195,10 @@ export default function IntegrationsSection({ settings, update }: Props) {
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-2">
+      <div className="mb-4">
         <h2 className="text-[15px] font-semibold text-gray-800 dark:text-gray-200">
           {t("integrations.title")}
         </h2>
-        {activeConn && (
-          <>
-            <span className="text-[12px] text-gray-400 dark:text-gray-500">
-              — {activeConn.name}
-            </span>
-            <span className="group relative">
-              <svg
-                className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500 cursor-help"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                />
-              </svg>
-              <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-800 dark:bg-gray-700 px-2.5 py-1.5 text-[11px] text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                {t("integrations.perConnectionHint")}
-              </span>
-            </span>
-          </>
-        )}
       </div>
       <SectionDescription>{t("integrations.description")}</SectionDescription>
 
@@ -180,6 +208,41 @@ export default function IntegrationsSection({ settings, update }: Props) {
         </div>
       ) : (
         <>
+
+          <FieldGroup
+            label={t("integrations.connection")}
+            description={t("integrations.connectionDescription")}
+          >
+            <div className="flex flex-wrap gap-1.5">
+              {settings.connections.map((c) => {
+                const selected = c.id === connectionId;
+                const isActive = c.id === settings.activeConnectionId;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setSelectedConnectionId(c.id)}
+                    className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[12px] font-medium transition-colors border
+                      focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400 ${
+                        selected
+                          ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]"
+                          : "border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      }`}
+                  >
+                    {isActive && (
+                      <span
+                        className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0"
+                        title={t("integrations.activeSuffix")}
+                      />
+                    )}
+                    {c.name}
+                  </button>
+                );
+              })}
+            </div>
+          </FieldGroup>
+
+          <Divider />
 
           <FieldGroup
             label={t("integrations.enabled")}
@@ -281,12 +344,46 @@ export default function IntegrationsSection({ settings, update }: Props) {
             label={t("integrations.projectPathOrRepo")}
             description={t("integrations.projectPathOrRepoDescription")}
           >
-            <TextInput
-              value={config.projectPathOrRepo}
-              onChange={(v) => updateField("projectPathOrRepo", v)}
-              placeholder={t("integrations.projectPathOrRepoPlaceholder")}
-              disabled={disabled}
-            />
+            {!manualRepo && repoOptions.length > 0 ? (
+              <SearchableSelect
+                options={repoOptions}
+                value={config.projectPathOrRepo || null}
+                onChange={(v) => updateField("projectPathOrRepo", v ?? "")}
+                placeholder={t("integrations.projectPathOrRepoSelectPlaceholder")}
+                disabled={disabled}
+              />
+            ) : (
+              <TextInput
+                value={config.projectPathOrRepo}
+                onChange={(v) => updateField("projectPathOrRepo", v)}
+                placeholder={t("integrations.projectPathOrRepoPlaceholder")}
+                disabled={disabled}
+              />
+            )}
+            <div className="mt-1.5 flex items-center gap-3 text-[11px]">
+              <button
+                type="button"
+                onClick={loadRepos}
+                disabled={disabled || !config.baseUrl || !issueToken || reposLoading}
+                className="text-[var(--accent)] hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:no-underline"
+              >
+                {reposLoading
+                  ? t("integrations.repoLoading")
+                  : t("integrations.repoLoad")}
+              </button>
+              {repoOptions.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setManualRepo((m) => !m)}
+                  disabled={disabled}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {manualRepo
+                    ? t("integrations.repoPickFromList")
+                    : t("integrations.repoEnterManually")}
+                </button>
+              )}
+            </div>
           </FieldGroup>
 
           <FieldGroup

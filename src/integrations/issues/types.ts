@@ -30,6 +30,12 @@ export interface ExternalLabel {
   color: string;
 }
 
+export interface ExternalRepo {
+  /** Identifier stored in projectPathOrRepo (GitLab path, GitHub/Gitea owner/repo). */
+  id: string;
+  label: string;
+}
+
 export interface IssueProvider {
   testConnection(): Promise<{
     success: boolean;
@@ -40,4 +46,5 @@ export interface IssueProvider {
   getIssueUrl(issue: ExternalIssue): string;
   addSpentTime?(issueId: number, durationSeconds: number): Promise<void>;
   fetchLabels?(): Promise<ExternalLabel[]>;
+  fetchRepos?(): Promise<ExternalRepo[]>;
 }

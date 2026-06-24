@@ -1,21 +1,23 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 
-interface Option {
-  value: number;
+type OptionValue = string | number;
+
+interface Option<T extends OptionValue> {
+  value: T;
   label: string;
 }
 
-interface SearchableSelectProps {
-  options: Option[];
-  value: number | null;
-  onChange: (value: number | null) => void;
+interface SearchableSelectProps<T extends OptionValue> {
+  options: Option<T>[];
+  value: T | null;
+  onChange: (value: T | null) => void;
   placeholder: string;
   disabled?: boolean;
   allowEmpty?: boolean;
   emptyLabel?: string;
 }
 
-export default function SearchableSelect({
+export default function SearchableSelect<T extends OptionValue>({
   options,
   value,
   onChange,
@@ -23,7 +25,7 @@ export default function SearchableSelect({
   disabled,
   allowEmpty,
   emptyLabel,
-}: SearchableSelectProps) {
+}: SearchableSelectProps<T>) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [highlightIndex, setHighlightIndex] = useState(0);
@@ -74,7 +76,7 @@ export default function SearchableSelect({
   }, [highlightIndex, open]);
 
   const select = useCallback(
-    (val: number | null) => {
+    (val: T | null) => {
       onChange(val);
       setOpen(false);
       setSearch("");

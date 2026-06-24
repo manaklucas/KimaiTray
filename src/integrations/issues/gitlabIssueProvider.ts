@@ -1,5 +1,5 @@
 import { fetch } from "@tauri-apps/plugin-http";
-import type { ExternalIssue, ExternalLabel, IssueProvider, IssueIntegrationSettings } from "./types";
+import type { ExternalIssue, ExternalLabel, ExternalRepo, IssueProvider, IssueIntegrationSettings } from "./types";
 import { logger } from "../../utils/logger";
 
 interface GitLabIssue {
@@ -140,6 +140,23 @@ export function createGitLabProvider(
         { per_page: "100" },
       );
       return labels.map((l) => ({ name: l.name, color: l.color }));
+    },
+
+    async fetchRepos(): Promise<ExternalRepo[]> {
+      const projects = await request<Array<{ path_with_namespace: string }>>(
+        "/projects",
+        {
+          membership: "true",
+          simple: "true",
+          per_page: "100",
+          order_by: "last_activity_at",
+          sort: "desc",
+        },
+      );
+      return projects.map((p) => ({
+        id: p.path_with_namespace,
+        label: p.path_with_namespace,
+      }));
     },
   };
 }

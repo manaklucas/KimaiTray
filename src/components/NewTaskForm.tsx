@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { KimaiClient } from "../api/kimaiClient";
@@ -8,6 +8,7 @@ import { useKimaiTags } from "../hooks/useKimaiTags";
 import type { StartTaskPayload } from "../hooks/useStartTask";
 import type { IssueIntegrationSettings } from "../integrations/issues/types";
 import type { ExternalIssue } from "../integrations/issues/types";
+import { useRepos } from "../integrations/issues/useRepos";
 import IssuePicker from "../integrations/issues/IssuePicker";
 import IssueLinkActions from "../integrations/issues/IssueLinkActions";
 import TagsInput from "./TagsInput";
@@ -55,6 +56,42 @@ export default function NewTaskForm({
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [selectedIssue, setSelectedIssue] = useState<ExternalIssue | null>(null);
+
+  // Repository for issue lookup — defaults to the one configured in settings,
+  // but can be overridden per timer here.
+  const [selectedRepo, setSelectedRepo] = useState(
+    issueIntegrationConfig?.projectPathOrRepo ?? "",
+  );
+  const { repos: availableRepos } = useRepos(
+    showIssuePicker ? issueIntegrationConfig ?? null : null,
+    issueToken ?? null,
+  );
+  const repoOptions = useMemo(() => {
+    const opts = availableRepos.map((r) => ({ value: r.id, label: r.label }));
+    if (selectedRepo && !opts.some((o) => o.value === selectedRepo)) {
+      opts.unshift({ value: selectedRepo, label: selectedRepo });
+    }
+    return opts;
+  }, [availableRepos, selectedRepo]);
+  const effectiveIssueConfig = useMemo(
+    () =>
+      issueIntegrationConfig
+        ? { ...issueIntegrationConfig, projectPathOrRepo: selectedRepo }
+        : null,
+    [issueIntegrationConfig, selectedRepo],
+  );
+
+  // Follow the configured default repository when the connection/default changes.
+  useEffect(() => {
+    setSelectedRepo(issueIntegrationConfig?.projectPathOrRepo ?? "");
+    setSelectedIssue(null);
+  }, [issueIntegrationConfig?.baseUrl, issueIntegrationConfig?.projectPathOrRepo]);
+
+  const handleSelectRepo = useCallback((v: string | null) => {
+    setSelectedRepo(v ?? "");
+    setSelectedIssue(null);
+  }, []);
+
   const autoInsertUrl = issueIntegrationConfig?.autoInsertUrl ?? false;
   const handleSelectIssue = (issue: ExternalIssue | null) => {
     setSelectedIssue(issue);
@@ -244,24 +281,40 @@ export default function NewTaskForm({
         </div>
 
         {showIssuePicker && issueIntegrationConfig?.enabled && issueToken && (
-          <div>
-            <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
-              {t("integrations.issuePicker")}
-            </label>
-            <IssuePicker
-              config={issueIntegrationConfig}
-              token={issueToken}
-              selectedIssue={selectedIssue}
-              onSelectIssue={handleSelectIssue}
-              disabled={isSubmitting}
-            />
-            {selectedIssue && (
-              <IssueLinkActions
-                issue={selectedIssue}
-                description={description}
-                onDescriptionChange={setDescription}
-              />
+          <div className="space-y-2">
+            {repoOptions.length > 0 && (
+              <div>
+                <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  {t("integrations.repository")}
+                </label>
+                <SearchableSelect
+                  options={repoOptions}
+                  value={selectedRepo || null}
+                  onChange={handleSelectRepo}
+                  placeholder={t("integrations.projectPathOrRepoSelectPlaceholder")}
+                  disabled={isSubmitting}
+                />
+              </div>
             )}
+            <div>
+              <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
+                {t("integrations.issuePicker")}
+              </label>
+              <IssuePicker
+                config={effectiveIssueConfig ?? issueIntegrationConfig}
+                token={issueToken}
+                selectedIssue={selectedIssue}
+                onSelectIssue={handleSelectIssue}
+                disabled={isSubmitting}
+              />
+              {selectedIssue && (
+                <IssueLinkActions
+                  issue={selectedIssue}
+                  description={description}
+                  onDescriptionChange={setDescription}
+                />
+              )}
+            </div>
           </div>
         )}
 
@@ -270,13 +323,13 @@ export default function NewTaskForm({
             <label className="block text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
               {t("newTask.description")}
             </label>
-            <input
-              type="text"
+            <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               disabled={isSubmitting}
               placeholder={t("newTask.optionalNote")}
-              className={selectCls}
+              rows={3}
+              className={`${selectCls} min-h-[64px] resize-y leading-snug`}
             />
           </div>
         )}

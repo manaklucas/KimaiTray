@@ -1,5 +1,5 @@
 import { fetch } from "@tauri-apps/plugin-http";
-import type { ExternalIssue, ExternalLabel, IssueProvider, IssueIntegrationSettings } from "./types";
+import type { ExternalIssue, ExternalLabel, ExternalRepo, IssueProvider, IssueIntegrationSettings } from "./types";
 import { logger } from "../../utils/logger";
 
 interface GitHubIssue {
@@ -143,6 +143,14 @@ export function createGitHubProvider(
         { per_page: "100" },
       );
       return labels.map((l) => ({ name: l.name, color: `#${l.color}` }));
+    },
+
+    async fetchRepos(): Promise<ExternalRepo[]> {
+      const repos = await request<Array<{ full_name: string }>>(
+        "/user/repos",
+        { per_page: "100", sort: "updated" },
+      );
+      return repos.map((r) => ({ id: r.full_name, label: r.full_name }));
     },
   };
 }
