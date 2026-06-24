@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0] - 2026-06-24
+
+### New Features
+
+- **Gitea issue integration** — link Gitea issues to your time entries alongside the existing GitLab and GitHub providers. Supports issue search, open/all state and assignee filtering, include/exclude label filters, and **spent-time sync** to the linked issue when the timer stops (Gitea's native time-tracking endpoint), mirroring the GitLab integration
+- **macOS True Tray mode** — hide the app from the Dock and Cmd+Tab so KimaiTray lives purely in the menu bar
+
+### Improvements
+
+- **API version shown per integration provider** — the Integrations settings now display which API version each provider targets (GitLab v4, GitHub REST v3, Gitea v1) under the provider selector
+
 ## [0.9.0] - 2026-06-17
 
 ### New Features
