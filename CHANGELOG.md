@@ -10,6 +10,7 @@
 ### Improvements
 
 - **API version shown per integration provider** — the Integrations settings now display which API version each provider targets (GitLab v4, GitHub REST v3, Gitea v1) under the provider selector
+- **Issue integration requests now go through the native HTTP layer** — GitLab, GitHub and Gitea API calls are routed via the Tauri HTTP plugin instead of the webview's `fetch`, so they are no longer subject to browser CORS restrictions. This fixes "Connection failed" against self-hosted instances (e.g. a local Gitea at `http://localhost:3000`) that don't send permissive CORS headers
 
 ## [0.9.0] - 2026-06-17
 

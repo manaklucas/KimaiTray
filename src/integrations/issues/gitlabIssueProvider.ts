@@ -1,3 +1,4 @@
+import { fetch } from "@tauri-apps/plugin-http";
 import type { ExternalIssue, ExternalLabel, IssueProvider, IssueIntegrationSettings } from "./types";
 import { logger } from "../../utils/logger";
 
