@@ -48,6 +48,7 @@
   },
   "connection": {
     "title": "Verbindung",
+    "connectionsTitle": "Verbindungen",
     "description": "Verbinden Sie sich mit Ihrer Kimai-Instanz über die Basis-URL und einen persönlichen API-Token. Sie können mehrere Verbindungen speichern und zwischen ihnen wechseln.",
     "addNew": "Neue Verbindung hinzufügen",
     "connectionName": "Verbindungsname",

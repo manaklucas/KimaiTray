@@ -48,6 +48,7 @@
   },
   "connection": {
     "title": "Připojení",
+    "connectionsTitle": "Připojení",
     "description": "Připojte se k instanci Kimai pomocí základní URL adresy a osobního API tokenu. Můžete uložit více připojení a přepínat mezi nimi.",
     "addNew": "Přidat nové připojení",
     "connectionName": "Název připojení",

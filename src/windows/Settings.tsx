@@ -84,7 +84,6 @@ const NAV_LABEL_KEYS: Record<SettingsSection, string> = {
 };
 
 const NAV_ORDER: SettingsSection[] = [
-  "connection",
   "general",
   "appearance",
   "tray",
@@ -100,6 +99,9 @@ export default function Settings() {
   const { t } = useTranslation();
   const [section, setSection] = useState<SettingsSection>("connection");
   const [appVersion, setAppVersion] = useState("");
+  const [selectedConnectionId, setSelectedConnectionId] = useState<
+    string | null | undefined
+  >(undefined);
 
   useEffect(() => {
     getVersion().then(setAppVersion);
@@ -109,7 +111,9 @@ export default function Settings() {
     const win = getCurrentWindow();
     const unlisten = win.listen<string>("kimai://navigate-section", (e) => {
       const target = e.payload as SettingsSection;
-      if (NAV_ORDER.includes(target)) setSection(target);
+      if (target === "connection" || NAV_ORDER.includes(target)) {
+        setSection(target);
+      }
     });
     return () => { unlisten.then((fn) => fn()); };
   }, []);
@@ -120,10 +124,24 @@ export default function Settings() {
     loaded,
     saveConnection,
     removeConnection,
-    activateConnection,
   } = useSettings();
   useAppearance();
   useLanguageSync();
+
+  const fallbackConnectionId =
+    settings.activeConnectionId || settings.connections[0]?.id || null;
+  const connectionSelection =
+    selectedConnectionId === undefined
+      ? fallbackConnectionId
+      : selectedConnectionId &&
+          !settings.connections.some((c) => c.id === selectedConnectionId)
+        ? fallbackConnectionId
+        : selectedConnectionId;
+
+  const openConnection = (id: string | null) => {
+    setSelectedConnectionId(id);
+    setSection("connection");
+  };
 
   if (!loaded) {
     return (
@@ -137,6 +155,72 @@ export default function Settings() {
     <div className="flex h-screen w-screen bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-gray-100">
       {/* Sidebar */}
       <nav className="flex w-[200px] shrink-0 flex-col border-r border-gray-100 bg-gray-50/80 dark:border-gray-800 dark:bg-[#141414] pt-4 pb-3">
+        <div className="px-4 mb-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+            {t("connection.connectionsTitle")}
+          </span>
+        </div>
+
+        <div className="mb-4 space-y-0.5 px-2">
+          {settings.connections.map((conn) => {
+            const selected = section === "connection" && connectionSelection === conn.id;
+            const active = conn.id === settings.activeConnectionId;
+            return (
+              <button
+                key={conn.id}
+                type="button"
+                onClick={() => openConnection(conn.id)}
+                className={`flex w-full min-w-0 items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-[12px] transition-colors
+                  focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400
+                  ${
+                    selected
+                      ? "bg-[var(--accent-light)] text-[var(--accent)] font-medium"
+                      : "text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+                  }`}
+              >
+                <span
+                  className={`h-2 w-2 shrink-0 rounded-full ${
+                    active ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-600"
+                  }`}
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate">{conn.name}</span>
+                  <span className="block truncate text-[10px] font-normal text-gray-400 dark:text-gray-500">
+                    {conn.url}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+
+          <button
+            type="button"
+            onClick={() => openConnection(null)}
+            className={`flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-[12px] transition-colors
+              focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-400
+              ${
+                section === "connection" && connectionSelection === null
+                  ? "bg-[var(--accent-light)] text-[var(--accent)] font-medium"
+                  : "text-[var(--accent)] hover:bg-gray-100 dark:hover:bg-gray-800"
+              }`}
+          >
+            <svg
+              className="h-3.5 w-3.5 shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            {t("connection.addNew")}
+          </button>
+        </div>
+
         <div className="px-4 mb-4">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
             {t("settings.title")}
@@ -180,14 +264,15 @@ export default function Settings() {
       <main className="flex-1 overflow-y-auto px-8 py-6">
         <div className={section === "integrations" ? "max-w-2xl" : "max-w-lg"}>
           {section === "connection" && (
-            <ConnectionSection
-              settings={settings}
-              token={token}
-              saveConnection={saveConnection}
-              removeConnection={removeConnection}
-              activateConnection={activateConnection}
-            />
-          )}
+              <ConnectionSection
+                settings={settings}
+                token={token}
+                selectedConnectionId={connectionSelection}
+                onSelectedConnectionChange={setSelectedConnectionId}
+                saveConnection={saveConnection}
+                removeConnection={removeConnection}
+              />
+            )}
           {section === "general" && (
             <GeneralSection settings={settings} update={update} />
           )}

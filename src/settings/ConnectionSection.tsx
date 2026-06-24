@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AppSettings, SavedConnection } from "../types";
 import { testConnection, isInsecureUrl, type ConnectionResult } from "../api";
@@ -14,22 +14,22 @@ import {
 interface Props {
   settings: AppSettings;
   token: string;
+  selectedConnectionId: string | null;
+  onSelectedConnectionChange: (id: string | null) => void;
   saveConnection: (conn: SavedConnection, token: string) => Promise<void>;
   removeConnection: (id: string) => Promise<void>;
-  activateConnection: (id: string) => Promise<void>;
 }
 
 export default function ConnectionSection({
   settings,
   token,
+  selectedConnectionId,
+  onSelectedConnectionChange,
   saveConnection,
   removeConnection,
-  activateConnection,
 }: Props) {
   const { t } = useTranslation();
-  const [editingId, setEditingId] = useState<string | null>(
-    settings.activeConnectionId || null,
-  );
+  const [editingId, setEditingId] = useState<string | null>(selectedConnectionId);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [editToken, setEditToken] = useState("");
@@ -38,7 +38,6 @@ export default function ConnectionSection({
     "idle" | "testing" | "connected" | "error"
   >("idle");
   const [statusMessage, setStatusMessage] = useState("");
-  const initialized = useRef(false);
 
   const loadFormForConnection = useCallback(
     async (id: string | null) => {
@@ -69,15 +68,21 @@ export default function ConnectionSection({
   );
 
   useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      if (settings.activeConnectionId) {
-        loadFormForConnection(settings.activeConnectionId);
-      } else if (settings.kimaiUrl) {
-        setUrl(settings.kimaiUrl);
-      }
+    if (selectedConnectionId) {
+      loadFormForConnection(selectedConnectionId);
+      return;
     }
-  }, [settings.activeConnectionId, settings.kimaiUrl, loadFormForConnection]);
+
+    loadFormForConnection(null);
+    if (settings.connections.length === 0 && settings.kimaiUrl) {
+      setUrl(settings.kimaiUrl);
+    }
+  }, [
+    selectedConnectionId,
+    settings.connections.length,
+    settings.kimaiUrl,
+    loadFormForConnection,
+  ]);
 
   useEffect(() => {
     if (
@@ -90,18 +95,6 @@ export default function ConnectionSection({
   }, [token, editingId, settings.activeConnectionId, editToken]);
 
   const insecure = url.length > 0 && isInsecureUrl(url);
-
-  const handleSelectConnection = useCallback(
-    async (id: string) => {
-      await activateConnection(id);
-      loadFormForConnection(id);
-    },
-    [activateConnection, loadFormForConnection],
-  );
-
-  const handleAddNew = useCallback(() => {
-    loadFormForConnection(null);
-  }, [loadFormForConnection]);
 
   const handleTestAndSave = useCallback(async () => {
     setStatus("testing");
@@ -129,6 +122,7 @@ export default function ConnectionSection({
 
       await saveConnection({ id, name: connName, url }, editToken);
       setEditingId(id);
+      onSelectedConnectionChange(id);
       if (!name) setName(connName);
 
       setStatus("connected");
@@ -139,22 +133,33 @@ export default function ConnectionSection({
       setStatus("error");
       setStatusMessage(result.error ?? t("connection.connectionFailed"));
     }
-  }, [url, editToken, name, editingId, saveConnection, t]);
+  }, [
+    url,
+    editToken,
+    name,
+    editingId,
+    saveConnection,
+    onSelectedConnectionChange,
+    t,
+  ]);
 
   const handleDelete = useCallback(
-    async (id: string, e: React.MouseEvent) => {
-      e.stopPropagation();
+    async () => {
+      if (!editingId) return;
+      const id = editingId;
       await removeConnection(id);
-      if (editingId === id) {
-        const remaining = settings.connections.filter((c) => c.id !== id);
-        if (remaining.length > 0) {
-          loadFormForConnection(remaining[0].id);
-        } else {
-          loadFormForConnection(null);
-        }
-      }
+      const remaining = settings.connections.filter((c) => c.id !== id);
+      const nextId = remaining[0]?.id ?? null;
+      onSelectedConnectionChange(nextId);
+      loadFormForConnection(nextId);
     },
-    [editingId, settings.connections, removeConnection, loadFormForConnection],
+    [
+      editingId,
+      settings.connections,
+      removeConnection,
+      onSelectedConnectionChange,
+      loadFormForConnection,
+    ],
   );
 
   return (
@@ -164,74 +169,22 @@ export default function ConnectionSection({
         {t("connection.description")}
       </SectionDescription>
 
-      {/* Saved connections list */}
-      {settings.connections.length > 0 && (
-        <div className="mb-4 overflow-hidden rounded-md border border-gray-200 dark:border-gray-700">
-          {settings.connections.map((conn) => (
-            <div
-              key={conn.id}
-              onClick={() => handleSelectConnection(conn.id)}
-              className={`flex cursor-pointer items-center gap-2.5 border-b border-gray-100 px-3 py-2 text-[12px] last:border-b-0 dark:border-gray-800
-                ${
-                  editingId === conn.id
-                    ? "bg-[var(--accent-light)]"
-                    : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                }`}
-            >
-              <span
-                className={`h-2 w-2 shrink-0 rounded-full ${
-                  conn.id === settings.activeConnectionId
-                    ? "bg-emerald-500"
-                    : "bg-gray-300 dark:bg-gray-600"
-                }`}
-              />
-              <span className="truncate font-medium text-gray-700 dark:text-gray-300">
-                {conn.name}
-              </span>
-              <span className="truncate text-[11px] text-gray-400 dark:text-gray-500">
-                {conn.url}
-              </span>
-              <button
-                type="button"
-                onClick={(e) => handleDelete(conn.id, e)}
-                className="ml-auto shrink-0 p-0.5 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
-              >
-                <svg
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+      {editingId && (
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-800/50">
+          <div className="min-w-0">
+            <div className="truncate text-[12px] font-medium text-gray-700 dark:text-gray-300">
+              {settings.connections.find((c) => c.id === editingId)?.name}
             </div>
-          ))}
-
+            <div className="truncate text-[11px] text-gray-400 dark:text-gray-500">
+              {settings.connections.find((c) => c.id === editingId)?.url}
+            </div>
+          </div>
           <button
             type="button"
-            onClick={handleAddNew}
-            className="flex w-full items-center gap-2 px-3 py-2 text-[12px] text-[var(--accent)] hover:bg-gray-50 dark:hover:bg-gray-800/50"
+            onClick={handleDelete}
+            className="shrink-0 rounded-md px-2 py-1 text-[11px] font-medium text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
           >
-            <svg
-              className="h-3.5 w-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
-            {t("connection.addNew")}
+            {t("common.delete")}
           </button>
         </div>
       )}
